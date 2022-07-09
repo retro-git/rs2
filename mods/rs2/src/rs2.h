@@ -1,9 +1,9 @@
-#ifndef RET2S2_H
-#define RET2S2_H
+#ifndef RS2_H
+#define RS2_H
 
 #include "levels.h"
 
-struct ret2s2 {
+struct rs2 {
     int menu_index;
     int menu_selection_index;
     int menu_enabled;
@@ -12,7 +12,7 @@ struct ret2s2 {
     savestate_t savestate;
 };
 
-extern struct ret2s2 ret2s2;
+extern struct rs2 rs2;
 
 void draw_menu();
 void begin_warp();
