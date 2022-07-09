@@ -1,0 +1,12 @@
+.vscode
+build/
+debug/
+*.log
+offset.txt
+overlay.ld
+Makefile
+backup/
+output/
+*.o
+*.dep
+.DS_Store
