@@ -9,6 +9,7 @@ struct ret2s2 {
     int menu_enabled;
     int is_warping;
     level_data warp_selected_level;
+    savestate_t savestate;
 };
 
 extern struct ret2s2 ret2s2;

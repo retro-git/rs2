@@ -16,6 +16,21 @@ void main_hook()
     if (spyro_game_state != 0)
         return;
 
+    if (spyro_input_raw.l2 && spyro_input_raw.r2) {
+        if (spyro_input_raw.triangle) {
+            spyro_player_position = ret2s2.savestate.position;
+            spyro_player_rotation = ret2s2.savestate.rotation;
+            spyro_cam_rotation = ret2s2.savestate.cam_rotation;
+            spyro_cam_position = ret2s2.savestate.cam_position;
+        }
+        else if (spyro_input_raw.square) {
+            ret2s2.savestate.position = spyro_player_position;
+            ret2s2.savestate.rotation = spyro_player_rotation;
+            ret2s2.savestate.cam_rotation = spyro_cam_rotation;
+            ret2s2.savestate.cam_position = spyro_cam_position;
+        }
+    }
+
     if (spyro_input_raw.l3 && ret2s2.menu_enabled == 0)
     {
         ret2s2.menu_enabled = 1;

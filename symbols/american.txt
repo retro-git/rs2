@@ -3,6 +3,11 @@ spyro_DrawText = 0x8004a374;
 spyro_FUN_800156fc = 0x800156fc;
 
 spyro_speed = 0x8006a090;
+spyro_player_position = 0x80069ff0;
+spyro_player_rotation = 0x8006a054;
+spyro_cam_position = 0x80067eac;
+spyro_cam_rotation = 0x80067F28;
+
 spyro_game_state = 0x800681c8;
 spyro_input_raw = 0x800683A0;
 

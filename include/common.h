@@ -5,8 +5,8 @@
 
 typedef struct
 {
-    int x;
-    int z;
+    int32_t x;
+    int32_t z;
 } vec2_t;
 
 typedef struct
@@ -17,9 +17,16 @@ typedef struct
 
 typedef struct
 {
-    int x;
-    int z;
-    int y;
+    int16_t x;
+    int16_t z;
+    int16_t y;
+} vec3s_t;
+
+typedef struct
+{
+    int32_t x;
+    int32_t z;
+    int32_t y;
 } vec3_t;
 
 typedef struct
@@ -32,8 +39,8 @@ typedef struct
 typedef struct
 {
     uint16_t l2 : 1;
-    uint16_t l1 : 1;
     uint16_t r2 : 1;
+    uint16_t l1 : 1;
     uint16_t r1 : 1;
     uint16_t triangle : 1;
     uint16_t circle : 1;
@@ -94,16 +101,28 @@ typedef enum {
     BOSS = 2,
 } level_type;
 
+typedef struct {
+    vec3_t position;
+    vec3_t rotation;
+    vec3_t cam_position;
+    vec3s_t cam_rotation;
+} savestate_t;
+
 int sprintf(char *str, char *format, ...);
 void spyro_DrawText(char *text, int x, int y, int colorIndex, int *unk);
 void spyro_FUN_800156fc(void);
 
 extern struct vec3 spyro_speed;
-extern int spyro_game_state;
+extern vec3_t spyro_player_position;
+extern vec3_t spyro_player_rotation;
+extern vec3_t spyro_cam_position;
+extern vec3s_t spyro_cam_rotation;
+
+extern int32_t spyro_game_state;
 extern controller_t spyro_input_raw;
-extern int spyro_level_load_id;
-extern int spyro_world_id;
-extern int spyro_pause_menu_index;
+extern int32_t spyro_level_load_id;
+extern int32_t spyro_world_id;
+extern int32_t spyro_pause_menu_index;
 extern uint16_t spyro_pause_submenu_index;
 extern uint16_t spyro_unk_timer;
 
