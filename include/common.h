@@ -1,0 +1,110 @@
+#ifndef COMMON_H
+#define COMMON_H
+
+#include <stdint.h>
+
+typedef struct
+{
+    int x;
+    int z;
+} vec2_t;
+
+typedef struct
+{
+    float x;
+    float z;
+} vec2f_t;
+
+typedef struct
+{
+    int x;
+    int z;
+    int y;
+} vec3_t;
+
+typedef struct
+{
+    float x;
+    float z;
+    float y;
+} vec3f_t;
+
+typedef struct
+{
+    uint16_t l2 : 1;
+    uint16_t l1 : 1;
+    uint16_t r2 : 1;
+    uint16_t r1 : 1;
+    uint16_t triangle : 1;
+    uint16_t circle : 1;
+    uint16_t cross : 1;
+    uint16_t square : 1;
+    uint16_t select : 1;
+    uint16_t l3 : 1;
+    uint16_t r3 : 1;
+    uint16_t start : 1;
+    uint16_t dup : 1;
+    uint16_t dright : 1;
+    uint16_t ddown : 1;
+    uint16_t dleft : 1;
+} controller_t;
+
+typedef enum {
+    SQUARE = 0x3e,
+    CROSS = 0x3c,
+    CIRCLE = 0x7b,
+    TRIANGLE = 0x7d
+} special_characters;
+
+typedef enum {
+    SUMMER_FOREST = 0,
+    GLIMMER = 1,
+    IDOL_SPRINGS = 2,
+    COLOSSUS = 3,
+    HURRICOS = 4,
+    AQUARIA_TOWERS = 5,
+    SUNNY_BEACH = 6,
+    OCEAN_SPEEDWAY = 7,
+    CRUSH = 8,
+    AUTUMN_PLAINS = 9,
+    SKELOS_BADLANDS = 10,
+    CRYSTAL_GLACIER = 11,
+    BREEZE_HARBOR = 12,
+    ZEPHYR = 13,
+    METRO_SPEEDWAY = 14,
+    SCORCH = 15,
+    SHADY_OASIS = 16,
+    MAGMA_CONE = 17,
+    FRACTURE_HILLS = 18,
+    ICY_SPEEDWAY = 19,
+    GULP = 20,
+    WINTER_TUNDRA = 21,
+    MYSTIC_MARSH = 22,
+    CLOUD_TEMPLES = 23,
+    CANYON_SPEEDWAY = 24,
+    ROBOTICA_FARMS = 25,
+    METROPOLIS = 26,
+    DRAGON_SHORES = 27,
+    RIPTO = 28,
+} levels;
+
+typedef enum {
+    HOMEWORLD = 0,
+    STAGE = 1,
+    BOSS = 2,
+} level_type;
+
+int sprintf(char *str, char *format, ...);
+void spyro_DrawText(char *text, int x, int y, int colorIndex, int *unk);
+void spyro_FUN_800156fc(void);
+
+extern struct vec3 spyro_speed;
+extern int spyro_game_state;
+extern controller_t spyro_input_raw;
+extern int spyro_level_load_id;
+extern int spyro_world_id;
+extern int spyro_pause_menu_index;
+extern uint16_t spyro_pause_submenu_index;
+extern uint16_t spyro_unk_timer;
+
+#endif

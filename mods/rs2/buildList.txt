@@ -1,0 +1,2 @@
+american, exe, 0x80011afc, 0x0, src/hook.s
+american, header, 0x8000B0B8, 0x0, src/ret2s2.c src/levels.c, ret2s2.bin

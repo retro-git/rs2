@@ -1,0 +1,15 @@
+sprintf = 0x800594ac;
+spyro_DrawText = 0x8004a374;
+spyro_FUN_800156fc = 0x800156fc;
+
+spyro_speed = 0x8006a090;
+spyro_game_state = 0x800681c8;
+spyro_input_raw = 0x800683A0;
+
+spyro_level_load_id = 0x8006715C;
+spyro_world_id = 0x80066f54;
+spyro_pause_menu_index = 0x800698F4;
+spyro_pause_submenu_index = 0x800698F8;
+spyro_unk_timer = 0x800698EC;
+
+spyro_gems = 0x800670CC;
