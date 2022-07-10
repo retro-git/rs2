@@ -7,34 +7,32 @@ void draw_hook(unsigned int unk)
 {
     spyro_FUN_80013a14(unk);
 
-    if (rs2.menu_enabled)
-    {
-        draw_menu();
-    }
+    if (rs2.menu_enabled) draw_menu();
 }
 
 void draw_menu()
 {
-    char buffer[64];
+    char buffer[32];
     for (unsigned int i = 0; i < sizeof(levels_table) / sizeof(level_data); i++)
     {
         sprintf(buffer, "%s", levels_table[i].name);
         spyro_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == rs2.menu_selection_index ? 1 : 0, 0);
     }
-    if (spyro_input_raw.r3)
+    if (rs2.button_holdtimes[R3])
     {
         rs2.menu_enabled = 0;
     }
-    else if (spyro_input_raw.dup)
+    else if (rs2.button_holdtimes[DUP] && rs2.button_holdtimes[DUP] % 2 == 0)
     {
         rs2.menu_selection_index == 0 ? rs2.menu_selection_index = sizeof(levels_table) / sizeof(level_data) - 1 : rs2.menu_selection_index--;
     }
-    else if (spyro_input_raw.ddown)
+    else if (rs2.button_holdtimes[DDOWN] && rs2.button_holdtimes[DDOWN] % 2 == 0)
     {
         rs2.menu_selection_index == sizeof(levels_table) / sizeof(level_data) - 1 ? rs2.menu_selection_index = 0 : rs2.menu_selection_index++;
     }
-    else if (spyro_input_raw.select)
+    else if (spyro_input_raw.b.select)
     {
+        rs2.menu_enabled = 0;
         begin_warp();
     }
 }
@@ -65,6 +63,5 @@ void begin_warp()
         }
     }
 
-    rs2.menu_enabled = 0;
     rs2.is_warping = 1;
 }

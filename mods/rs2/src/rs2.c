@@ -4,22 +4,33 @@
 
 struct rs2 rs2 = {0};
 
+void patch_jump(int32_t *overwrite_loc, int32_t jump_loc)
+{
+    int32_t instr = ((jump_loc & 0b00000011111111111111111111111111) >> 2) | 0b0001100000000000000000000000000;
+    *overwrite_loc = instr;
+}
+
 void read_cb(unsigned char status, unsigned char *result)
 {
     psyq_CdReadCallback(rs2.read_callback);
+    patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
+}
 
-    int32_t *draw_hook_call_loc = (int32_t *)0x80015808;
-    int32_t instr = ((((int)(draw_hook) & 0b00000011111111111111111111111111) >> 2) | 0b0001100000000000000000000000000);
+void init()
+{
+#if EMU_DEBUG == 1
+    // patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
+#else
+    rs2.read_callback = psyq_CdReadCallback(read_cb);
 
-    *draw_hook_call_loc = instr;
+    CdlLOC loc;
+    psyq_CdIntToPos(229989, &loc);
 
-    /*char *draw_hook_call_loc = (char *)0x80015808;
-    char *draw_hook_loc = draw_hook;
-
-    draw_hook_call_loc[0] = 0x00;
-    draw_hook_call_loc[1] = 0x28;
-    draw_hook_call_loc[2] = 0x00;
-    draw_hook_call_loc[3] = 0x0c;*/
+    char res;
+    psyq_CdControl(CdlSetloc, &loc, &res);
+    psyq_CdRead(1, (void *)0x8000A000, 0x80);
+#endif
+    rs2.initialised = 1;
 }
 
 void main_hook()
@@ -27,41 +38,41 @@ void main_hook()
     spyro_FUN_800156fc();
 
     if (!rs2.initialised)
-    {
-        rs2.read_callback = psyq_CdReadCallback(read_cb);
-
-        CdlLOC loc;
-        psyq_CdIntToPos(229989, &loc);
-
-        //loc.minute = dec2bcd_r(51);
-        //loc.second = dec2bcd_r(8);
-        //loc.sector = dec2bcd_r(40);
-
-        char res;
-        psyq_CdControl(CdlSetloc, &loc, &res);
-        psyq_CdRead(1, (void *)0x8000A000, 0x80);
-
-        rs2.initialised = 1;
-    }
+        init();
 
     if (rs2.is_warping)
-    {
         handle_warp();
-    }
 
     if (spyro_game_state != 0)
         return;
 
-    if (spyro_input_raw.l2 && spyro_input_raw.r2)
+    handle_input();
+}
+
+void handle_input()
+{
+    for (int i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(int32_t); i++)
     {
-        if (spyro_input_raw.triangle)
+        if (spyro_input_raw.i >> i & 1)
+        {
+            rs2.button_holdtimes[i]++;
+        }
+        else
+        {
+            rs2.button_holdtimes[i] = 0;
+        }
+    }
+
+    if (spyro_input_raw.b.l2 && spyro_input_raw.b.r2)
+    {
+        if (spyro_input_raw.b.triangle)
         {
             spyro_player_position = rs2.savestate.position;
             spyro_player_rotation = rs2.savestate.rotation;
             spyro_cam_rotation = rs2.savestate.cam_rotation;
             spyro_cam_position = rs2.savestate.cam_position;
         }
-        else if (spyro_input_raw.square)
+        else if (spyro_input_raw.b.square)
         {
             rs2.savestate.position = spyro_player_position;
             rs2.savestate.rotation = spyro_player_rotation;
@@ -70,7 +81,7 @@ void main_hook()
         }
     }
 
-    if (spyro_input_raw.l3 && rs2.menu_enabled == 0)
+    if (spyro_input_raw.b.l3 && rs2.menu_enabled == 0)
     {
         rs2.menu_enabled = 1;
     }
