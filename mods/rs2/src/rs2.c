@@ -31,7 +31,7 @@ void main_hook()
         rs2.read_callback = psyq_CdReadCallback(read_cb);
 
         CdlLOC loc;
-        psyq_CdIntToPos(229990, &loc);
+        psyq_CdIntToPos(229989, &loc);
 
         //loc.minute = dec2bcd_r(51);
         //loc.second = dec2bcd_r(8);
