@@ -100,11 +100,11 @@ void handle_input()
                                                 });
         }
     }
-    else if (rs2.menu_enabled == 0 && rs2.button_holdtimes[L3] == 1)
+    else if (rs2.menu_enabled == 0 && rs2.button_holdtimes[R3] == 1)
     {
         rs2.menu_enabled = 1;
     }
-    else if (rs2.menu_enabled && rs2.button_holdtimes[L3] == 1)
+    else if (rs2.menu_enabled && rs2.button_holdtimes[R3] == 1)
     {
         rs2.menu_enabled = 0;
     }
