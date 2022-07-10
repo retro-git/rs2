@@ -6,9 +6,9 @@
 
 struct rs2 {
     uint16_t initialised;
-    int16_t menu_index;
-    int16_t menu_selection_index;
-    int16_t menu_enabled;
+    uint16_t menu_index;
+    uint16_t menu_selection_index;
+    uint16_t menu_enabled;
     uint16_t is_warping;
     level_data warp_selected_level;
     savestate_t savestate;

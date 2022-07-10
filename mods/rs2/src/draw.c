@@ -3,9 +3,46 @@
 #include "rs2.h"
 #include "levels.h"
 
+draw_command_t draw_commands[4] = {0};
+
+void add_draw_command(DRAW_COMMAND_TYPE type, void *data)
+{
+    for (uint16_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++)
+    {
+        if (draw_commands[i].type == FREE_SLOT)
+        {
+            switch (type)
+            {
+                case DRAW_TEXT_TIMEOUT:
+                    draw_commands[i].type = DRAW_TEXT_TIMEOUT;
+                    draw_commands[i].d.draw_text_timeout_data = data;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
 void draw_hook(unsigned int unk)
 {
     spyro_FUN_80013a14(unk);
+
+    for (uint16_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++)
+    {
+        switch (draw_commands[i].type)
+        {
+            case DRAW_TEXT_TIMEOUT:
+                draw_text_timeout_data_t* data = draw_commands[i].d.draw_text_timeout_data;
+                if (data->cur_time > data->start_time && data->cur_time < data->end_time) spyro_DrawText(data->text, data->x, data->y, data->col, 0);
+                data->cur_time += 1;
+                if (data->cur_time > data->end_time) draw_commands[i].type = FREE_SLOT;
+                break;
+            case FREE_SLOT:
+            default:
+                break;
+        }
+    }
 
     if (rs2.menu_enabled) draw_menu();
 }
@@ -13,16 +50,13 @@ void draw_hook(unsigned int unk)
 void draw_menu()
 {
     char buffer[32];
-    for (unsigned int i = 0; i < sizeof(levels_table) / sizeof(level_data); i++)
+    for (uint16_t i = 0; i < sizeof(levels_table) / sizeof(level_data); i++)
     {
         sprintf(buffer, "%s", levels_table[i].name);
         spyro_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == rs2.menu_selection_index ? 1 : 0, 0);
     }
-    if (rs2.button_holdtimes[R3])
-    {
-        rs2.menu_enabled = 0;
-    }
-    else if (rs2.button_holdtimes[DUP] && rs2.button_holdtimes[DUP] % 2 == 0)
+    
+    if (rs2.button_holdtimes[DUP] && rs2.button_holdtimes[DUP] % 2 == 0)
     {
         rs2.menu_selection_index == 0 ? rs2.menu_selection_index = sizeof(levels_table) / sizeof(level_data) - 1 : rs2.menu_selection_index--;
     }

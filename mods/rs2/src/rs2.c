@@ -51,7 +51,7 @@ void main_hook()
 
 void handle_input()
 {
-    for (int i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(int32_t); i++)
+    for (uint16_t i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(int32_t); i++)
     {
         if (spyro_input_raw.i >> i & 1)
         {
@@ -65,32 +65,55 @@ void handle_input()
 
     if (spyro_input_raw.b.l2 && spyro_input_raw.b.r2)
     {
-        if (spyro_input_raw.b.triangle)
-        {
-            spyro_player_position = rs2.savestate.position;
-            spyro_player_rotation = rs2.savestate.rotation;
-            spyro_cam_rotation = rs2.savestate.cam_rotation;
-            spyro_cam_position = rs2.savestate.cam_position;
-        }
-        else if (spyro_input_raw.b.square)
+        if (rs2.button_holdtimes[TRIANGLE] == 1)
         {
             rs2.savestate.position = spyro_player_position;
             rs2.savestate.rotation = spyro_player_rotation;
             rs2.savestate.cam_rotation = spyro_cam_rotation;
             rs2.savestate.cam_position = spyro_cam_position;
+
+            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+                                                    .text = "Saved state",
+                                                    .x = 80,
+                                                    .y = 80,
+                                                    .col = 4,
+                                                    .cur_time = 0,
+                                                    .start_time = 0,
+                                                    .end_time = 60,
+                                                });
+        }
+        else if (rs2.button_holdtimes[CIRCLE] == 1)
+        {
+            spyro_player_position = rs2.savestate.position;
+            spyro_player_rotation = rs2.savestate.rotation;
+            spyro_cam_rotation = rs2.savestate.cam_rotation;
+            spyro_cam_position = rs2.savestate.cam_position;
+
+            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+                                                    .text = "Loaded state",
+                                                    .x = 80,
+                                                    .y = 80,
+                                                    .col = 4,
+                                                    .cur_time = 0,
+                                                    .start_time = 0,
+                                                    .end_time = 60,
+                                                });
         }
     }
-
-    if (spyro_input_raw.b.l3 && rs2.menu_enabled == 0)
+    else if (rs2.menu_enabled == 0 && rs2.button_holdtimes[L3] == 1)
     {
         rs2.menu_enabled = 1;
+    }
+    else if (rs2.menu_enabled && rs2.button_holdtimes[L3] == 1)
+    {
+        rs2.menu_enabled = 0;
     }
 }
 
 void handle_warp()
 {
-    int32_t unk_cam_bossfix = *(int32_t *)0x80067eB0;
-    int32_t unk_cam_homefix = *(int32_t *)0x80067F28;
+    uint32_t unk_cam_bossfix = *(uint32_t *)0x80067eB0;
+    uint32_t unk_cam_homefix = *(uint32_t *)0x80067F28;
     spyro_level_load_id = rs2.warp_selected_level.load_level_id;
 
     if (spyro_game_state == 0)
