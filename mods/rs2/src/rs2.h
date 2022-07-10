@@ -16,8 +16,6 @@ struct rs2 {
 
 extern struct rs2 rs2;
 
-void draw_menu();
-void begin_warp();
 void handle_warp();
 
 #endif

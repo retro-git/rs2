@@ -3,6 +3,15 @@
 
 #include <stdint.h>
 
+typedef void (*CdlCB)(u_char,u_char *);
+
+typedef struct {
+	unsigned char minute;		/* minute (BCD) */
+	unsigned char second;		/* second (BCD) */
+	unsigned char sector;		/* sector (BCD) */
+	unsigned char track;		/* track (void) */
+} CdlLOC;
+
 typedef struct
 {
     int32_t x;
