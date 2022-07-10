@@ -156,6 +156,8 @@ CdlCB psyq_CdReadCallback(CdlCB func);
 
 int printf(char *format, ...);
 int sprintf(char *str, char *format, ...);
+void * memcpy(void * _s1, const void * _s2, unsigned int n);
+
 void spyro_DrawText(char *text, int x, int y, int colorIndex, int *unk);
 void spyro_FUN_800156fc(void);
 void spyro_FUN_80013a14(unsigned int unk);
