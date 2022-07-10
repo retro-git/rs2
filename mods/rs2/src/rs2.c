@@ -1,12 +1,41 @@
 #include "rs2.h"
 #include "../../../include/common.h"
-#include "levels.h"
+#include "draw.h"
 
 struct rs2 rs2 = {0};
+
+void read_cb(unsigned char status, unsigned char *result)
+{
+    psyq_CdReadCallback(rs2.read_callback);
+
+    char* draw_hook_loc = (char*)0x80015808;
+    draw_hook_loc[0] = 0x00;
+    draw_hook_loc[1] = 0x28;
+    draw_hook_loc[2] = 0x00;
+    draw_hook_loc[3] = 0x0c;
+}
 
 void main_hook()
 {
     spyro_FUN_800156fc();
+
+    if (!rs2.initialised)
+    {
+        rs2.read_callback = psyq_CdReadCallback(read_cb);
+
+        CdlLOC loc;
+        psyq_CdIntToPos(229989, &loc);
+
+        //loc.minute = dec2bcd_r(51);
+        //loc.second = dec2bcd_r(8);
+        //loc.sector = dec2bcd_r(40);
+
+        char res;
+        psyq_CdControl(CdlSetloc, &loc, &res);
+        psyq_CdRead(1, (void *)0x8000A000, 0x80);
+
+        rs2.initialised = 1;
+    }
 
     if (rs2.is_warping)
     {
@@ -16,14 +45,17 @@ void main_hook()
     if (spyro_game_state != 0)
         return;
 
-    if (spyro_input_raw.l2 && spyro_input_raw.r2) {
-        if (spyro_input_raw.triangle) {
+    if (spyro_input_raw.l2 && spyro_input_raw.r2)
+    {
+        if (spyro_input_raw.triangle)
+        {
             spyro_player_position = rs2.savestate.position;
             spyro_player_rotation = rs2.savestate.rotation;
             spyro_cam_rotation = rs2.savestate.cam_rotation;
             spyro_cam_position = rs2.savestate.cam_position;
         }
-        else if (spyro_input_raw.square) {
+        else if (spyro_input_raw.square)
+        {
             rs2.savestate.position = spyro_player_position;
             rs2.savestate.rotation = spyro_player_rotation;
             rs2.savestate.cam_rotation = spyro_cam_rotation;
@@ -36,13 +68,13 @@ void main_hook()
         rs2.menu_enabled = 1;
     }
 
-    if (rs2.menu_enabled)
-    {
-        draw_menu();
-    }
+    /* if (rs2.menu_enabled)
+     {
+         draw_menu();
+     }*/
 }
 
-void draw_menu()
+/*void draw_menu()
 {
     char buffer[64];
     for (unsigned int i = 0; i < sizeof(levels_table) / sizeof(level_data); i++)
@@ -94,7 +126,7 @@ void begin_warp()
 
     rs2.menu_enabled = 0;
     rs2.is_warping = 1;
-}
+}*/
 
 void handle_warp()
 {
@@ -106,18 +138,18 @@ void handle_warp()
     {
         rs2.is_warping = 0;
     }
-    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75)) //crush, gulp, ripto starting cams respectively
+    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75)) // crush, gulp, ripto starting cams respectively
     {
         spyro_unk_timer = 0;
         spyro_game_state = 3;
         *(int16_t *)0x800698F0 = 0;
         spyro_pause_submenu_index = 0;
     }
-    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401)) //home world starting cams respectively 
+    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401)) // home world starting cams respectively
     {
         spyro_game_state = 3;
         spyro_pause_submenu_index = 0;
-        *(int32_t*)0x800698f0 = 0;
+        *(int32_t *)0x800698f0 = 0;
         spyro_unk_timer = 0;
     }
 }

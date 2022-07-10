@@ -4,12 +4,14 @@
 #include "levels.h"
 
 struct rs2 {
+    uint16_t initialised;
     int menu_index;
     int menu_selection_index;
     int menu_enabled;
-    int is_warping;
+    uint16_t is_warping;
     level_data warp_selected_level;
     savestate_t savestate;
+    CdlCB read_callback;
 };
 
 extern struct rs2 rs2;
