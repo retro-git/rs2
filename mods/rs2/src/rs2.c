@@ -8,11 +8,18 @@ void read_cb(unsigned char status, unsigned char *result)
 {
     psyq_CdReadCallback(rs2.read_callback);
 
-    char* draw_hook_loc = (char*)0x80015808;
-    draw_hook_loc[0] = 0x00;
-    draw_hook_loc[1] = 0x28;
-    draw_hook_loc[2] = 0x00;
-    draw_hook_loc[3] = 0x0c;
+    int32_t *draw_hook_call_loc = (int32_t *)0x80015808;
+    int32_t instr = ((((int)(draw_hook) & 0b00000011111111111111111111111111) >> 2) | 0b0001100000000000000000000000000);
+
+    *draw_hook_call_loc = instr;
+
+    /*char *draw_hook_call_loc = (char *)0x80015808;
+    char *draw_hook_loc = draw_hook;
+
+    draw_hook_call_loc[0] = 0x00;
+    draw_hook_call_loc[1] = 0x28;
+    draw_hook_call_loc[2] = 0x00;
+    draw_hook_call_loc[3] = 0x0c;*/
 }
 
 void main_hook()
@@ -24,7 +31,7 @@ void main_hook()
         rs2.read_callback = psyq_CdReadCallback(read_cb);
 
         CdlLOC loc;
-        psyq_CdIntToPos(229989, &loc);
+        psyq_CdIntToPos(229990, &loc);
 
         //loc.minute = dec2bcd_r(51);
         //loc.second = dec2bcd_r(8);

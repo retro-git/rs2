@@ -3,10 +3,12 @@
 #include "rs2.h"
 #include "levels.h"
 
-void draw_hook(unsigned int unk) {
+void draw_hook(unsigned int unk)
+{
     spyro_FUN_80013a14(unk);
 
-    if (rs2.menu_enabled) {
+    if (rs2.menu_enabled)
+    {
         draw_menu();
     }
 }
@@ -47,17 +49,19 @@ void begin_warp()
     *(int *)0x80069894 = 0xffff;
     *(int *)0x80069896 = 0xffff;
 
-    if (rs2.warp_selected_level.type == HOMEWORLD) {
-        switch (rs2.menu_selection_index) {
-            case SUMMER_FOREST:
-                spyro_world_id = IDOL_SPRINGS;
-                break;
-            case AUTUMN_PLAINS:
-                spyro_world_id = SKELOS_BADLANDS;
-                break;
-            case WINTER_TUNDRA:
-                spyro_world_id = DRAGON_SHORES;
-                break;
+    if (rs2.warp_selected_level.type == HOMEWORLD)
+    {
+        switch (rs2.menu_selection_index)
+        {
+        case SUMMER_FOREST:
+            spyro_world_id = IDOL_SPRINGS;
+            break;
+        case AUTUMN_PLAINS:
+            spyro_world_id = SKELOS_BADLANDS;
+            break;
+        case WINTER_TUNDRA:
+            spyro_world_id = DRAGON_SHORES;
+            break;
         }
     }
 
