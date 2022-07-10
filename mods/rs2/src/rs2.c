@@ -30,6 +30,7 @@ void init()
     psyq_CdControl(CdlSetloc, &loc, &res);
     psyq_CdRead(1, (void *)0x8000A000, 0x80);
 #endif
+    rs2.is_warping = 0;
     rs2.initialised = 1;
 }
 

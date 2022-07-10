@@ -39,6 +39,7 @@ void draw_hook(unsigned int unk)
                 if (data->cur_time > data->end_time) draw_commands[i].type = FREE_SLOT;
                 break;
             case FREE_SLOT:
+                break;
             default:
                 break;
         }
@@ -55,7 +56,7 @@ void draw_menu()
         sprintf(buffer, "%s", levels_table[i].name);
         spyro_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == rs2.menu_selection_index ? 1 : 0, 0);
     }
-    
+
     if (rs2.button_holdtimes[DUP] && rs2.button_holdtimes[DUP] % 2 == 0)
     {
         rs2.menu_selection_index == 0 ? rs2.menu_selection_index = sizeof(levels_table) / sizeof(level_data) - 1 : rs2.menu_selection_index--;
