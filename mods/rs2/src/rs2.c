@@ -1,29 +1,79 @@
 #include "rs2.h"
 #include "../../../include/common.h"
-#include "levels.h"
+#include "draw.h"
 
 struct rs2 rs2 = {0};
+
+void patch_jump(int32_t *overwrite_loc, int32_t jump_loc)
+{
+    int32_t instr = ((jump_loc & 0b00000011111111111111111111111111) >> 2) | 0b0001100000000000000000000000000;
+    *overwrite_loc = instr;
+}
+
+void read_cb(unsigned char status, unsigned char *result)
+{
+    psyq_CdReadCallback(rs2.read_callback);
+    patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
+}
+
+void init()
+{
+#if EMU_DEBUG == 1
+    // patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
+#else
+    rs2.read_callback = psyq_CdReadCallback(read_cb);
+
+    CdlLOC loc;
+    psyq_CdIntToPos(229989, &loc);
+
+    char res;
+    psyq_CdControl(CdlSetloc, &loc, &res);
+    psyq_CdRead(1, (void *)0x8000A000, 0x80);
+#endif
+    rs2.initialised = 1;
+}
 
 void main_hook()
 {
     spyro_FUN_800156fc();
 
+    if (!rs2.initialised)
+        init();
+
     if (rs2.is_warping)
-    {
         handle_warp();
-    }
 
     if (spyro_game_state != 0)
         return;
 
-    if (spyro_input_raw.l2 && spyro_input_raw.r2) {
-        if (spyro_input_raw.triangle) {
+    handle_input();
+}
+
+void handle_input()
+{
+    for (int i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(int32_t); i++)
+    {
+        if (spyro_input_raw.i >> i & 1)
+        {
+            rs2.button_holdtimes[i]++;
+        }
+        else
+        {
+            rs2.button_holdtimes[i] = 0;
+        }
+    }
+
+    if (spyro_input_raw.b.l2 && spyro_input_raw.b.r2)
+    {
+        if (spyro_input_raw.b.triangle)
+        {
             spyro_player_position = rs2.savestate.position;
             spyro_player_rotation = rs2.savestate.rotation;
             spyro_cam_rotation = rs2.savestate.cam_rotation;
             spyro_cam_position = rs2.savestate.cam_position;
         }
-        else if (spyro_input_raw.square) {
+        else if (spyro_input_raw.b.square)
+        {
             rs2.savestate.position = spyro_player_position;
             rs2.savestate.rotation = spyro_player_rotation;
             rs2.savestate.cam_rotation = spyro_cam_rotation;
@@ -31,69 +81,10 @@ void main_hook()
         }
     }
 
-    if (spyro_input_raw.l3 && rs2.menu_enabled == 0)
+    if (spyro_input_raw.b.l3 && rs2.menu_enabled == 0)
     {
         rs2.menu_enabled = 1;
     }
-
-    if (rs2.menu_enabled)
-    {
-        draw_menu();
-    }
-}
-
-void draw_menu()
-{
-    char buffer[64];
-    for (unsigned int i = 0; i < sizeof(levels_table) / sizeof(level_data); i++)
-    {
-        sprintf(buffer, "%s", levels_table[i].name);
-        spyro_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == rs2.menu_selection_index ? 1 : 0, 0);
-    }
-    if (spyro_input_raw.r3)
-    {
-        rs2.menu_enabled = 0;
-    }
-    else if (spyro_input_raw.dup)
-    {
-        rs2.menu_selection_index == 0 ? rs2.menu_selection_index = sizeof(levels_table) / sizeof(level_data) - 1 : rs2.menu_selection_index--;
-    }
-    else if (spyro_input_raw.ddown)
-    {
-        rs2.menu_selection_index == sizeof(levels_table) / sizeof(level_data) - 1 ? rs2.menu_selection_index = 0 : rs2.menu_selection_index++;
-    }
-    else if (spyro_input_raw.select)
-    {
-        begin_warp();
-    }
-}
-
-void begin_warp()
-{
-    rs2.warp_selected_level = levels_table[rs2.menu_selection_index];
-    spyro_pause_submenu_index = 0;
-    spyro_unk_timer = 0x11;
-    spyro_pause_menu_index = 5;
-    spyro_game_state = 4;
-    *(int *)0x80069894 = 0xffff;
-    *(int *)0x80069896 = 0xffff;
-
-    if (rs2.warp_selected_level.type == HOMEWORLD) {
-        switch (rs2.menu_selection_index) {
-            case SUMMER_FOREST:
-                spyro_world_id = IDOL_SPRINGS;
-                break;
-            case AUTUMN_PLAINS:
-                spyro_world_id = SKELOS_BADLANDS;
-                break;
-            case WINTER_TUNDRA:
-                spyro_world_id = DRAGON_SHORES;
-                break;
-        }
-    }
-
-    rs2.menu_enabled = 0;
-    rs2.is_warping = 1;
 }
 
 void handle_warp()
@@ -106,18 +97,18 @@ void handle_warp()
     {
         rs2.is_warping = 0;
     }
-    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75)) //crush, gulp, ripto starting cams respectively
+    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75)) // crush, gulp, ripto starting cams respectively
     {
         spyro_unk_timer = 0;
         spyro_game_state = 3;
         *(int16_t *)0x800698F0 = 0;
         spyro_pause_submenu_index = 0;
     }
-    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401)) //home world starting cams respectively 
+    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401)) // home world starting cams respectively
     {
         spyro_game_state = 3;
         spyro_pause_submenu_index = 0;
-        *(int32_t*)0x800698f0 = 0;
+        *(int32_t *)0x800698f0 = 0;
         spyro_unk_timer = 0;
     }
 }

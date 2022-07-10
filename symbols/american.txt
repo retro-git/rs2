@@ -1,6 +1,20 @@
 sprintf = 0x800594ac;
+printf = 0x8005ab18;
+puts = 0x8005c344;
+
+psyq_open = 0x8005ef34;
+psyq_close = 0x8005ef44;
+psyq_lseek = 0x8005ef54;
+psyq_read = 0x8005ef64;
+psyq_CdRead = 0x80058108;
+psyq_CdControlB = 0x80058ac8;
+psyq_CdControl = 0x80058858;
+psyq_CdReadCallback = 0x800582a4;
+psyq_CdIntToPos = 0x80058c98;
+
 spyro_DrawText = 0x8004a374;
 spyro_FUN_800156fc = 0x800156fc;
+spyro_FUN_80013a14 = 0x80013a14;
 
 spyro_speed = 0x8006a090;
 spyro_player_position = 0x80069ff0;
