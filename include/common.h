@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 
-typedef void (*CdlCB)(u_char,u_char *);
+#define CdlSetloc	0x02
+
+typedef void (*CdlCB)(unsigned char,unsigned char *);
 
 typedef struct {
 	unsigned char minute;		/* minute (BCD) */
@@ -117,9 +119,17 @@ typedef struct {
     vec3s_t cam_rotation;
 } savestate_t;
 
+CdlLOC *psyq_CdIntToPos(int i, CdlLOC *p);
+int psyq_CdControl(unsigned char  com, unsigned char  *param, unsigned char  *result);
+int psyq_CdControlB(unsigned char com, unsigned char *param, unsigned char *result);
+int psyq_CdRead(int sectors, unsigned long *buf, int mode);
+CdlCB psyq_CdReadCallback(CdlCB func);
+
+int printf(char *format, ...);
 int sprintf(char *str, char *format, ...);
 void spyro_DrawText(char *text, int x, int y, int colorIndex, int *unk);
 void spyro_FUN_800156fc(void);
+void spyro_FUN_80013a14(unsigned int unk);
 
 extern struct vec3 spyro_speed;
 extern vec3_t spyro_player_position;
