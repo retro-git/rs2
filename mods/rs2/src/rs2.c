@@ -18,7 +18,7 @@ void read_cb(unsigned char status, unsigned char *result)
 
 void init()
 {
-#if EMU_DEBUG == 0
+#if EMU_DEBUG == 1
     // patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
 #else
     rs2.read_callback = psyq_CdReadCallback(read_cb);
