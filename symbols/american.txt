@@ -2,6 +2,7 @@ sprintf = 0x800594ac;
 printf = 0x8005ab18;
 puts = 0x8005c344;
 memcpy = 0x8005c1f8;
+bzero = 0x8005c1b8;
 
 psyq_open = 0x8005ef34;
 psyq_close = 0x8005ef44;

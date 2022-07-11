@@ -30,7 +30,7 @@ void init()
     psyq_CdControl(CdlSetloc, &loc, &res);
     psyq_CdRead(1, (void *)0x8000A000, 0x80);
 #endif
-    rs2.is_warping = 0;
+    bzero(&rs2, sizeof(rs2));
     rs2.initialised = 1;
 }
 
@@ -38,16 +38,17 @@ void main_hook()
 {
     spyro_FUN_800156fc();
 
-    if (!rs2.initialised)
+    if (rs2.initialised != 1) {
         init();
+    }
 
-    if (rs2.is_warping)
+    if (rs2.is_warping) {
         handle_warp();
+    }
 
-    if (spyro_game_state != 0)
-        return;
-
-    handle_input();
+    if (spyro_game_state == 0) {
+        handle_input();
+    }
 }
 
 void handle_input()
