@@ -1,3 +1,4 @@
 common, exe, 0x80011afc, 0x0, src/hook_main.s
-common, header, 0x8000A8D0, 0x48, src/rs2.c, rs2.bin
+common, header, 0x8000B070, 0x48, src/rs2.c, rs2.bin
+common, exe, 0x80015808, 0x0, src/hook_draw.s
 common, kernel, 0x8000a000, 0x0, src/draw.c src/levels.c, draw.bin

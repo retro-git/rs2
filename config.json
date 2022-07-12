@@ -9,10 +9,31 @@
     },
     "versions": [
         {
-            "american": {
+            "american-emu": {
                 "name": "spyro2.bin",
                 "symbols": [
-                    "american.txt"
+                    "american.txt",
+                    "ps1-header.txt"
+                ],
+                "build_id": 94425
+            }
+        },
+        {
+            "american-ps1": {
+                "name": "spyro2.bin",
+                "symbols": [
+                    "american.txt",
+                    "ps1-header.txt"
+                ],
+                "build_id": 94425
+            }
+        },
+        {
+            "american-ps2": {
+                "name": "spyro2.bin",
+                "symbols": [
+                    "american.txt",
+                    "ps2-header.txt"
                 ],
                 "build_id": 94425
             }
