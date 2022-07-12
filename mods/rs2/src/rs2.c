@@ -12,42 +12,49 @@ void patch_jump(int32_t *overwrite_loc, int32_t jump_loc)
 
 void read_cb(unsigned char status, unsigned char *result)
 {
-    psyq_CdReadCallback(rs2.read_callback);
     patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
+    rs2.initialised = 1;
+    printf("init\n");
+    psyq_CdReadCallback(rs2.read_callback);
 }
 
 void init()
 {
-#if EMU_DEBUG == 1
+#if EMU_DEBUG == 0
     // patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
+    rs2.initialised = 1;
 #else
-    rs2.read_callback = psyq_CdReadCallback(read_cb);
-
     CdlLOC loc;
     psyq_CdIntToPos(229989, &loc);
 
     char res;
     psyq_CdControlB(CdlSetloc, &loc, &res);
+
+    rs2.read_callback = psyq_CdReadCallback(read_cb);
     psyq_CdRead(1, (void *)0x8000A000, 0x80);
 #endif
-    bzero(&rs2, sizeof(rs2));
-    rs2.initialised = 1;
 }
 
 void main_hook()
 {
     spyro_FUN_800156fc();
 
-    if (rs2.initialised != 1) {
+    if (rs2.initialised != 1 && spyro_game_state == 0xb)
+    {
         init();
     }
 
-    if (rs2.is_warping) {
-        handle_warp();
-    }
+    if (rs2.initialised)
+    {
+        if (rs2.is_warping)
+        {
+            handle_warp();
+        }
 
-    if (spyro_game_state == 0) {
-        handle_input();
+        if (spyro_game_state == 0)
+        {
+            handle_input();
+        }
     }
 }
 
@@ -75,7 +82,7 @@ void handle_input()
             rs2.savestate.cam_position = spyro_cam_position;
 
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Saved state",
+                                                    .text = "Saved State",
                                                     .x = 80,
                                                     .y = 80,
                                                     .col = 4,
@@ -92,7 +99,7 @@ void handle_input()
             spyro_cam_position = rs2.savestate.cam_position;
 
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Loaded state",
+                                                    .text = "Loaded State",
                                                     .x = 80,
                                                     .y = 80,
                                                     .col = 4,

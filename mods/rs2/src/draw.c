@@ -13,12 +13,12 @@ void add_draw_command(DRAW_COMMAND_TYPE type, void *data)
         {
             switch (type)
             {
-                case DRAW_TEXT_TIMEOUT:
-                    draw_commands[i].type = DRAW_TEXT_TIMEOUT;
-                    draw_commands[i].d.draw_text_timeout_data = data;
-                    break;
-                default:
-                    break;
+            case DRAW_TEXT_TIMEOUT:
+                draw_commands[i].type = DRAW_TEXT_TIMEOUT;
+                memcpy(&draw_commands[i].d.draw_text_timeout_data, data, sizeof(draw_text_timeout_data_t));
+                break;
+            default:
+                break;
             }
         }
     }
@@ -32,20 +32,27 @@ void draw_hook(unsigned int unk)
     {
         switch (draw_commands[i].type)
         {
-            case DRAW_TEXT_TIMEOUT:
-                draw_text_timeout_data_t* data = draw_commands[i].d.draw_text_timeout_data;
-                if (data->cur_time > data->start_time && data->cur_time < data->end_time) spyro_DrawText(data->text, data->x, data->y, data->col, 0);
-                data->cur_time += 1;
-                if (data->cur_time > data->end_time) draw_commands[i].type = FREE_SLOT;
-                break;
-            case FREE_SLOT:
-                break;
-            default:
-                break;
+        case DRAW_TEXT_TIMEOUT:
+            draw_text_timeout_data_t *data = &draw_commands[i].d.draw_text_timeout_data;
+            if (data->cur_time > data->start_time && data->cur_time < data->end_time)
+            {
+                spyro_DrawText(data->text, data->x, data->y, data->col, 0);
+            }
+            data->cur_time += 1;
+            if (data->cur_time > data->end_time)
+            {
+                draw_commands[i].type = FREE_SLOT;
+            }
+            break;
+        case FREE_SLOT:
+            break;
+        default:
+            break;
         }
     }
 
-    if (rs2.menu_enabled) draw_menu();
+    if (rs2.menu_enabled)
+        draw_menu();
 }
 
 void draw_menu()

@@ -19,7 +19,7 @@ typedef struct {
 typedef struct {
     DRAW_COMMAND_TYPE type;
     union {
-        draw_text_timeout_data_t* draw_text_timeout_data;
+        draw_text_timeout_data_t draw_text_timeout_data;
     } d;
 } draw_command_t;
 
