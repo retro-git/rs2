@@ -14,6 +14,8 @@
                 "symbols": [
                     "funcs-u.txt",
                     "data-u.txt",
+                    "funcs-u-rs2.txt",
+                    "data-u-rs2.txt",
                     "ps1-header.txt"
                 ],
                 "build_id": 94425
@@ -25,6 +27,8 @@
                 "symbols": [
                     "funcs-u.txt",
                     "data-u.txt",
+                    "funcs-u-rs2.txt",
+                    "data-u-rs2.txt",
                     "ps1-header.txt"
                 ],
                 "build_id": 94425
@@ -36,6 +40,8 @@
                 "symbols": [
                     "funcs-u.txt",
                     "data-u.txt",
+                    "funcs-u-rs2.txt",
+                    "data-u-rs2.txt",
                     "ps2-header.txt"
                 ],
                 "build_id": 94425

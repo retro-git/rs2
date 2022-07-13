@@ -27,8 +27,8 @@ GAME_DrawText = 0x8004a374;
 GAME_DrawSTBlackRect = 0x8004d2d8;
 GAME_DrawOpaqueBlackRect = 0x8004dd28;
 GAME_DrawGameScreenshot = 0x8004e14c;
-GAME_FUN_800156fc = 0x800156fc;
-GAME_FUN_80013a14 = 0x80013a14;
+
+LIBPAD_PadInitDirect = 0x80054f1c;
 
 LIBG_ResetGraph = 0x8005557c;
 LIBG_SetGraphDebug = 0x800556f0;
@@ -67,7 +67,6 @@ LIBC_printf = 0x8005ab18;
 LIBC_strcpy = 0x8005ab88;
 LIBC_bzero = 0x8005c1b8;
 LIBC_memcpy = 0x8005c1f8;
-memcpy = 0x8005c1f8;
 LIBC_puts = 0x8005c344;
 LIBC_memchr = 0x8005edc4;
 LIBC_memmove = 0x8005ee14;
