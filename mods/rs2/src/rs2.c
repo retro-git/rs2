@@ -14,15 +14,16 @@ void read_cb(unsigned char status, unsigned char *result)
 {
     patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
     rs2.initialised = 1;
-    LIBC_printf("init\n");
+    LIBC_printf("initialised %d\n", BUILD);
     LIBCD_CdReadCallback(rs2.read_callback);
 }
 
 void init()
 {
-#if EMU_DEBUG == 0
+#if BUILD == 94424
     // patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
     rs2.initialised = 1;
+    LIBC_printf("init %d\n", BUILD);
 #else
     CdlLOC loc;
     LIBCD_CdIntToPos(229989, &loc);
@@ -31,7 +32,7 @@ void init()
     LIBCD_CdControlB(CdlSetloc, (unsigned char*)&loc, &res);
 
     rs2.read_callback = LIBCD_CdReadCallback(read_cb);
-    LIBCD_CdRead(1, (void *)0x8000A000, 0x80);
+    LIBCD_CdRead(1, (void*)&kernel_free_space_1, 0x80);
 #endif
 }
 
@@ -39,7 +40,7 @@ void main_hook()
 {
     GAME_FUN_800156fc();
 
-    if (rs2.initialised != 1 && GAME_gameState == 0xb)
+    if (rs2.initialised != 1 /*&& GAME_gameState == 0xb*/)
     {
         init();
     }

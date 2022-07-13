@@ -9,8 +9,6 @@
 #include "libgraphics.h"
 #include "common.h"
 
-#define EMU_DEBUG 1
-
 #define L2 0
 #define R2 1
 #define L1 2
@@ -102,6 +100,9 @@ typedef enum
 
 void GAME_FUN_800156fc(void);
 void GAME_FUN_80013a14(unsigned int unk);
+
+extern int32_t header_start;
+extern int32_t kernel_free_space_1;
 
 extern Vec3 GAME_cam_position;
 extern Vec3s GAME_cam_rotation;
