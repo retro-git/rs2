@@ -8,3 +8,5 @@ GAME_world_id = 0x80066f54;
 GAME_pause_menu_index = 0x800698F4;
 GAME_pause_submenu_index = 0x800698F8;
 GAME_unk_timer = 0x800698EC;
+
+GAME_rng = 0x8006d144;

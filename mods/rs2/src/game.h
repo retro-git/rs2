@@ -98,6 +98,8 @@ typedef enum
     BOSS = 2,
 } LevelType;
 
+int LIBC_rand();
+
 void GAME_FUN_800156fc(void);
 void GAME_FUN_80013a14(unsigned int unk);
 
@@ -107,6 +109,7 @@ extern int32_t kernel_free_space_1;
 extern Vec3 GAME_cam_position;
 extern Vec3s GAME_cam_rotation;
 extern controller_u_t GAME_input;
+extern int32_t GAME_rng;
 
 extern int32_t GAME_level_load_id;
 extern int32_t GAME_world_id;

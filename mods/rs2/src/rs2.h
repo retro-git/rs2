@@ -26,6 +26,7 @@ struct rs2 {
 
 extern struct rs2 rs2;
 
+int rand_hook_trampoline();
 void handle_input();
 void patch_jump(int32_t *overwrite_loc, int32_t jump_loc);
 void read_cb(unsigned char status, unsigned char *result);

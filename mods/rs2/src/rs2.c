@@ -29,11 +29,30 @@ void init()
     LIBCD_CdIntToPos(229989, &loc);
 
     char res;
-    LIBCD_CdControlB(CdlSetloc, (unsigned char*)&loc, &res);
+    LIBCD_CdControlB(CdlSetloc, (unsigned char *)&loc, &res);
 
     rs2.read_callback = LIBCD_CdReadCallback(read_cb);
-    LIBCD_CdRead(1, (void*)&kernel_free_space_1, 0x80);
+    LIBCD_CdRead(1, (void *)&kernel_free_space_1, 0x80);
 #endif
+}
+
+int __attribute__((optimize("O0"))) rand_hook()
+{
+    int rand = rand_hook_trampoline();
+    return rand;
+}
+
+int rand_hook_trampoline()
+{
+    // int32_t jump_loc =  (0x80059d34 & 0b00000011111111111111111111111111) >> 2;
+    int32_t jump_loc = 0x80059d34;
+    asm volatile(".set noreorder");
+    asm volatile("lui $v1, 0x41c6");
+    asm volatile("lui $v0, 0x8007");
+    asm volatile("j %0"
+                 :
+                 : "g"(jump_loc));
+    asm volatile("nop");
 }
 
 void main_hook()
