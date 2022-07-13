@@ -1,0 +1,2 @@
+header_start = 0x8000B070;
+kernel_free_space_1 = 0x8000A000;
