@@ -1,5 +1,5 @@
 #include "rs2.h"
-#include "../../../include/common.h"
+#include "game.h"
 #include "draw.h"
 
 struct rs2 rs2 = {0};
@@ -39,7 +39,7 @@ void main_hook()
 {
     GAME_FUN_800156fc();
 
-    if (rs2.initialised != 1 && GAME_gameState == MAIN_MENU)
+    if (rs2.initialised != 1 && GAME_gameState == 0xb)
     {
         init();
     }

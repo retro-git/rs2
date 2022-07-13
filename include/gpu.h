@@ -1,7 +1,7 @@
 #ifndef GAME_GPU_H
 #define GAME_GPU_H
 
-#include "common.h"
+#include "game.h"
 #include "libgraphics.h"
 
 typedef struct {

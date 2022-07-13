@@ -1,4 +1,4 @@
-#include "../../../include/common.h"
+#include "game.h"
 #include "draw.h"
 #include "rs2.h"
 #include "levels.h"

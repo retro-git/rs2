@@ -2,7 +2,7 @@
 #define RS2_H
 
 #include "levels.h"
-#include "../../../include/common.h"
+#include "game.h"
 
 typedef struct
 {

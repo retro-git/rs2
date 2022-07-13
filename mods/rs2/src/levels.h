@@ -1,7 +1,7 @@
 #ifndef LEVELS_H
 #define LEVELS_H
 
-#include "../../../include/common.h"
+#include "game.h"
 
 typedef struct {
     char* name;
