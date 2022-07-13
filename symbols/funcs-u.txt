@@ -1,0 +1,107 @@
+GAME_main = 0x80011adc;
+GAME_InitSound = 0x80011b1c;
+GAME_InitGeometry = 0x80011d24;
+
+GAME_CDLoadWADHeader = 0x80011b3c;
+GAME_CDReadCallback_Func = 0x8001379c;
+
+GAME_memsetWord = 0x8001b3c8;
+GAME_memcpyWord = 0x8001b40c;
+
+GAME_GPUInitGraphics = 0x80011bbc;
+GAME_GPUPackets_Insert = 0x8001b390;
+GAME_GPUClearDoubleBuffer = 0x8004c484;
+GAME_GPUChangeTexPage = 0x8004d104;
+
+GAME_Vec3_Scale = 0x8001bcc4;
+GAME_Vec3_LShift = 0x8001bd20;
+GAME_Vec3_RShift = 0x8001bd48;
+GAME_Vec3_Null = 0x8001bda0;
+GAME_Vec3_Move = 0x8001bdb0;
+GAME_Vec3_Sum = 0x8001bdcc;
+GAME_Vec3_Sub = 0x8001be00;
+GAME_Vec3_MultByN = 0x8001be34;
+GAME_Vec3_DivByN = 0x8001be60;
+
+GAME_DrawText = 0x8004a374;
+GAME_DrawSTBlackRect = 0x8004d2d8;
+GAME_DrawOpaqueBlackRect = 0x8004dd28;
+GAME_DrawGameScreenshot = 0x8004e14c;
+GAME_FUN_800156fc = 0x800156fc;
+GAME_FUN_80013a14 = 0x80013a14;
+
+LIBG_ResetGraph = 0x8005557c;
+LIBG_SetGraphDebug = 0x800556f0;
+LIBG_DrawSync = 0x800557e4;
+LIBG_InitGeom = 0x80057b20;
+LIBG_VSync = 0x80058edc;
+LIBG_SetDefDrawEnv = 0x80058e1c;
+LIBG_SetDefDispEnv = 0x800590ec;
+LIBG_SetDispMask = 0x8005574c;
+LIBG_ClearImage = 0x80055968;
+LIBG_LoadImage = 0x800559f8;
+LIBG_SetDrawMode = 0x8005a01c;
+LIBG_StoreImage = 0x80055a58;
+LIBG_MoveImage = 0x80055ab8;
+LIBG_DrawOTag = 0x80055b70;
+LIBG_PutDrawEnv = 0x80055be0;
+LIBG_PutDispEnv = 0x80055ca0;
+LIBG_MulMatrix0 = 0x80059d6c;
+LIBG_ScaleMatrix = 0x80059e7c;
+
+LIBCD_CdRead = 0x80058108;
+LIBCD_CdInit = 0x800582b8;
+LIBCD_CdReadCallback = 0x800582a4;
+LIBCD_CdStatus = 0x800587b4;
+LIBCD_CdSync = 0x80058810;
+LIBCD_CdControl = 0x80058858;
+LIBCD_CdControlB = 0x80058ac8;
+LIBCD_CdDataCallback = 0x80058c54;
+LIBCD_CdIntToPos = 0x80058c98;
+LIBCD_CdSync_ = 0x8005c900;
+
+LIBC_sprintf = 0x800594ac;
+LIBC_rand = 0x80059d2c;
+LIBC_initrand = 0x80059d5c;
+LIBC_printf = 0x8005ab18;
+LIBC_strcpy = 0x8005ab88;
+LIBC_bzero = 0x8005c1b8;
+LIBC_memcpy = 0x8005c1f8;
+memcpy = 0x8005c1f8;
+LIBC_puts = 0x8005c344;
+LIBC_memchr = 0x8005edc4;
+LIBC_memmove = 0x8005ee14;
+LIBC_strcat = 0x8005ee84;
+
+LIBSPU_SsUtReverbOff = 0x80011d58;
+LIBSPU_SpuSetTransferStartAddr = 0x80059fbc;
+LIBSPU_SpuSetTransferMode = 0x8005a20c;
+LIBSPU_SpuSetCommonAttr = 0x8005912c;
+LIBSPU_SpuRead = 0x8005a0fc;
+LIBSPU_SpuIsTransferCompleted = 0x8005a15c;
+LIBSPU_SpuSetKey = 0x8005a23c;
+LIBSPU_SpuSetVoiceAttr = 0x8005a4a8;
+LIBSPU_SpuStart = 0x8005f06c;
+
+LIBK_LoadExec = 0x8005ab08;
+LIBK_InitHeap = 0x8005abd8;
+LIBK_setExceptionJmpBuf = 0x8005ac24;
+LIBK_ExitCriticalSection = 0x8005aff4;
+LIBK_ReturnFromException = 0x8005b004;
+LIBK_ChangeClearPAD = 0x8005b014;
+LIBK_ChangeClearRCnt = 0x8005b024;
+LIBK_EnterCriticalSection = 0x8005b034;
+LIBK_ResetEntryInt = 0x8005b044;
+LIBK_GPU_cw = 0x8005c1e8;
+LIBK_DeliverEvent = 0x8005d768;
+LIBK_open = 0x8005ef34;
+LIBK_close = 0x8005ef44;
+LIBK_lseek = 0x8005ef54;
+LIBK_read = 0x8005ef64;
+LIBK_write = 0x8005ef74;
+LIBK_sysDeqIntRP = 0x8005f864;
+LIBK_sysEnqIntRP = 0x8005f874;
+LIBK_TestEvent = 0x8005f0e4;
+LIBK_OpenEvent = 0x800600cc;
+LIBK_EnableEvent = 0x800600dc;
+LIBK_CloseEvent = 0x800600ec;

@@ -6,9 +6,9 @@
 typedef struct {
     char* name;
     int load_level_id;
-    level_type type;
-} level_data;
+    LevelType type;
+} LevelData;
 
-extern level_data levels_table[29];
+extern LevelData levels_table[29];
 
 #endif

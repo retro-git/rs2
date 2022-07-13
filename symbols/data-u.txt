@@ -1,0 +1,24 @@
+GAME_GPUCurrDrawenv = 0x80066fc0;
+GAME_GPUPackets = 0x80067000;
+GAME_GPUPackets_Next = 0x80067030;
+GAME_GPUScreenBuffer = 0x80069928;
+
+GAME_gemCount = 0x800670CC;
+GAME_gemCountHUD = 0x80067660;
+GAME_gameState = 0x800681c8;
+GAME_spyro = 0x80069ff0;
+
+GAME_CDWAD_headerBuffer = 0x800676d8;
+GAME_CDHandler = 0x800682d8;
+GAME_CDReadBuffer = 0x8006d264;
+
+GAME_input = 0x800683A0;
+
+GAME_cam_position = 0x80067eac;
+GAME_cam_rotation = 0x80067F28;
+
+GAME_level_load_id = 0x8006715C;
+GAME_world_id = 0x80066f54;
+GAME_pause_menu_index = 0x800698F4;
+GAME_pause_submenu_index = 0x800698F8;
+GAME_unk_timer = 0x800698EC;

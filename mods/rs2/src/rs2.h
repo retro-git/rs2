@@ -4,13 +4,21 @@
 #include "levels.h"
 #include "../../../include/common.h"
 
+typedef struct
+{
+    Vec3 position;
+    Vec3 rotation;
+    Vec3 cam_position;
+    Vec3s cam_rotation;
+} savestate_t;
+
 struct rs2 {
     uint16_t initialised;
     uint16_t menu_index;
     uint16_t menu_selection_index;
     uint16_t menu_enabled;
     uint16_t is_warping;
-    level_data warp_selected_level;
+    LevelData warp_selected_level;
     savestate_t savestate;
     CdlCB read_callback;
     int32_t button_holdtimes[16];

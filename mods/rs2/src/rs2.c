@@ -14,8 +14,8 @@ void read_cb(unsigned char status, unsigned char *result)
 {
     patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
     rs2.initialised = 1;
-    printf("init\n");
-    psyq_CdReadCallback(rs2.read_callback);
+    LIBC_printf("init\n");
+    LIBCD_CdReadCallback(rs2.read_callback);
 }
 
 void init()
@@ -25,21 +25,21 @@ void init()
     rs2.initialised = 1;
 #else
     CdlLOC loc;
-    psyq_CdIntToPos(229989, &loc);
+    LIBCD_CdIntToPos(229989, &loc);
 
     char res;
-    psyq_CdControlB(CdlSetloc, &loc, &res);
+    LIBCD_CdControlB(CdlSetloc, (unsigned char*)&loc, &res);
 
-    rs2.read_callback = psyq_CdReadCallback(read_cb);
-    psyq_CdRead(1, (void *)0x8000A000, 0x80);
+    rs2.read_callback = LIBCD_CdReadCallback(read_cb);
+    LIBCD_CdRead(1, (void *)0x8000A000, 0x80);
 #endif
 }
 
 void main_hook()
 {
-    spyro_FUN_800156fc();
+    GAME_FUN_800156fc();
 
-    if (rs2.initialised != 1 && spyro_game_state == 0xb)
+    if (rs2.initialised != 1 && GAME_gameState == MAIN_MENU)
     {
         init();
     }
@@ -51,7 +51,7 @@ void main_hook()
             handle_warp();
         }
 
-        if (spyro_game_state == 0)
+        if (GAME_gameState == PLAYING)
         {
             handle_input();
         }
@@ -62,7 +62,7 @@ void handle_input()
 {
     for (uint16_t i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(int32_t); i++)
     {
-        if (spyro_input_raw.i >> i & 1)
+        if (GAME_input.i >> i & 1)
         {
             rs2.button_holdtimes[i]++;
         }
@@ -72,14 +72,14 @@ void handle_input()
         }
     }
 
-    if (spyro_input_raw.b.l2 && spyro_input_raw.b.r2)
+    if (GAME_input.b.l2 && GAME_input.b.r2)
     {
         if (rs2.button_holdtimes[TRIANGLE] == 1)
         {
-            rs2.savestate.position = spyro_player_position;
-            rs2.savestate.rotation = spyro_player_rotation;
-            rs2.savestate.cam_rotation = spyro_cam_rotation;
-            rs2.savestate.cam_position = spyro_cam_position;
+            rs2.savestate.position = GAME_spyro.position;
+            rs2.savestate.rotation = GAME_spyro.eulerRotations;
+            rs2.savestate.cam_rotation = GAME_cam_rotation;
+            rs2.savestate.cam_position = GAME_cam_position;
 
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
                                                     .text = "Saved State",
@@ -93,10 +93,10 @@ void handle_input()
         }
         else if (rs2.button_holdtimes[CIRCLE] == 1)
         {
-            spyro_player_position = rs2.savestate.position;
-            spyro_player_rotation = rs2.savestate.rotation;
-            spyro_cam_rotation = rs2.savestate.cam_rotation;
-            spyro_cam_position = rs2.savestate.cam_position;
+            GAME_spyro.position = rs2.savestate.position;
+            GAME_spyro.eulerRotations = rs2.savestate.rotation;
+            GAME_cam_rotation = rs2.savestate.cam_rotation;
+            GAME_cam_position = rs2.savestate.cam_position;
 
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
                                                     .text = "Loaded State",
@@ -123,24 +123,24 @@ void handle_warp()
 {
     uint32_t unk_cam_bossfix = *(uint32_t *)0x80067eB0;
     uint32_t unk_cam_homefix = *(uint32_t *)0x80067F28;
-    spyro_level_load_id = rs2.warp_selected_level.load_level_id;
+    GAME_level_load_id = rs2.warp_selected_level.load_level_id;
 
-    if (spyro_game_state == 0)
+    if (GAME_gameState == PLAYING)
     {
         rs2.is_warping = 0;
     }
-    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75)) // crush, gulp, ripto starting cams respectively
+    else if (GAME_gameState == LOADING_LEVELS && rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75)) // crush, gulp, ripto starting cams respectively
     {
-        spyro_unk_timer = 0;
-        spyro_game_state = 3;
+        GAME_unk_timer = 0;
+        GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
         *(int16_t *)0x800698F0 = 0;
-        spyro_pause_submenu_index = 0;
+        GAME_pause_submenu_index = 0;
     }
-    else if (spyro_game_state == 7 && rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401)) // home world starting cams respectively
+    else if (GAME_gameState == LOADING_LEVELS && rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401)) // home world starting cams respectively
     {
-        spyro_game_state = 3;
-        spyro_pause_submenu_index = 0;
+        GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
+        GAME_pause_submenu_index = 0;
         *(int32_t *)0x800698f0 = 0;
-        spyro_unk_timer = 0;
+        GAME_unk_timer = 0;
     }
 }

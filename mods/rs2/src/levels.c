@@ -1,6 +1,6 @@
 #include "levels.h"
 
-level_data levels_table[29]  = {
+LevelData levels_table[29]  = {
     { "Summer Forest", 0xa, HOMEWORLD },
     { "Glimmer", 0xb, STAGE },
     { "Idol Springs", 0xc, STAGE },
