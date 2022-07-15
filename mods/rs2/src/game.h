@@ -2,12 +2,8 @@
 #define COMMON_H
 
 #include <stdint.h>
-#include "libcd.h"
-#include "libc.h"
-#include "spyro.h"
+
 #include "vec3.h"
-#include "libgraphics.h"
-#include "common.h"
 
 #define L2 0
 #define R2 1
@@ -102,6 +98,7 @@ int LIBC_rand();
 
 void GAME_FUN_800156fc(void);
 void GAME_FUN_80013a14(unsigned int unk);
+void GAME_FUN_80077374(int unk);
 
 extern int32_t header_start;
 extern int32_t kernel_free_space_1;

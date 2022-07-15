@@ -2,6 +2,11 @@
 #include "draw.h"
 #include "rs2.h"
 #include "levels.h"
+#include "libcd.h"
+#include "libc.h"
+#include "spyro.h"
+#include "common.h"
+#include "vec3.h"
 
 draw_command_t draw_commands[4] = {0};
 

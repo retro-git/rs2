@@ -3,6 +3,8 @@
 
 #include "levels.h"
 #include "game.h"
+#include "vec3.h"
+#include "libcd.h"
 
 typedef struct
 {

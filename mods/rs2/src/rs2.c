@@ -1,14 +1,13 @@
 #include "rs2.h"
 #include "game.h"
 #include "draw.h"
+#include "hook.h"
+#include "libcd.h"
+#include "libc.h"
+#include "spyro.h"
+#include "common.h"
 
 struct rs2 rs2 = {0};
-
-void patch_jump(int32_t *overwrite_loc, int32_t jump_loc)
-{
-    int32_t instr = ((jump_loc & 0b00000011111111111111111111111111) >> 2) | 0b0001100000000000000000000000000;
-    *overwrite_loc = instr;
-}
 
 void read_cb(unsigned char status, unsigned char *result)
 {
@@ -38,8 +37,7 @@ void init()
 
 int __attribute__((optimize("O0"))) rand_hook()
 {
-    int rand = rand_hook_trampoline();
-    return rand;
+    return rand_hook_trampoline();
 }
 
 int rand_hook_trampoline()
@@ -69,6 +67,17 @@ void main_hook()
         if (rs2.is_warping)
         {
             handle_warp();
+        }
+
+        if (GAME_gameState == 0xb)
+        {
+            RECT rect;
+            rect.x = 585;
+            rect.y = 457;
+            rect.w = 50;
+            rect.h = 30;
+            LIBG_MoveImage(&rect, 50, 50);
+            LIBG_MoveImage(&rect, 50, 50 + 228);
         }
 
         if (GAME_gameState == PLAYING)
