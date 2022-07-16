@@ -2,8 +2,8 @@
 
 # clean/compile/build mod iso
 python3 ../../../../tools/mod-builder/main.py 11
-python3 ../../../../tools/mod-builder/main.py 1 2
-python3 ../../../../tools/mod-builder/main.py 4 2
+python3 ../../../../tools/mod-builder/main.py 1 $1
+python3 ../../../../tools/mod-builder/main.py 4 $1
 
 # build loader
 cd loader/src
