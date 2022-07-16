@@ -1,0 +1,6 @@
+psyq/include
+psyq/lib
+*.dep
+*.elf
+*.map
+*.ps-exe
