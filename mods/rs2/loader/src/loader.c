@@ -6,6 +6,8 @@
 #include <libgte.h>
 #include <libetc.h>
 #include <libgpu.h>
+#include <libapi.h>
+#include <libds.h>
 #define VMODE 0                 // Video Mode : 0 : NTSC, 1: PAL
 #define SCREENXRES 320          // Screen width
 #define SCREENYRES 240          // Screen height
@@ -17,6 +19,8 @@
 DISPENV disp[2];                 // Double buffered DISPENV and DRAWENV
 DRAWENV draw[2];
 short db = 0;                      // index of which buffer is used, values 0, 1
+
+int i = 0;
 void init(void)
 {
     ResetGraph(0);                 // Initialize drawing engine with a complete reset (0)
@@ -53,9 +57,22 @@ int main(void)
     init();                         // execute init()
     while (1)                       // infinite loop
     {   
-        FntPrint("Hello world !");  // Send string to print stream
+        i += 1;
+        printf("%d\n", i);
+        FntPrint("rs2-0.0.1-alpha RETRO PRODUCTIONS");  // Send string to print stream
         FntFlush(-1);               // Draw printe stream
         display();                  // Execute display()
+        if (i == 100) {
+            break;
+        }
     }
+
+    ResetGraph(0);
+    //CardStop();
+    //PadStop();
+    StopCallback();
+    _96_init();
+    LoadExec("cdrom:\\SCUS_944.25;1", 0x801FFFF0, 0);
+
     return 0;
-    }
+}

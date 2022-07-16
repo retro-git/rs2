@@ -4,3 +4,5 @@ psyq/lib
 *.elf
 *.map
 *.ps-exe
+*.bin
+*.cue

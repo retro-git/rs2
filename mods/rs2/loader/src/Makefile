@@ -1,5 +1,5 @@
-TARGET = hello_world
+TARGET = loader
 
-SRCS = hello_world.c \
+SRCS = loader.c \
 
 include ../common.mk 
