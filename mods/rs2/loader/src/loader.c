@@ -1,6 +1,3 @@
-// Demonstrate DISP/DRAW env, font setup, and display a text.
-// Schnappy 2020
-// Based on Lameguy64 tutorial : http://lameguy64.net/svn/pstutorials/chapter1/1-display.html
 #include <sys/types.h>
 #include <stdio.h>
 #include <libgte.h>
@@ -8,6 +5,13 @@
 #include <libgpu.h>
 #include <libapi.h>
 #include <libds.h>
+#include <libcd.h>
+
+// CD specifics
+#define CD_SECTOR_SIZE 2048
+// Converting bytes to sectors SECTOR_SIZE is defined in words, aka int
+#define BtoS(len) ( ( len + CD_SECTOR_SIZE - 1 ) / CD_SECTOR_SIZE ) 
+
 #define VMODE 0                 // Video Mode : 0 : NTSC, 1: PAL
 #define SCREENXRES 320          // Screen width
 #define SCREENYRES 240          // Screen height
@@ -16,6 +20,7 @@
 #define MARGINX 0                // margins for text display
 #define MARGINY 32
 #define FONTSIZE 8 * 7           // Text Field Height
+
 DISPENV disp[2];                 // Double buffered DISPENV and DRAWENV
 DRAWENV draw[2];
 short db = 0;                      // index of which buffer is used, values 0, 1
@@ -44,6 +49,7 @@ void init(void)
     FntLoad(960, 0);                // Load font to vram at 960,0(+128)
     FntOpen(MARGINX, SCREENYRES - MARGINY - FONTSIZE, SCREENXRES - MARGINX * 2, FONTSIZE, 0, 280 ); // FntOpen(x, y, width, height,  black_bg, max. nbr. chars
 }
+
 void display(void)
 {
     DrawSync(0);                    // Wait for all drawing to terminate
@@ -52,9 +58,22 @@ void display(void)
     PutDrawEnv(&draw[db]);  
     db = !db;                       // flip db value (0 or 1)
 }
+
+void inject() {
+    CdlFILE filePos;
+    CdSearchFile(&filePos, "\\DRAW.BIN;1");
+    CdControlB(CdlSetloc, (u_char *)&filePos.pos, 0);
+    CdRead(BtoS(filePos.size), (u_char *)0x8000a000, CdlModeSpeed);
+    CdReadSync(0, 0);
+}
+
 int main(void)
 {
-    init();                         // execute init()
+    init();                         // init display
+
+    CdInit();
+    inject();
+
     while (1)                       // infinite loop
     {   
         i += 1;

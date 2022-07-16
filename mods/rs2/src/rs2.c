@@ -9,32 +9,6 @@
 
 struct rs2 rs2 = {0};
 
-void read_cb(unsigned char status, unsigned char *result)
-{
-    patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
-    rs2.initialised = 1;
-    LIBC_printf("initialised %d\n", BUILD);
-    LIBCD_CdReadCallback(rs2.read_callback);
-}
-
-void init()
-{
-#if BUILD == 94424
-    // patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
-    rs2.initialised = 1;
-    LIBC_printf("init %d\n", BUILD);
-#else
-    CdlLOC loc;
-    LIBCD_CdIntToPos(229989, &loc);
-
-    char res;
-    LIBCD_CdControlB(CdlSetloc, (unsigned char *)&loc, &res);
-
-    rs2.read_callback = LIBCD_CdReadCallback(read_cb);
-    LIBCD_CdRead(1, (void *)&kernel_free_space_1, 0x80);
-#endif
-}
-
 int __attribute__((optimize("O0"))) rand_hook()
 {
     return rand_hook_trampoline();
@@ -57,33 +31,25 @@ void main_hook()
 {
     GAME_FUN_800156fc();
 
-    if (rs2.initialised != 1 /*&& GAME_gameState == 0xb*/)
+    if (rs2.is_warping)
     {
-        init();
+        handle_warp();
     }
 
-    if (rs2.initialised)
+    if (GAME_gameState == 0xb)
     {
-        if (rs2.is_warping)
-        {
-            handle_warp();
-        }
+        RECT rect;
+        rect.x = 585;
+        rect.y = 457;
+        rect.w = 50;
+        rect.h = 30;
+        LIBG_MoveImage(&rect, 50, 50);
+        LIBG_MoveImage(&rect, 50, 50 + 228);
+    }
 
-        if (GAME_gameState == 0xb)
-        {
-            RECT rect;
-            rect.x = 585;
-            rect.y = 457;
-            rect.w = 50;
-            rect.h = 30;
-            LIBG_MoveImage(&rect, 50, 50);
-            LIBG_MoveImage(&rect, 50, 50 + 228);
-        }
-
-        if (GAME_gameState == PLAYING)
-        {
-            handle_input();
-        }
+    if (GAME_gameState == PLAYING)
+    {
+        handle_input();
     }
 }
 

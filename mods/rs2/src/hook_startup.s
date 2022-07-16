@@ -1,2 +1,2 @@
 .set noreorder
-jal intro
+jal startup
