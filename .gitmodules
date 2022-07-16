@@ -1,6 +1,3 @@
-[submodule "nugget"]
-	path = mods/rs2/loader/thirdparty/nugget
-	url = https://github.com/pcsx-redux/nugget/
 [submodule "mods/rs2/loader/thirdparty/nugget"]
 	path = mods/rs2/loader/thirdparty/nugget
 	url = https://github.com/pcsx-redux/nugget/
