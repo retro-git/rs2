@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/bin/zsh
+
+declare -A versions
+versions[2]="ps1"
+versions[3]="ps2"
 
 # clean/compile/build mod iso
 python3 ../../../../tools/mod-builder/main.py 11
@@ -31,3 +35,6 @@ sed -i 's/SCUS_944.25/LOADER.BIN/' SYSTEM.CNF
 
 cd ../
 mkpsxiso spyro2_rs2.xml -y
+
+patchname="spyro2_rs2_${versions[$1]}.xdelta"
+xdelta3 -f -e -s spyro2.bin spyro2_rs2.bin $patchname
