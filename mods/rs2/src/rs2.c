@@ -35,18 +35,7 @@ void main_hook()
     {
         handle_warp();
     }
-
-    if (GAME_gameState == 0xb)
-    {
-        RECT rect;
-        rect.x = 585;
-        rect.y = 457;
-        rect.w = 50;
-        rect.h = 30;
-        LIBG_MoveImage(&rect, 50, 50);
-        LIBG_MoveImage(&rect, 50, 50 + 228);
-    }
-
+    
     if (GAME_gameState == PLAYING)
     {
         handle_input();
