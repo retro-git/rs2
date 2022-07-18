@@ -19,6 +19,7 @@ struct rs2 {
     uint16_t menu_index;
     uint16_t menu_enabled;
     uint16_t is_warping;
+    uint16_t frame_advance;
     LevelData warp_selected_level;
     savestate_t savestate;
     CdlCB read_callback;

@@ -28,7 +28,11 @@ int rand_hook_trampoline()
 }
 
 void UpdateGame_Normal_hook() {
-    if (!rs2.menu_enabled) {
+    if (!rs2.menu_enabled && !rs2.frame_advance) {
+        GAME_UpdateGame_Normal();
+    }
+    else if (!rs2.menu_enabled && rs2.frame_advance && (rs2.button_holdtimes[L3] == 1 || rs2.button_holdtimes[L3] > 5)) {
+        GAME_inputStates[0].pressed.i = GAME_inputStates[0].current.i;
         GAME_UpdateGame_Normal();
     }
 }

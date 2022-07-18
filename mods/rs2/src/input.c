@@ -69,6 +69,16 @@ void read_input_hook()
         rs2.menu_enabled = !rs2.menu_enabled;
     }
 
+    if (rs2.button_holdtimes[L3] == 1 && !rs2.frame_advance)
+    {
+        rs2.frame_advance = !rs2.frame_advance;
+    }
+    else if (rs2.button_holdtimes[SELECT] == 1)
+    {
+        rs2.frame_advance = !rs2.frame_advance;
+        GAME_inputStates[0].pressed.b.select = 0;
+    }
+
     if (rs2.menu_enabled)
     {
         MenuData *menu = &menus[rs2.menu_index];

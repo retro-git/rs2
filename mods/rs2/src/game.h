@@ -24,7 +24,7 @@
 
 typedef union
 {
-    uint16_t i;
+    uint32_t i;
     struct
     {
         uint16_t l2 : 1;
