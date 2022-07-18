@@ -74,10 +74,6 @@ void read_input_hook()
         MenuData* menu = &menus[rs2.menu_index];
         if (rs2.button_holdtimes[R2] == 1)
         {
-            //LIBC_printf("%d\n", rs2.menu_index);
-            LIBC_printf("hello");
-            LIBC_printf("%d\n", (rs2.menu_index + 1) % (sizeof(menus) / sizeof(MenuData)));
-            LIBC_printf("%d\n", sizeof(menus) / sizeof(MenuData));
             rs2.menu_index = (rs2.menu_index + 1) % (sizeof(menus) / sizeof(MenuData));
         }
         else if (rs2.button_holdtimes[L2] == 1)
