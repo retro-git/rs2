@@ -91,17 +91,34 @@ void draw_menu()
         OptionData* options_table = menus[rs2.menu_index].d.options_table;
         for (uint16_t i = 0; i < menu->num_options; i++)
         {
+            OptionData* option = &options_table[i];
             LIBC_sprintf(buffer, "%s", options_table[i].name);
-            GAME_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == menu->menu_selection_index ? 1 : 0, 0);
+
+            uint32_t x = i <= 14 ? 100 : 300;
+            uint32_t y = 40 + 10 * (i % 15);
+
+            GAME_DrawText(buffer, x, y, i == menu->menu_selection_index ? 1 : 0, 0);
+            switch (option->type)
+            {
+                case OPTION_TOGGLE: {
+                    GAME_DrawText(option->d.toggled ? "ON" : "OFF", x + 80, y, (option->d.toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
+                }
+                break;
+                case OPTION_NUMBER: {
+                    LIBC_sprintf(buffer, "%d", option->d.number);
+                    GAME_DrawText(buffer, x + 80, y, 0, 0);
+                    break;
+                }
+            }
         }
         break;
     }
 }
 
-void begin_warp()
+void begin_warp(uint16_t level_index)
 {
    // rs2.warp_selected_level = levels_table[rs2.menu_selection_index];
-    rs2.warp_selected_level = menus[rs2.menu_index].d.levels_table[menus[0].menu_selection_index];
+    rs2.warp_selected_level = menus[rs2.menu_index].d.levels_table[level_index];
     GAME_pause_submenu_index = 0;
     GAME_unk_timer = 0x11;
     GAME_pause_menu_index = 5;
@@ -111,7 +128,7 @@ void begin_warp()
 
     if (rs2.warp_selected_level.type == HOMEWORLD)
     {
-        switch (menus[0].menu_selection_index)
+        switch (level_index)
         {
         case SUMMER_FOREST:
             GAME_world_id = IDOL_SPRINGS;

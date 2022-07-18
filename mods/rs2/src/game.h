@@ -46,6 +46,11 @@ typedef union
     } b;
 } controller_u_t;
 
+typedef enum {
+    TEXTCOL_GREEN = 4,
+    TEXTCOL_RED = 5,
+} DrawTextColors;
+
 typedef struct {
     controller_u_t current;
     controller_u_t pressed;

@@ -9,8 +9,18 @@ typedef struct {
     LevelType type;
 } LevelData;
 
+typedef enum {
+    OPTION_TOGGLE = 0,
+    OPTION_NUMBER = 1,
+} OptionType;
+
 typedef struct {
     char* name;
+    OptionType type;
+    union {
+        int16_t toggled;
+        int32_t number;
+    } d;
 } OptionData;
 
 typedef enum {

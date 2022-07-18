@@ -33,10 +33,11 @@ LevelData levels_table[29]  = {
     { "Ripto", 0x42, BOSS },
 };
 
-OptionData options_table[3] = {
-    { "Test" },
-    { "Test2" },
-    { "Test3" },
+OptionData options_table[4] = {
+    { "Test1", OPTION_TOGGLE, 0 },
+    { "Test2", OPTION_TOGGLE, 0 },
+    { "Test3", OPTION_TOGGLE, 0 },
+    { "Test4", OPTION_NUMBER, 0 },
 };
 
 MenuData menus[2] = {

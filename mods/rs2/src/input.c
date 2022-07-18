@@ -71,7 +71,7 @@ void read_input_hook()
 
     if (rs2.menu_enabled)
     {
-        MenuData* menu = &menus[rs2.menu_index];
+        MenuData *menu = &menus[rs2.menu_index];
         if (rs2.button_holdtimes[R2] == 1)
         {
             rs2.menu_index = (rs2.menu_index + 1) % (sizeof(menus) / sizeof(MenuData));
@@ -88,10 +88,40 @@ void read_input_hook()
         {
             menu->menu_selection_index == menus[rs2.menu_index].num_options - 1 ? menu->menu_selection_index = 0 : menu->menu_selection_index++;
         }
-        else if (currentInput.b.select)
+
+        if (rs2.button_holdtimes[CROSS] == 1)
         {
-            rs2.menu_enabled = 0;
-            begin_warp();
+            switch (menu->type)
+            {
+            case TELEPORT_MENU:
+                rs2.menu_enabled = 0;
+                begin_warp(menu->menu_selection_index);
+                break;
+
+            case OPTIONS_MENU:
+                LIBC_printf("option\n");
+                switch(menu->d.options_table[menu->menu_selection_index].type)
+                {
+                    case OPTION_TOGGLE:
+                        menu->d.options_table[menu->menu_selection_index].d.toggled = !menu->d.options_table[menu->menu_selection_index].d.toggled;
+                    break;
+                }
+                break;
+            }
+        }
+
+        if ((rs2.button_holdtimes[DRIGHT] && rs2.button_holdtimes[DRIGHT] % 2 == 0) || (rs2.button_holdtimes[DLEFT] && rs2.button_holdtimes[DLEFT] % 2 == 0))
+        {
+            if (menu->type == OPTIONS_MENU)
+            {
+                OptionData* option = &menu->d.options_table[menu->menu_selection_index];
+                switch(option->type)
+                {
+                    case OPTION_NUMBER:
+                        option->d.number = currentInput.b.dright ? option->d.number + 1 : option->d.number - 1;
+                    break;
+                }
+            }
         }
     }
 }
