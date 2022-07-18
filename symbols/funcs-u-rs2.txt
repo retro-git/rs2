@@ -1,6 +1,7 @@
 memcpy = 0x8005c1f8;
 
-GAME_FUN_800156fc = 0x800156fc;	
+GAME_RenderGame = 0x800156fc;
+GAME_UpdateGame_Normal = 0x800159c8;
 GAME_FUN_80013a14 = 0x80013a14;
 GAME_FUN_80077374 = 0x80077374;
 

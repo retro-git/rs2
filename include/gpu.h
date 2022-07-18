@@ -1,7 +1,7 @@
 #ifndef GAME_GPU_H
 #define GAME_GPU_H
 
-#include "game.h"
+#include "common.h"
 #include "libgraphics.h"
 
 typedef struct {
@@ -9,6 +9,21 @@ typedef struct {
     DISPENV dispenv;
     int unk;
 } ScreenBuffer;
+
+typedef struct {
+    unsigned long *tag;
+    unsigned char r0; 
+    unsigned char g0;
+    unsigned char b0;
+    unsigned char code;
+    short x0, y0;
+    unsigned char r1;
+    unsigned char g1;
+    unsigned char b1;
+    unsigned char p1;
+    short x1;
+    short y1;
+} LINE_G2;
 
 /*
     Functions

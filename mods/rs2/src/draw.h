@@ -27,5 +27,6 @@ void add_draw_command(DRAW_COMMAND_TYPE type, void *data);
 void draw_hook(unsigned int unk);
 void draw_menu();
 void begin_warp();
+void DrawLine(short x0, short y0, Color c0, short x1, short y1, Color c1);
 
 #endif

@@ -7,6 +7,17 @@
 #include "spyro.h"
 #include "common.h"
 #include "vec3.h"
+#include "gpu.h"
+
+#define FRAME_WIDTH 512
+#define FRAME_HEIGHT 228
+
+#define SCREEN_LEFT 0
+#define SCREEN_RIGHT 512
+#define SCREEN_TOP 12
+#define SCREEN_BOTTOM 228
+
+#define LINE_HEIGHT 12
 
 draw_command_t draw_commands[4] = {0};
 
@@ -56,6 +67,8 @@ void draw_hook(unsigned int unk)
         }
     }
 
+   // DrawLine(100, 50, col, 200, 100, col);
+
     if (rs2.menu_enabled)
         draw_menu();
 }
@@ -67,20 +80,6 @@ void draw_menu()
     {
         LIBC_sprintf(buffer, "%s", levels_table[i].name);
         GAME_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == rs2.menu_selection_index ? 1 : 0, 0);
-    }
-
-    if (rs2.button_holdtimes[DUP] && rs2.button_holdtimes[DUP] % 2 == 0)
-    {
-        rs2.menu_selection_index == 0 ? rs2.menu_selection_index = sizeof(levels_table) / sizeof(LevelData) - 1 : rs2.menu_selection_index--;
-    }
-    else if (rs2.button_holdtimes[DDOWN] && rs2.button_holdtimes[DDOWN] % 2 == 0)
-    {
-        rs2.menu_selection_index == sizeof(levels_table) / sizeof(LevelData) - 1 ? rs2.menu_selection_index = 0 : rs2.menu_selection_index++;
-    }
-    else if (GAME_input.b.select)
-    {
-        rs2.menu_enabled = 0;
-        begin_warp();
     }
 }
 
@@ -111,4 +110,25 @@ void begin_warp()
     }
 
     rs2.is_warping = 1;
+}
+
+void DrawLine(short x0, short y0, Color c0, short x1, short y1, Color c1) {
+	LINE_G2* ptrPrimitive = (LINE_G2*)GAME_GPUPackets_Next;
+	ptrPrimitive->tag = 0x4000000;
+	ptrPrimitive->code = 0x50;
+
+	ptrPrimitive->x0 = x0;
+	ptrPrimitive->y0 = y0;
+	ptrPrimitive->r0 = c0.r;
+	ptrPrimitive->g0 = c0.g;
+	ptrPrimitive->b0 = c0.b;
+
+	ptrPrimitive->x1 = x1;
+	ptrPrimitive->y1 = y1;
+	ptrPrimitive->r1 = c1.r;
+	ptrPrimitive->g1 = c1.g;
+	ptrPrimitive->b1 = c1.b;
+	
+	GAME_GPUPackets_Insert(ptrPrimitive);
+	GAME_GPUPackets_Next = ptrPrimitive + 1;
 }

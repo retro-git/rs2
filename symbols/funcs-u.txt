@@ -28,6 +28,8 @@ GAME_DrawSTBlackRect = 0x8004d2d8;
 GAME_DrawOpaqueBlackRect = 0x8004dd28;
 GAME_DrawGameScreenshot = 0x8004e14c;
 
+GAME_ReadInput = 0x8001271c;
+
 LIBPAD_PadInitDirect = 0x80054f1c;
 
 LIBG_ResetGraph = 0x8005557c;

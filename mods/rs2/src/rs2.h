@@ -28,6 +28,7 @@ struct rs2 {
 
 extern struct rs2 rs2;
 
+void UpdateGame_Normal_hook();
 int rand_hook_trampoline();
 void handle_input();
 void patch_jump(int32_t *overwrite_loc, int32_t jump_loc);

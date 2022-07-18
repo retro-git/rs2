@@ -27,80 +27,21 @@ int rand_hook_trampoline()
     asm volatile("nop");
 }
 
+void UpdateGame_Normal_hook() {
+    if (!rs2.menu_enabled) {
+        GAME_UpdateGame_Normal();
+    }
+}
+
 void main_hook()
 {
-    GAME_FUN_800156fc();
+    GAME_RenderGame();
 
     if (rs2.is_warping)
     {
         handle_warp();
     }
-    
-    if (GAME_gameState == PLAYING)
-    {
-        handle_input();
-    }
-}
 
-void handle_input()
-{
-    for (uint16_t i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(int32_t); i++)
-    {
-        if (GAME_input.i >> i & 1)
-        {
-            rs2.button_holdtimes[i]++;
-        }
-        else
-        {
-            rs2.button_holdtimes[i] = 0;
-        }
-    }
-
-    if (GAME_input.b.l2 && GAME_input.b.r2)
-    {
-        if (rs2.button_holdtimes[TRIANGLE] == 1)
-        {
-            rs2.savestate.position = GAME_spyro.position;
-            rs2.savestate.rotation = GAME_spyro.eulerRotations;
-            rs2.savestate.cam_rotation = GAME_cam_rotation;
-            rs2.savestate.cam_position = GAME_cam_position;
-
-            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Saved State",
-                                                    .x = 80,
-                                                    .y = 80,
-                                                    .col = 4,
-                                                    .cur_time = 0,
-                                                    .start_time = 0,
-                                                    .end_time = 60,
-                                                });
-        }
-        else if (rs2.button_holdtimes[CIRCLE] == 1)
-        {
-            GAME_spyro.position = rs2.savestate.position;
-            GAME_spyro.eulerRotations = rs2.savestate.rotation;
-            GAME_cam_rotation = rs2.savestate.cam_rotation;
-            GAME_cam_position = rs2.savestate.cam_position;
-
-            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Loaded State",
-                                                    .x = 80,
-                                                    .y = 80,
-                                                    .col = 4,
-                                                    .cur_time = 0,
-                                                    .start_time = 0,
-                                                    .end_time = 60,
-                                                });
-        }
-    }
-    else if (rs2.menu_enabled == 0 && rs2.button_holdtimes[R3] == 1)
-    {
-        rs2.menu_enabled = 1;
-    }
-    else if (rs2.menu_enabled && rs2.button_holdtimes[R3] == 1)
-    {
-        rs2.menu_enabled = 0;
-    }
 }
 
 void handle_warp()
