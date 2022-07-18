@@ -1,4 +1,5 @@
-#include "levels.h"
+#include "menus.h"
+#include "game.h"
 
 LevelData levels_table[29]  = {
     { "Summer Forest", 0xa, HOMEWORLD },
@@ -30,4 +31,25 @@ LevelData levels_table[29]  = {
     { "Metropolis", 0x3e, STAGE },
     { "Dragon Shores", 0x41, STAGE },
     { "Ripto", 0x42, BOSS },
+};
+
+OptionData options_table[3] = {
+    { "Test" },
+    { "Test2" },
+    { "Test3" },
+};
+
+MenuData menus[2] = {
+    {
+        TELEPORT_MENU, 
+        sizeof(levels_table) / sizeof(LevelData),
+        0,
+        &levels_table,
+    },
+    {
+        OPTIONS_MENU,
+        sizeof(options_table) / sizeof(OptionData),
+        0,
+        &options_table,
+    },
 };

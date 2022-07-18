@@ -1,7 +1,7 @@
 #include "game.h"
 #include "draw.h"
 #include "rs2.h"
-#include "levels.h"
+#include "menus.h"
 #include "libcd.h"
 #include "libc.h"
 #include "spyro.h"
@@ -71,13 +71,26 @@ void read_input_hook()
 
     if (rs2.menu_enabled)
     {
-        if (rs2.button_holdtimes[DUP] && rs2.button_holdtimes[DUP] % 2 == 0)
+        MenuData* menu = &menus[rs2.menu_index];
+        if (rs2.button_holdtimes[R2] == 1)
         {
-            rs2.menu_selection_index == 0 ? rs2.menu_selection_index = sizeof(levels_table) / sizeof(LevelData) - 1 : rs2.menu_selection_index--;
+            //LIBC_printf("%d\n", rs2.menu_index);
+            LIBC_printf("hello");
+            LIBC_printf("%d\n", (rs2.menu_index + 1) % (sizeof(menus) / sizeof(MenuData)));
+            LIBC_printf("%d\n", sizeof(menus) / sizeof(MenuData));
+            rs2.menu_index = (rs2.menu_index + 1) % (sizeof(menus) / sizeof(MenuData));
+        }
+        else if (rs2.button_holdtimes[L2] == 1)
+        {
+            rs2.menu_index = (rs2.menu_index + (sizeof(menus) / sizeof(MenuData) - 1)) % (sizeof(menus) / sizeof(MenuData));
+        }
+        else if (rs2.button_holdtimes[DUP] && rs2.button_holdtimes[DUP] % 2 == 0)
+        {
+            menu->menu_selection_index == 0 ? menu->menu_selection_index = menus[rs2.menu_index].num_options - 1 : menu->menu_selection_index--;
         }
         else if (rs2.button_holdtimes[DDOWN] && rs2.button_holdtimes[DDOWN] % 2 == 0)
         {
-            rs2.menu_selection_index == sizeof(levels_table) / sizeof(LevelData) - 1 ? rs2.menu_selection_index = 0 : rs2.menu_selection_index++;
+            menu->menu_selection_index == menus[rs2.menu_index].num_options - 1 ? menu->menu_selection_index = 0 : menu->menu_selection_index++;
         }
         else if (currentInput.b.select)
         {

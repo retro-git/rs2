@@ -1,7 +1,7 @@
 #ifndef RS2_H
 #define RS2_H
 
-#include "levels.h"
+#include "menus.h"
 #include "game.h"
 #include "vec3.h"
 #include "libcd.h"
@@ -17,7 +17,6 @@ typedef struct
 struct rs2 {
     uint16_t initialised;
     uint16_t menu_index;
-    uint16_t menu_selection_index;
     uint16_t menu_enabled;
     uint16_t is_warping;
     LevelData warp_selected_level;
