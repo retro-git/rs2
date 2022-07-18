@@ -34,6 +34,7 @@ void read_input_hook()
             rs2.savestate.rotation = GAME_spyro.eulerRotations;
             rs2.savestate.cam_rotation = GAME_cam_rotation;
             rs2.savestate.cam_position = GAME_cam_position;
+            rs2.savestate.fracture_end_faun_state = GAME_fracture_end_faun_state;
 
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
                                                     .text = "Saved",
@@ -51,6 +52,7 @@ void read_input_hook()
             GAME_spyro.eulerRotations = rs2.savestate.rotation;
             GAME_cam_rotation = rs2.savestate.cam_rotation;
             GAME_cam_position = rs2.savestate.cam_position;
+            GAME_fracture_end_faun_state = rs2.savestate.fracture_end_faun_state;
         }
     }
 
@@ -104,6 +106,8 @@ void read_input_hook()
                     case OPTION_TOGGLE:
                         menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled = !menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled;
                     break;
+                    case OPTION_ONESHOT:
+                        menu->d.options_table[menu->menu_selection_index].d.option_oneshot_data->execute();
                 }
                 break;
             }

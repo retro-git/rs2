@@ -57,6 +57,10 @@ typedef union
 } controller_u_t;
 
 typedef enum {
+    TEXTCOL_DARK_YELLOW = 0,
+    TEXTCOL_LIGHT_YELLOW = 1,
+    TEXTCOL_YELLOW = 2,
+    TEXTCOL_WHITE = 3,
     TEXTCOL_GREEN = 4,
     TEXTCOL_RED = 5,
 } DrawTextColors;
@@ -124,5 +128,7 @@ extern int32_t GAME_world_id;
 extern int32_t GAME_pause_menu_index;
 extern uint16_t GAME_pause_submenu_index;
 extern uint16_t GAME_unk_timer;
+extern uint8_t GAME_fireball_state;
+extern uint8_t GAME_fracture_end_faun_state;
 
 #endif

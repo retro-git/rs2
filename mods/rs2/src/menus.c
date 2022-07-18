@@ -1,7 +1,7 @@
 #include "menus.h"
 #include "game.h"
 
-LevelData levels_table[29]  = {
+LevelData levels_table[NUM_LEVELS]  = {
     { "Summer Forest", 0xa, HOMEWORLD },
     { "Glimmer", 0xb, STAGE },
     { "Idol Springs", 0xc, STAGE },
@@ -33,9 +33,10 @@ LevelData levels_table[29]  = {
     { "Ripto", 0x42, BOSS },
 };
 
-OptionData options_table[2] = {
+OptionData options_table[NUM_OPTIONS_MENU1] = {
     { "Input Display", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_input_display_execute } },
-    { "test", OPTION_NUMBER, &(OptionNumberData){ .number = 0 } },
+    { "Satyrless Tools", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_satyrless_tools_execute } },
+    { "Toggle Fireball", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_toggle_fireball_execute } },
 };
 
 MenuData menus[2] = {

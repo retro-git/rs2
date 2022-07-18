@@ -60,9 +60,15 @@ void draw_hook(unsigned int unk)
     if (rs2.menu_enabled)
         draw_menu();
 
-    if (menus[OPTIONS_MENU1].d.options_table[MENU1_INPUT_DISPLAY].d.option_toggle_data->toggled)
-    {
-        menus[OPTIONS_MENU1].d.options_table[MENU1_INPUT_DISPLAY].d.option_toggle_data->execute();
+    for (uint16_t i = 0; i < NUM_OPTIONS_MENU1; i++) {
+        if (menus[OPTIONS_MENU1].d.options_table[i].type == OPTION_TOGGLE)
+        {
+            OptionToggleData *data = menus[OPTIONS_MENU1].d.options_table[i].d.option_toggle_data;
+            if (data->toggled)
+            {
+                data->execute();
+            }
+        }
     }
 }
 
@@ -77,7 +83,7 @@ void draw_menu()
         for (uint16_t i = 0; i < menu->num_options; i++)
         {
             LIBC_sprintf(buffer, "%s", levels_table[i].name);
-            GAME_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == menu->menu_selection_index ? 1 : 0, 0);
+            GAME_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == menu->menu_selection_index ? TEXTCOL_LIGHT_YELLOW : TEXTCOL_DARK_YELLOW, 0);
         }
         break;
     case MENU_TYPE_OPTIONS:
@@ -87,23 +93,19 @@ void draw_menu()
             OptionData *option = &options_table[i];
             LIBC_sprintf(buffer, "%s", options_table[i].name);
 
-            uint32_t x_option = FRAME_WIDTH / 3;
-            uint32_t x_value = FRAME_WIDTH / 3 + 125;
-            uint32_t y = 40 + 10 * (i % 15);
-
-            GAME_DrawText(buffer, x_option, y, i == menu->menu_selection_index ? 1 : 0, 0);
+            GAME_DrawText(buffer, MENU_X_COORD, MENU_Y_COORD(i), i == menu->menu_selection_index ? TEXTCOL_LIGHT_YELLOW : TEXTCOL_DARK_YELLOW, 0);
             switch (option->type)
             {
             case OPTION_TOGGLE:
             {
                 char* text = option->d.option_toggle_data->toggled ? "ON" : "OFF";
-                GAME_DrawText(text, x_value, y, (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
+                GAME_DrawText(text, MENU_X_COORD_VALUE, MENU_Y_COORD(i), (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
             }
             break;
             case OPTION_NUMBER:
             {
                 LIBC_sprintf(buffer, "%d", option->d.option_number_data->number);
-                GAME_DrawText(buffer, x_value, y, 0, 0);
+                GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
                 break;
             }
             }

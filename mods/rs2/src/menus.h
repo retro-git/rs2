@@ -4,6 +4,9 @@
 #include "game.h"
 #include "options.h"
 
+#define NUM_LEVELS 29
+#define NUM_OPTIONS_MENU1 3
+
 typedef void (*option_execute_func)(void);
 
 typedef enum {
@@ -13,6 +16,8 @@ typedef enum {
 
 typedef enum {
     MENU1_INPUT_DISPLAY = 0,
+    MENU1_SATYRLESS = 1,
+    MENU1_FIREBALL = 2,
 } MENU1_OPTIONS;
 
 typedef struct {
@@ -24,7 +29,12 @@ typedef struct {
 typedef enum {
     OPTION_TOGGLE = 0,
     OPTION_NUMBER = 1,
+    OPTION_ONESHOT = 2,
 } OPTION_TYPE;
+
+typedef struct {
+    option_execute_func execute;
+} OptionOneShotData;
 
 typedef struct {
     int16_t toggled;
@@ -41,6 +51,7 @@ typedef struct {
     union {
         OptionToggleData* option_toggle_data;
         OptionNumberData* option_number_data;
+        OptionOneShotData* option_oneshot_data;
     } d;
 } OptionData;
 

@@ -5,4 +5,9 @@ GAME_UpdateGame_Normal = 0x800159c8;
 GAME_FUN_80013a14 = 0x80013a14;
 GAME_FUN_80077374 = 0x80077374;
 
+GAME_DrawText_Center = 0x8004d984;
+GAME_DrawText_CenterWithBG = 0x8004d9ec;
+GAME_DrawText_Right = 0x8004da6c;
+GAME_GetTextWidth = 0x8004a7dc;
+
 LIBC_rand = 0x80059d2c;

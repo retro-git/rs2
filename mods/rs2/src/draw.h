@@ -1,6 +1,10 @@
 #ifndef DRAW_HOOK_H
 #define DRAW_HOOK_H
 
+#define MENU_Y_COORD(index) (40 + 10 * (index % 15))
+#define MENU_X_COORD (FRAME_WIDTH / 3)
+#define MENU_X_COORD_VALUE (FRAME_WIDTH / 3 + 150)
+
 typedef enum {
     FREE_SLOT = 0,
     DRAW_TEXT_TIMEOUT = 1,
