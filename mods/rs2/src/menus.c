@@ -34,21 +34,21 @@ LevelData levels_table[29]  = {
 };
 
 OptionData options_table[4] = {
-    { "Test1", OPTION_TOGGLE, 0 },
-    { "Test2", OPTION_TOGGLE, 0 },
-    { "Test3", OPTION_TOGGLE, 0 },
-    { "Test4", OPTION_NUMBER, 0 },
+    { "Test3", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_test_execute } },
+    { "Test3", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0 } },
+    { "Test3", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0 } },
+    { "Test4", OPTION_NUMBER, &(OptionNumberData){ .number = 0 } },
 };
 
 MenuData menus[2] = {
     {
-        TELEPORT_MENU, 
+        MENU_TYPE_TELEPORT, 
         sizeof(levels_table) / sizeof(LevelData),
         0,
         &levels_table,
     },
     {
-        OPTIONS_MENU,
+        MENU_TYPE_OPTIONS,
         sizeof(options_table) / sizeof(OptionData),
         0,
         &options_table,

@@ -71,6 +71,10 @@ void draw_hook(unsigned int unk)
 
     if (rs2.menu_enabled)
         draw_menu();
+
+    if (menus[OPTIONS_MENU1].d.options_table[MENU1_TEST].d.option_toggle_data->toggled) {
+        menus[OPTIONS_MENU1].d.options_table[MENU1_TEST].d.option_toggle_data->execute();
+    }
 }
 
 void draw_menu()
@@ -79,7 +83,7 @@ void draw_menu()
     MenuData* menu = &menus[rs2.menu_index];
     switch (menu->type)
     {
-    case TELEPORT_MENU:
+    case MENU_TYPE_TELEPORT:
         LevelData* levels_table = menus[rs2.menu_index].d.levels_table;
         for (uint16_t i = 0; i < menu->num_options; i++)
         {
@@ -87,7 +91,7 @@ void draw_menu()
             GAME_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == menu->menu_selection_index ? 1 : 0, 0);
         }
         break;
-    case OPTIONS_MENU:
+    case MENU_TYPE_OPTIONS:
         OptionData* options_table = menus[rs2.menu_index].d.options_table;
         for (uint16_t i = 0; i < menu->num_options; i++)
         {
@@ -101,11 +105,11 @@ void draw_menu()
             switch (option->type)
             {
                 case OPTION_TOGGLE: {
-                    GAME_DrawText(option->d.toggled ? "ON" : "OFF", x + 80, y, (option->d.toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
+                    GAME_DrawText(option->d.option_toggle_data->toggled ? "ON" : "OFF", x + 80, y, (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
                 }
                 break;
                 case OPTION_NUMBER: {
-                    LIBC_sprintf(buffer, "%d", option->d.number);
+                    LIBC_sprintf(buffer, "%d", option->d.option_number_data->number );
                     GAME_DrawText(buffer, x + 80, y, 0, 0);
                     break;
                 }

@@ -93,17 +93,16 @@ void read_input_hook()
         {
             switch (menu->type)
             {
-            case TELEPORT_MENU:
+            case MENU_TYPE_TELEPORT:
                 rs2.menu_enabled = 0;
                 begin_warp(menu->menu_selection_index);
                 break;
 
-            case OPTIONS_MENU:
-                LIBC_printf("option\n");
+            case MENU_TYPE_OPTIONS:
                 switch(menu->d.options_table[menu->menu_selection_index].type)
                 {
                     case OPTION_TOGGLE:
-                        menu->d.options_table[menu->menu_selection_index].d.toggled = !menu->d.options_table[menu->menu_selection_index].d.toggled;
+                        menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled = !menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled;
                     break;
                 }
                 break;
@@ -112,13 +111,13 @@ void read_input_hook()
 
         if ((rs2.button_holdtimes[DRIGHT] && rs2.button_holdtimes[DRIGHT] % 2 == 0) || (rs2.button_holdtimes[DLEFT] && rs2.button_holdtimes[DLEFT] % 2 == 0))
         {
-            if (menu->type == OPTIONS_MENU)
+            if (menu->type == MENU_TYPE_OPTIONS)
             {
                 OptionData* option = &menu->d.options_table[menu->menu_selection_index];
                 switch(option->type)
                 {
                     case OPTION_NUMBER:
-                        option->d.number = currentInput.b.dright ? option->d.number + 1 : option->d.number - 1;
+                        option->d.option_number_data->number = currentInput.b.dright ? option->d.option_number_data->number + 1 : option->d.option_number_data->number  - 1;
                     break;
                 }
             }

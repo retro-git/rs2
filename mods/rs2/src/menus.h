@@ -2,6 +2,19 @@
 #define MENUS_H
 
 #include "game.h"
+#include "options.h"
+
+typedef void (*option_execute_func)(void);
+
+typedef enum {
+    TELEPORT_MENU = 0,
+    OPTIONS_MENU1 = 1,
+} MENUS;
+
+typedef enum {
+    MENU1_TEST = 0,
+    MENU1_NUMBERTEST = 3,
+} MENU1_OPTIONS;
 
 typedef struct {
     char* name;
@@ -12,20 +25,29 @@ typedef struct {
 typedef enum {
     OPTION_TOGGLE = 0,
     OPTION_NUMBER = 1,
-} OptionType;
+} OPTION_TYPE;
+
+typedef struct {
+    int16_t toggled;
+    option_execute_func execute;
+} OptionToggleData;
+
+typedef struct {
+    int32_t number;
+} OptionNumberData;
 
 typedef struct {
     char* name;
-    OptionType type;
+    OPTION_TYPE type;
     union {
-        int16_t toggled;
-        int32_t number;
+        OptionToggleData* option_toggle_data;
+        OptionNumberData* option_number_data;
     } d;
 } OptionData;
 
 typedef enum {
-    TELEPORT_MENU = 0,
-    OPTIONS_MENU = 1,
+    MENU_TYPE_TELEPORT = 0,
+    MENU_TYPE_OPTIONS = 1,
 } MENU_TYPE;
 
 typedef struct {
