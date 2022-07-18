@@ -87,21 +87,23 @@ void draw_menu()
             OptionData *option = &options_table[i];
             LIBC_sprintf(buffer, "%s", options_table[i].name);
 
-            uint32_t x = i <= 14 ? 100 : 300;
+            uint32_t x_option = FRAME_WIDTH / 3;
+            uint32_t x_value = FRAME_WIDTH / 3 + 125;
             uint32_t y = 40 + 10 * (i % 15);
 
-            GAME_DrawText(buffer, x, y, i == menu->menu_selection_index ? 1 : 0, 0);
+            GAME_DrawText(buffer, x_option, y, i == menu->menu_selection_index ? 1 : 0, 0);
             switch (option->type)
             {
             case OPTION_TOGGLE:
             {
-                GAME_DrawText(option->d.option_toggle_data->toggled ? "ON" : "OFF", x + 160, y, (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
+                char* text = option->d.option_toggle_data->toggled ? "ON" : "OFF";
+                GAME_DrawText(text, x_value, y, (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
             }
             break;
             case OPTION_NUMBER:
             {
                 LIBC_sprintf(buffer, "%d", option->d.option_number_data->number);
-                GAME_DrawText(buffer, x + 80, y, 0, 0);
+                GAME_DrawText(buffer, x_value, y, 0, 0);
                 break;
             }
             }

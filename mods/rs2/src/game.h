@@ -100,6 +100,11 @@ enum BlendMode {
 
 int LIBC_rand();
 
+void GAME_DrawText_Center(char* text, int x, int y, int col);
+void GAME_DrawText_CenterWithBG(char* text, int x, int y, int col);
+void GAME_DrawText_Right(char* text, int x, int y, int col);
+int GAME_GetTextWidth(char* text);
+
 void GAME_ReadInput(void);
 void GAME_RenderGame(void);
 void GAME_UpdateGame_Normal(void);
