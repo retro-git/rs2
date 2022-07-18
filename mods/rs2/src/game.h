@@ -22,6 +22,16 @@
 #define DDOWN 14 //0x2000
 #define DLEFT 15 //0x4000
 
+#define FRAME_WIDTH 512
+#define FRAME_HEIGHT 228
+
+#define SCREEN_LEFT 0
+#define SCREEN_RIGHT 512
+#define SCREEN_TOP 12
+#define SCREEN_BOTTOM 228
+
+#define LINE_HEIGHT 12
+
 typedef union
 {
     uint32_t i;
@@ -55,10 +65,10 @@ typedef struct {
     controller_u_t current;
     controller_u_t pressed;
     controller_u_t released;
-    char rightStickAnalogX;
-    char rightStickAnalogY;
-    char leftStickAnalogX;
-    char leftStickAnalogY;
+    uint8_t rightStickAnalogX;
+    uint8_t rightStickAnalogY;
+    uint8_t leftStickAnalogX;
+    uint8_t leftStickAnalogY;
 } InputState;
 
 typedef enum

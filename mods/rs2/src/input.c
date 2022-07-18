@@ -36,7 +36,7 @@ void read_input_hook()
             rs2.savestate.cam_position = GAME_cam_position;
 
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Saved State",
+                                                    .text = "Saved",
                                                     .x = 80,
                                                     .y = 80,
                                                     .col = 4,
@@ -51,16 +51,6 @@ void read_input_hook()
             GAME_spyro.eulerRotations = rs2.savestate.rotation;
             GAME_cam_rotation = rs2.savestate.cam_rotation;
             GAME_cam_position = rs2.savestate.cam_position;
-
-            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Loaded State",
-                                                    .x = 80,
-                                                    .y = 80,
-                                                    .col = 4,
-                                                    .cur_time = 0,
-                                                    .start_time = 0,
-                                                    .end_time = 60,
-                                                });
         }
     }
 

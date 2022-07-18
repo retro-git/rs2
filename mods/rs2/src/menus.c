@@ -33,11 +33,8 @@ LevelData levels_table[29]  = {
     { "Ripto", 0x42, BOSS },
 };
 
-OptionData options_table[4] = {
-    { "Test3", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_test_execute } },
-    { "Test3", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0 } },
-    { "Test3", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0 } },
-    { "Test4", OPTION_NUMBER, &(OptionNumberData){ .number = 0 } },
+OptionData options_table[1] = {
+    { "Input Display", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_input_display_execute } },
 };
 
 MenuData menus[2] = {

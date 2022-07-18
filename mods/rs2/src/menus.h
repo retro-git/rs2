@@ -12,8 +12,7 @@ typedef enum {
 } MENUS;
 
 typedef enum {
-    MENU1_TEST = 0,
-    MENU1_NUMBERTEST = 3,
+    MENU1_INPUT_DISPLAY = 0,
 } MENU1_OPTIONS;
 
 typedef struct {

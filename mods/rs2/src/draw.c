@@ -9,16 +9,6 @@
 #include "gpu.h"
 #include "menus.h"
 
-#define FRAME_WIDTH 512
-#define FRAME_HEIGHT 228
-
-#define SCREEN_LEFT 0
-#define SCREEN_RIGHT 512
-#define SCREEN_TOP 12
-#define SCREEN_BOTTOM 228
-
-#define LINE_HEIGHT 12
-
 draw_command_t draw_commands[4] = {0};
 
 void add_draw_command(DRAW_COMMAND_TYPE type, void *data)
@@ -67,24 +57,23 @@ void draw_hook(unsigned int unk)
         }
     }
 
-    // DrawLine(100, 50, col, 200, 100, col);
-
     if (rs2.menu_enabled)
         draw_menu();
 
-    if (menus[OPTIONS_MENU1].d.options_table[MENU1_TEST].d.option_toggle_data->toggled) {
-        menus[OPTIONS_MENU1].d.options_table[MENU1_TEST].d.option_toggle_data->execute();
+    if (menus[OPTIONS_MENU1].d.options_table[MENU1_INPUT_DISPLAY].d.option_toggle_data->toggled)
+    {
+        menus[OPTIONS_MENU1].d.options_table[MENU1_INPUT_DISPLAY].d.option_toggle_data->execute();
     }
 }
 
 void draw_menu()
 {
     char buffer[32];
-    MenuData* menu = &menus[rs2.menu_index];
+    MenuData *menu = &menus[rs2.menu_index];
     switch (menu->type)
     {
     case MENU_TYPE_TELEPORT:
-        LevelData* levels_table = menus[rs2.menu_index].d.levels_table;
+        LevelData *levels_table = menus[rs2.menu_index].d.levels_table;
         for (uint16_t i = 0; i < menu->num_options; i++)
         {
             LIBC_sprintf(buffer, "%s", levels_table[i].name);
@@ -92,10 +81,10 @@ void draw_menu()
         }
         break;
     case MENU_TYPE_OPTIONS:
-        OptionData* options_table = menus[rs2.menu_index].d.options_table;
+        OptionData *options_table = menus[rs2.menu_index].d.options_table;
         for (uint16_t i = 0; i < menu->num_options; i++)
         {
-            OptionData* option = &options_table[i];
+            OptionData *option = &options_table[i];
             LIBC_sprintf(buffer, "%s", options_table[i].name);
 
             uint32_t x = i <= 14 ? 100 : 300;
@@ -104,15 +93,17 @@ void draw_menu()
             GAME_DrawText(buffer, x, y, i == menu->menu_selection_index ? 1 : 0, 0);
             switch (option->type)
             {
-                case OPTION_TOGGLE: {
-                    GAME_DrawText(option->d.option_toggle_data->toggled ? "ON" : "OFF", x + 80, y, (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
-                }
+            case OPTION_TOGGLE:
+            {
+                GAME_DrawText(option->d.option_toggle_data->toggled ? "ON" : "OFF", x + 160, y, (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
+            }
+            break;
+            case OPTION_NUMBER:
+            {
+                LIBC_sprintf(buffer, "%d", option->d.option_number_data->number);
+                GAME_DrawText(buffer, x + 80, y, 0, 0);
                 break;
-                case OPTION_NUMBER: {
-                    LIBC_sprintf(buffer, "%d", option->d.option_number_data->number );
-                    GAME_DrawText(buffer, x + 80, y, 0, 0);
-                    break;
-                }
+            }
             }
         }
         break;
@@ -121,7 +112,7 @@ void draw_menu()
 
 void begin_warp(uint16_t level_index)
 {
-   // rs2.warp_selected_level = levels_table[rs2.menu_selection_index];
+    // rs2.warp_selected_level = levels_table[rs2.menu_selection_index];
     rs2.warp_selected_level = menus[rs2.menu_index].d.levels_table[level_index];
     GAME_pause_submenu_index = 0;
     GAME_unk_timer = 0x11;
@@ -169,4 +160,29 @@ void DrawLine(short x0, short y0, Color c0, short x1, short y1, Color c1)
 
     GAME_GPUPackets_Insert(ptrPrimitive);
     GAME_GPUPackets_Next = ptrPrimitive + 1;
+}
+
+void DrawRectST(short left, short right, short top, short bottom, Color color) {
+	POLY_F4* ptrPrimitive = (POLY_F4*)GAME_GPUPackets_Next;
+	ptrPrimitive->tag = 0x5000000;
+	ptrPrimitive->code = 0x2a;
+
+	ptrPrimitive->x0 = left;
+	ptrPrimitive->x2 = left;
+	
+	ptrPrimitive->x1 = right;
+	ptrPrimitive->x3 = right;
+
+	ptrPrimitive->y0 = top;
+	ptrPrimitive->y1 = top;
+	
+	ptrPrimitive->y2 = bottom;
+	ptrPrimitive->y3 = bottom;
+
+	ptrPrimitive->r0 = color.r;
+	ptrPrimitive->g0 = color.g;
+	ptrPrimitive->b0 = color.b;
+	
+	GAME_GPUPackets_Insert(ptrPrimitive);
+	GAME_GPUPackets_Next = ptrPrimitive + 1;
 }
