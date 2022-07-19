@@ -13,3 +13,5 @@ GAME_fireball_state = 0x800698BB;
 GAME_fracture_end_faun_state = 0x800B34FD;
 
 GAME_rng = 0x8006d144;
+
+GAME_moby_array_pointer = 0x80066f14;

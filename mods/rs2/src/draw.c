@@ -70,6 +70,24 @@ void draw_hook(unsigned int unk)
             }
         }
     }
+
+   // *(MATRIX*)0x80067e84 
+
+    for (int i = 0; ; i++) {
+        Moby* current_moby = GAME_moby_array_pointer + (i * sizeof(Moby));
+
+        if (current_moby->objectTypeID == 0x0078) {
+            LIBC_printf("SPARX: %d  %d  %d\n", current_moby->position.x, current_moby->position.y, current_moby->position.z);
+            break;
+        }
+
+       /* if (current_moby->data.data_pointer == 0 || current_moby->updateState == -1) {
+            LIBC_printf("MOBYS: %d\n", i);
+            break;
+        }*/
+
+       // LIBC_printf("MOBYA: %d: %x\n", i, current_moby->objectTypeID);
+    }
 }
 
 void draw_menu()

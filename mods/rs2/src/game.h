@@ -2,8 +2,10 @@
 #define COMMON_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "vec3.h"
+#include "moby.h"
 
 #define L2 0 //0x0
 #define R2 1 //0x1
@@ -122,6 +124,7 @@ extern Vec3 GAME_cam_position;
 extern Vec3s GAME_cam_rotation;
 extern InputState GAME_inputStates[5];
 extern int32_t GAME_rng;
+extern void* GAME_moby_array_pointer;
 
 extern int32_t GAME_level_load_id;
 extern int32_t GAME_world_id;

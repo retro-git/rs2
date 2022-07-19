@@ -1,0 +1,76 @@
+#include "game.h"
+
+typedef struct {
+    int16_t positionTimer;
+    int16_t a;
+    int16_t localPosition[3];
+    int16_t maxTime;
+    int16_t lastTime;
+} MobyDataSparx;
+
+typedef struct {
+    union {
+        void* data_pointer;
+        MobyDataSparx* sparx_data;
+    } data;
+    void* a;
+    void* b;
+    Vec3 position;
+    uint32_t c[7];
+    uint16_t d;
+    uint16_t objectTypeID;
+    uint16_t e;
+    uint8_t objectSubTypeID;
+    uint8_t f;
+    uint8_t modelID;
+    uint8_t nextModelID;
+    uint8_t keyframe;
+    uint8_t nextKeyframe;
+    uint8_t i;
+    uint8_t animating;
+    uint16_t j;
+    uint8_t eulerRotation[4];
+    int8_t updateState;
+    uint8_t variantID;
+    uint8_t k[3];
+    uint8_t draw;
+    uint8_t lodDistance;
+    uint8_t l;
+    uint8_t heldGemValue;
+    uint8_t m;
+    uint8_t n;
+    uint8_t o;
+    uint8_t col[4];
+} Moby;
+
+/*typedef struct {
+    union {
+        void* data_pointer;
+        MobyDataSparx* sparx_data;
+    } data;
+    void* unk4;
+    void* unk8;
+    Vec3 position;
+    uint32_t collisionFlagsReceived;
+    char unk28[26];
+    uint16_t type;
+    char unk56[2];
+    uint8_t subType;
+    char unk;
+    uint8_t modelId;
+    uint8_t nextModelId;
+    uint8_t keyframe;
+    uint8_t nextKeyframe;
+    char unk64;
+    uint8_t animating;
+    char unk66[6];
+    uint8_t state;
+    uint8_t gemValueId;
+    char unk74[3];
+    uint8_t isShown;
+    uint8_t lodDistanceLimit;
+    char unk79;
+    uint8_t heldGemValue;
+    char unk81[3];
+    uint8_t color[4];
+} Moby;*/
