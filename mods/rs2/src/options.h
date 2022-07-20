@@ -5,6 +5,7 @@ void option_reset_checkpoint_execute();
 void option_reset_gems_execute();
 void option_reset_orbs_execute();
 
+void option_infinite_lives_execute();
 void option_powerups_alwayson_execute();
 void option_instant_fish_execute();
 void option_satyrless_tools_execute();

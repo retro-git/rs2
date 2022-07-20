@@ -12,12 +12,6 @@
 
 #define OPTION_TOGGLE_ENABLED(menu, option) (menus[menu].d.options_table[option].d.option_toggle_data->toggled)
 
-/*void option_infinite_lives_execute() {
-    if (OPTION_TOGGLE_ENABLED(OPTIONS_MENU1, MENU1_INFINITE_LIVES)) {
-        GAME_num_lives = 99;
-    }
-}*/
-
 void oneshot_toggle_message(char toggled, uint32_t option_index)
 {
     add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
@@ -71,6 +65,15 @@ void option_reset_orbs_execute()
 void option_reset_eol_portals_execute() {
     LIBC_bzero(&GAME_end_level_portals_status, 0x1c);
     GAME_num_talismans = 0;
+}
+
+void option_infinite_lives_execute() {
+    if (*(int16_t*)0x80032fe4 == -1) {
+        *(int16_t*)0x80032fe4 = 0;
+    } else {
+        *(int16_t*)0x80032fe4 = -1;
+    }
+    oneshot_toggle_message(*(int16_t*)0x80032fe4 == 0, MENU1_LOCK_LIVES);
 }
 
 void option_satyrless_tools_execute()

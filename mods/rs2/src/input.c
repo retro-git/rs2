@@ -84,10 +84,24 @@ void read_input_hook()
     {
         rs2.frame_advance = !rs2.frame_advance;
     }
-    else if (rs2.button_holdtimes[SELECT] == 1)
+    else if (rs2.button_holdtimes[SELECT] == 1 && rs2.frame_advance)
     {
         rs2.frame_advance = !rs2.frame_advance;
         GAME_inputStates[0].pressed.b.select = 0;
+    }
+    else if (currentInput.b.select) {
+        if (currentInput.b.circle && GAME_world_id != DRAGON_SHORES) { //swim
+            GAME_spyro.state = 0x29;
+        }
+        else if (currentInput.b.cross) { //moon jump
+            *(int16_t*)0x8006A08D = menus[OPTIONS_MENU1].d.options_table[MENU1_MOONJUMP_SPEED].d.option_number_data->number;
+        }
+        else if (currentInput.b.triangle) { //normal
+            GAME_spyro.state = 0;
+        }
+        /*else if (currentInput.b.square) { //supercharge
+            GAME_spyro.state = 0x3d;
+        }*/
     }
 
     if (rs2.menu_enabled)
@@ -127,6 +141,7 @@ void read_input_hook()
                     break;
                 case OPTION_ONESHOT:
                     menu->d.options_table[menu->menu_selection_index].d.option_oneshot_data->execute();
+                    break;
                 }
                 break;
             }
@@ -140,7 +155,11 @@ void read_input_hook()
                 switch (option->type)
                 {
                 case OPTION_NUMBER:
-                    option->d.option_number_data->number = currentInput.b.dright ? option->d.option_number_data->number + 1 : option->d.option_number_data->number - 1;
+                    OptionNumberData* data = option->d.option_number_data;
+                    int16_t diff = currentInput.b.dright ? 1 : -1;
+                    if (data->number + diff < data->min) data->number = data->max;
+                    else if (data->number + diff > data->max) data->number = data->min;
+                    else data->number += diff;
                     break;
                 }
             }
