@@ -37,9 +37,10 @@ OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
     { "Input Display", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_input_display_execute } },
     { "Satyrless Tools", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_satyrless_tools_execute } },
     { "Instant Fish", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_instant_fish_execute } },
-    { "Toggle Fireball", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_toggle_fireball_execute } },
+    { "Powerups Enabled", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_powerups_alwayson_execute }},
+    { "Toggle Zombie", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_toggle_zombie_execute }},
     { "Toggle Sparx ER", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_toggle_sparx_extended_range_execute }},
-    { "Powerups Enabled", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_powerups_alwayson_execute }}
+    { "Toggle Fireball", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_toggle_fireball_execute } },
 };
 
 OptionData menu2_respawn_options_table[NUM_OPTIONS_MENU2_RESPAWN] = {

@@ -48,6 +48,16 @@ void option_powerups_alwayson_execute() {
     GAME_enemies_killed_since_death = 0x30;
 }
 
+void option_toggle_zombie_execute() {
+    if (GAME_sparx_health >= 0) {
+        GAME_sparx_health = -1;
+    } else {
+        GAME_sparx_health = 3;
+    }
+    oneshot_toggle_message(GAME_sparx_health == -1, MENU1_ZOMBIE);
+   // GAME_sparx_health >= 0 ? GAME_sparx_health = -1 : GAME_sparx_health = 3;
+}
+
 void option_reset_gems_execute()
 {
     LIBC_bzero(&GAME_gems_collected_status, 0x356);

@@ -12,5 +12,6 @@ void option_input_display_execute();
 void option_test_execute();
 void option_toggle_fireball_execute();
 void option_toggle_sparx_extended_range_execute();
+void option_toggle_zombie_execute();
 
 #endif

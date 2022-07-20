@@ -6,7 +6,7 @@
 
 #define NUM_MENUS 3
 #define NUM_LEVELS 29
-#define NUM_OPTIONS_MENU1 6
+#define NUM_OPTIONS_MENU1 7
 #define NUM_OPTIONS_MENU2_RESPAWN 2
 
 typedef void (*option_execute_func)(void);
@@ -21,9 +21,10 @@ typedef enum {
     MENU1_INPUT_DISPLAY = 0,
     MENU1_SATYRLESS = 1,
     MENU1_INSTANT_FISH = 2,
-    MENU1_FIREBALL = 3,
-    MENU1_SPARX_ER = 4,
-    MENU1_POWERUPS_ALWAYSON = 5,
+    MENU1_POWERUPS_ALWAYSON = 3,
+    MENU1_ZOMBIE = 4,
+    MENU1_SPARX_ER = 5,
+    MENU1_FIREBALL = 6,
 } MENU1_OPTIONS;
 
 typedef enum {

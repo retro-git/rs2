@@ -142,5 +142,6 @@ extern uint8_t GAME_idol_fish_status;
 extern uint8_t GAME_sparx_extended_range_state;
 extern uint8_t GAME_enemies_killed_since_death;
 extern uint32_t GAME_ripto_zoe_state;
+extern int32_t GAME_sparx_health;
 
 #endif
