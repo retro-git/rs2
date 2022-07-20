@@ -12,6 +12,9 @@
 void read_input_hook()
 {
     GAME_ReadInput();
+
+    if (GAME_gameState != PLAYING) return;
+
     controller_u_t currentInput = GAME_inputStates[0].current;
 
     for (uint16_t i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(int32_t); i++)
@@ -30,7 +33,7 @@ void read_input_hook()
     {
         if (rs2.button_holdtimes[START] == 1)
         {
-            for (uint16_t i = 0; i < NUM_OPTIONS_MENU2_RESPAWN; i++)
+           /* for (uint16_t i = 0; i < NUM_OPTIONS_MENU2_RESPAWN; i++)
             {
                 if (menus[OPTIONS_MENU2_RESPAWN].d.options_table[i].type == OPTION_TOGGLE)
                 {
@@ -40,7 +43,7 @@ void read_input_hook()
                         data->execute();
                     }
                 }
-            }
+            }*/
             GAME_pause_submenu_index = 0;
             GAME_unk_timer = 0;
             GAME_gameState = TRANSITION_LOAD_TO_PLAYING;

@@ -60,13 +60,18 @@ void draw_hook(unsigned int unk)
     if (rs2.menu_enabled)
         draw_menu();
 
-    for (uint16_t i = 0; i < NUM_OPTIONS_MENU1; i++) {
-        if (menus[OPTIONS_MENU1].d.options_table[i].type == OPTION_TOGGLE)
+    for (uint16_t i = 0; i < NUM_MENUS; i++)
+    {
+        if (menus[i].type != MENU_TYPE_OPTIONS) continue;
+        for (uint16_t j = 0; j < menus[i].num_options; j++)
         {
-            OptionToggleData *data = menus[OPTIONS_MENU1].d.options_table[i].d.option_toggle_data;
-            if (data->toggled)
+            if (menus[i].d.options_table[j].type == OPTION_TOGGLE)
             {
-                data->execute();
+                OptionToggleData *data = menus[i].d.options_table[j].d.option_toggle_data;
+                if (data->toggled)
+                {
+                    data->execute();
+                }
             }
         }
     }
@@ -106,18 +111,18 @@ void draw_menu()
             GAME_DrawText(buffer, MENU_X_COORD, MENU_Y_COORD(i), i == menu->menu_selection_index ? TEXTCOL_LIGHT_YELLOW : TEXTCOL_DARK_YELLOW, 0);
             switch (option->type)
             {
-                case OPTION_TOGGLE:
-                {
-                    char* text = option->d.option_toggle_data->toggled ? "ON" : "OFF";
-                    GAME_DrawText(text, MENU_X_COORD_VALUE, MENU_Y_COORD(i), (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
-                }
+            case OPTION_TOGGLE:
+            {
+                char *text = option->d.option_toggle_data->toggled ? "ON" : "OFF";
+                GAME_DrawText(text, MENU_X_COORD_VALUE, MENU_Y_COORD(i), (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
+            }
+            break;
+            case OPTION_NUMBER:
+            {
+                LIBC_sprintf(buffer, "%d", option->d.option_number_data->number);
+                GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
                 break;
-                case OPTION_NUMBER:
-                {
-                    LIBC_sprintf(buffer, "%d", option->d.option_number_data->number);
-                    GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
-                    break;
-                }
+            }
             }
         }
         break;
@@ -176,27 +181,28 @@ void DrawLine(short x0, short y0, Color c0, short x1, short y1, Color c1)
     GAME_GPUPackets_Next = ptrPrimitive + 1;
 }
 
-void DrawRectST(short left, short right, short top, short bottom, Color color) {
-	POLY_F4* ptrPrimitive = (POLY_F4*)GAME_GPUPackets_Next;
-	ptrPrimitive->tag = 0x5000000;
-	ptrPrimitive->code = 0x2a;
+void DrawRectST(short left, short right, short top, short bottom, Color color)
+{
+    POLY_F4 *ptrPrimitive = (POLY_F4 *)GAME_GPUPackets_Next;
+    ptrPrimitive->tag = 0x5000000;
+    ptrPrimitive->code = 0x2a;
 
-	ptrPrimitive->x0 = left;
-	ptrPrimitive->x2 = left;
-	
-	ptrPrimitive->x1 = right;
-	ptrPrimitive->x3 = right;
+    ptrPrimitive->x0 = left;
+    ptrPrimitive->x2 = left;
 
-	ptrPrimitive->y0 = top;
-	ptrPrimitive->y1 = top;
-	
-	ptrPrimitive->y2 = bottom;
-	ptrPrimitive->y3 = bottom;
+    ptrPrimitive->x1 = right;
+    ptrPrimitive->x3 = right;
 
-	ptrPrimitive->r0 = color.r;
-	ptrPrimitive->g0 = color.g;
-	ptrPrimitive->b0 = color.b;
-	
-	GAME_GPUPackets_Insert(ptrPrimitive);
-	GAME_GPUPackets_Next = ptrPrimitive + 1;
+    ptrPrimitive->y0 = top;
+    ptrPrimitive->y1 = top;
+
+    ptrPrimitive->y2 = bottom;
+    ptrPrimitive->y3 = bottom;
+
+    ptrPrimitive->r0 = color.r;
+    ptrPrimitive->g0 = color.g;
+    ptrPrimitive->b0 = color.b;
+
+    GAME_GPUPackets_Insert(ptrPrimitive);
+    GAME_GPUPackets_Next = ptrPrimitive + 1;
 }

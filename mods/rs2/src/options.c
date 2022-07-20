@@ -39,10 +39,10 @@ void option_instant_fish_execute()
     }
 }
 
-// void option_reset_checkpoint_execute()
-// {
-//     GAME_zoe_checkpoint_active = 0;
-// }
+void option_reset_checkpoint_execute()
+{
+    GAME_zoe_checkpoint_active = 0;
+}
 
 void option_powerups_alwayson_execute() {
     GAME_enemies_killed_since_death = 0x30;
@@ -66,6 +66,11 @@ void option_reset_gems_execute()
 void option_reset_orbs_execute()
 {
     LIBC_bzero(&GAME_orbs_collected_status, 0x1a);
+}
+
+void option_reset_eol_portals_execute() {
+    LIBC_bzero(&GAME_end_level_portals_status, 0x1c);
+    GAME_num_talismans = 0;
 }
 
 void option_satyrless_tools_execute()

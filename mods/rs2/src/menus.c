@@ -44,9 +44,10 @@ OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
 };
 
 OptionData menu2_respawn_options_table[NUM_OPTIONS_MENU2_RESPAWN] = {
-    //{ "Reset Checkpoint", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_checkpoint_execute } },
+    { "Reset Checkpoint", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_checkpoint_execute } },
     { "Reset Gems", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_gems_execute } },
     { "Reset Orbs", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_orbs_execute } },
+    { "Reset Talismans", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_eol_portals_execute } },
 };
 
 MenuData menus[NUM_MENUS] = {

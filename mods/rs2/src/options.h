@@ -1,7 +1,7 @@
 #ifndef OPTIONS_H
 #define OPTION_H
 
-//void option_reset_checkpoint_execute();
+void option_reset_checkpoint_execute();
 void option_reset_gems_execute();
 void option_reset_orbs_execute();
 
@@ -13,5 +13,6 @@ void option_test_execute();
 void option_toggle_fireball_execute();
 void option_toggle_sparx_extended_range_execute();
 void option_toggle_zombie_execute();
+void option_reset_eol_portals_execute();
 
 #endif
