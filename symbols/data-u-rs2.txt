@@ -26,3 +26,6 @@ GAME_orbs_collected_status = 0x80069FD0;
 GAME_idol_fish_status = 0x801984B4;
 GAME_enemies_killed_since_death = 0x80066EFC;
 GAME_ripto_zoe_state = 0x80064794;
+GAME_sparx_health = 0x8006A248;
+GAME_end_level_portals_status = 0x8006B264;
+GAME_num_talismans = 0x80067108;
