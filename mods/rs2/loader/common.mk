@@ -6,6 +6,9 @@ THISDIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 SRCS += $(THISDIR)thirdparty/nugget/common/crt0/crt0.s
 SRCS += $(THISDIR)thirdparty/nugget/common/syscalls/printf.s 
 
+$(info $$VERSION isasd ${VERSION})
+
+CPPFLAGS += -DVERSION=$(VERSION)
 CPPFLAGS += -I$(THISDIR)thirdparty/nugget/psyq/include -I$(THISDIR)psyq-4_7-converted/include -I$(THISDIR)psyq-4.7-converted-full/include -I$(THISDIR)psyq/include 
 LDFLAGS += -L$(THISDIR)thirdparty/nugget/psyq/lib -L$(THISDIR)psyq-4_7-converted/lib -L$(THISDIR)psyq-4.7-converted-full/lib -L$(THISDIR)psyq/lib
 # add support for NDR008's VScode setup

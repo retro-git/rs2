@@ -61,7 +61,12 @@ void display(void)
 
 void inject(char* file_name, u_char* dst) {
     CdlFILE filePos;
-    CdSearchFile(&filePos, file_name);
+    if (CdSearchFile(&filePos, file_name) == 0) {
+        printf("File %s not found\n", file_name);
+    }
+    else {
+        printf("File %s found\n", file_name);
+    }
     CdControlB(CdlSetloc, (u_char *)&filePos.pos, 0);
     CdRead(BtoS(filePos.size), dst, CdlModeSpeed);
     CdReadSync(0, 0);
@@ -71,14 +76,28 @@ int main(void)
 {
     init();                         // init display
 
+    printf("LOADING %d\n", VERSION);
+
+    u_char* kernel_free_space_1;
+    u_char* kernel_free_space_2;
+
+    if (VERSION == 2) {
+        kernel_free_space_1 = (u_char*)0x8000A000;
+        kernel_free_space_2 = (u_char*)0x8000c400;
+    }
+    else if (VERSION == 3) {
+        kernel_free_space_1 = (u_char*)0x800096A8;
+        kernel_free_space_2 = (u_char*)0x80007526;
+    }
+
     CdInit();
-    inject("\\DRAW.BIN;1", (u_char *)0x8000a000);
-    //inject("\\INPUT.BIN;1");
+    inject("\\DRAW.BIN;1", kernel_free_space_1);
+    inject("\\INPUT.BIN;1", kernel_free_space_2);
 
     while (1)                       // infinite loop
     {   
         i += 1;
-        printf("%d\n", i);
+       // printf("%d\n", i);
         FntPrint("rs2-0.0.1-alpha RETRO PRODUCTIONS");  // Send string to print stream
         FntFlush(-1);               // Draw printe stream
         display();                  // Execute display()

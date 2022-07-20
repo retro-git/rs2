@@ -85,6 +85,7 @@ void draw_menu()
 {
     char buffer[32];
     MenuData *menu = &menus[rs2.menu_index];
+
     switch (menu->type)
     {
     case MENU_TYPE_TELEPORT:
