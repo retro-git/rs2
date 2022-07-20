@@ -12,7 +12,6 @@ typedef struct
     Vec3 rotation;
     Vec3 cam_position;
     Vec3s cam_rotation;
-    int8_t fracture_end_faun_state;
 } savestate_t;
 
 struct rs2 {

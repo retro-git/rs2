@@ -138,5 +138,9 @@ extern uint16_t GAME_pause_submenu_index;
 extern uint16_t GAME_unk_timer;
 extern uint8_t GAME_fireball_state;
 extern uint8_t GAME_fracture_end_faun_state;
+extern uint8_t GAME_idol_fish_status;
+extern uint8_t GAME_sparx_extended_range_state;
+extern uint8_t GAME_enemies_killed_since_death;
+extern uint32_t GAME_ripto_zoe_state;
 
 #endif

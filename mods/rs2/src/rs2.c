@@ -41,6 +41,8 @@ void main_hook()
 {
     GAME_RenderGame();
 
+    GAME_ripto_zoe_state = 0;
+
     if (rs2.is_warping)
     {
         handle_warp();

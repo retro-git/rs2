@@ -3,7 +3,7 @@
 
 #define MENU_Y_COORD(index) (40 + 10 * (index % 15))
 #define MENU_X_COORD (FRAME_WIDTH / 3)
-#define MENU_X_COORD_VALUE (FRAME_WIDTH / 3 + 150)
+#define MENU_X_COORD_VALUE (FRAME_WIDTH / 3 + 160)
 
 typedef enum {
     FREE_SLOT = 0,

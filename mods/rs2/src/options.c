@@ -18,15 +18,43 @@
     }
 }*/
 
-void option_reset_checkpoint_execute() {
-    GAME_zoe_checkpoint_active = 0;
+void oneshot_toggle_message(char toggled, uint32_t option_index)
+{
+    add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+                                            .text = "DONE",
+                                            .x = MENU_X_COORD_VALUE,
+                                            .y = MENU_Y_COORD(option_index),
+                                            .col = toggled ? TEXTCOL_GREEN : TEXTCOL_RED,
+                                            .cur_time = 0,
+                                            .start_time = 0,
+                                            .end_time = 15,
+                                        });
 }
 
-void option_reset_gems_execute() {
+void option_instant_fish_execute()
+{
+    if (GAME_world_id == IDOL_SPRINGS)
+    {
+        GAME_idol_fish_status = 0xa;
+    }
+}
+
+// void option_reset_checkpoint_execute()
+// {
+//     GAME_zoe_checkpoint_active = 0;
+// }
+
+void option_powerups_alwayson_execute() {
+    GAME_enemies_killed_since_death = 0x30;
+}
+
+void option_reset_gems_execute()
+{
     LIBC_bzero(&GAME_gems_collected_status, 0x356);
 }
 
-void option_reset_orbs_execute() {
+void option_reset_orbs_execute()
+{
     LIBC_bzero(&GAME_orbs_collected_status, 0x1a);
 }
 
@@ -34,7 +62,11 @@ void option_satyrless_tools_execute()
 {
     if (GAME_world_id == FRACTURE_HILLS)
     {
-        char* text = GAME_fracture_end_faun_state == 1 ? "Unloaded" : "Loaded";
+        if (GAME_inputStates[0].current.b.l2 && GAME_inputStates[0].current.b.r2 && rs2.button_holdtimes[CROSS] == 1)
+        {
+            GAME_fracture_end_faun_state = 1;
+        }
+        char *text = GAME_fracture_end_faun_state == 1 ? "Unloaded" : "Loaded";
         GAME_DrawText(text, SCREEN_LEFT + 1, SCREEN_TOP + 1, GAME_fracture_end_faun_state == 1 ? TEXTCOL_GREEN : TEXTCOL_RED, 0);
     }
 }
@@ -42,15 +74,13 @@ void option_satyrless_tools_execute()
 void option_toggle_fireball_execute()
 {
     GAME_fireball_state = !GAME_fireball_state;
-    add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                            .text = "DONE",
-                                            .x = MENU_X_COORD_VALUE,
-                                            .y = MENU_Y_COORD(MENU1_FIREBALL),
-                                            .col = GAME_fireball_state ? TEXTCOL_GREEN : TEXTCOL_RED,
-                                            .cur_time = 0,
-                                            .start_time = 0,
-                                            .end_time = 15,
-                                        });
+    oneshot_toggle_message(GAME_fireball_state, MENU1_FIREBALL);
+}
+
+void option_toggle_sparx_extended_range_execute()
+{
+    GAME_sparx_extended_range_state = !GAME_sparx_extended_range_state;
+    oneshot_toggle_message(GAME_sparx_extended_range_state, MENU1_SPARX_ER);
 }
 
 void option_input_display_execute()
@@ -108,5 +138,4 @@ void option_input_display_execute()
     DrawLine(
         10, FRAME_HEIGHT - 23 + 16, colorUnpressed,
         10 + (currentInput->leftStickAnalogX - 0x7f) * 9 / 0x80, FRAME_HEIGHT - 23 + 16 + (currentInput->leftStickAnalogY - 0x7f) * 6 / 0x80, colorPressed);
-
 }

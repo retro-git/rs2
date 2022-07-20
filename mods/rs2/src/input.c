@@ -41,8 +41,10 @@ void read_input_hook()
                     }
                 }
             }
-            GAME_num_lives++;
-            GAME_OnDeath();
+            GAME_pause_submenu_index = 0;
+            GAME_unk_timer = 0;
+            GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
+            *(int16_t*)0x800698f0 = 0;
         }
         else if (rs2.button_holdtimes[TRIANGLE] == 1)
         {
@@ -50,7 +52,6 @@ void read_input_hook()
             rs2.savestate.rotation = GAME_spyro.eulerRotations;
             rs2.savestate.cam_rotation = GAME_cam_rotation;
             rs2.savestate.cam_position = GAME_cam_position;
-            rs2.savestate.fracture_end_faun_state = GAME_fracture_end_faun_state;
 
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
                                                     .text = "Saved",
@@ -68,7 +69,6 @@ void read_input_hook()
             GAME_spyro.eulerRotations = rs2.savestate.rotation;
             GAME_cam_rotation = rs2.savestate.cam_rotation;
             GAME_cam_position = rs2.savestate.cam_position;
-            GAME_fracture_end_faun_state = rs2.savestate.fracture_end_faun_state;
         }
     }
 
