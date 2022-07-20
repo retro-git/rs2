@@ -13,6 +13,5 @@ void startup(int i) {
 
 void place_hooks()
 {
-    LIBC_printf("placing hooks\n");
     patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
 }

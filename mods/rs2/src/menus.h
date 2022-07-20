@@ -4,14 +4,17 @@
 #include "game.h"
 #include "options.h"
 
+#define NUM_MENUS 3
 #define NUM_LEVELS 29
 #define NUM_OPTIONS_MENU1 3
+#define NUM_OPTIONS_MENU2_RESPAWN 3
 
 typedef void (*option_execute_func)(void);
 
 typedef enum {
     TELEPORT_MENU = 0,
     OPTIONS_MENU1 = 1,
+    OPTIONS_MENU2_RESPAWN,
 } MENUS;
 
 typedef enum {
@@ -19,6 +22,12 @@ typedef enum {
     MENU1_SATYRLESS = 1,
     MENU1_FIREBALL = 2,
 } MENU1_OPTIONS;
+
+typedef enum {
+    MENU2_RESPAWN_RESET_CHECKPOINT = 0,
+    MENU2_RESPAWN_RESET_GEMS = 1,
+    MENU2_RESPAWN_RESET_ORBS = 2,
+} MENU2_RESPAWN_OPTIONS;
 
 typedef struct {
     char* name;
@@ -70,6 +79,6 @@ typedef struct {
     } d;
 } MenuData;
 
-extern MenuData menus[2];
+extern MenuData menus[NUM_MENUS];
 
 #endif

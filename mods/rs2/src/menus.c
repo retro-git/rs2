@@ -33,13 +33,19 @@ LevelData levels_table[NUM_LEVELS]  = {
     { "Ripto", 0x42, BOSS },
 };
 
-OptionData options_table[NUM_OPTIONS_MENU1] = {
+OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
     { "Input Display", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_input_display_execute } },
     { "Satyrless Tools", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_satyrless_tools_execute } },
     { "Toggle Fireball", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_toggle_fireball_execute } },
 };
 
-MenuData menus[2] = {
+OptionData menu2_respawn_options_table[NUM_OPTIONS_MENU2_RESPAWN] = {
+    { "Reset Checkpoint", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_checkpoint_execute } },
+    { "Reset Gems", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_gems_execute } },
+    { "Reset Orbs", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_orbs_execute } },
+};
+
+MenuData menus[NUM_MENUS] = {
     {
         MENU_TYPE_TELEPORT, 
         sizeof(levels_table) / sizeof(LevelData),
@@ -48,8 +54,14 @@ MenuData menus[2] = {
     },
     {
         MENU_TYPE_OPTIONS,
-        sizeof(options_table) / sizeof(OptionData),
+        NUM_OPTIONS_MENU1,
         0,
-        &options_table,
+        &menu1_options_table,
     },
+    {
+        MENU_TYPE_OPTIONS,
+        NUM_OPTIONS_MENU2_RESPAWN,
+        0,
+        &menu2_respawn_options_table,
+    }
 };

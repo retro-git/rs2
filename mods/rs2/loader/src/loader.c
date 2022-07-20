@@ -59,11 +59,11 @@ void display(void)
     db = !db;                       // flip db value (0 or 1)
 }
 
-void inject() {
+void inject(char* file_name, u_char* dst) {
     CdlFILE filePos;
-    CdSearchFile(&filePos, "\\DRAW.BIN;1");
+    CdSearchFile(&filePos, file_name);
     CdControlB(CdlSetloc, (u_char *)&filePos.pos, 0);
-    CdRead(BtoS(filePos.size), (u_char *)0x8000a000, CdlModeSpeed);
+    CdRead(BtoS(filePos.size), dst, CdlModeSpeed);
     CdReadSync(0, 0);
 }
 
@@ -72,7 +72,8 @@ int main(void)
     init();                         // init display
 
     CdInit();
-    inject();
+    inject("\\DRAW.BIN;1", (u_char *)0x8000a000);
+    //inject("\\INPUT.BIN;1");
 
     while (1)                       // infinite loop
     {   

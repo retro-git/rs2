@@ -9,7 +9,7 @@
 
 struct rs2 rs2 = {0};
 
-int __attribute__((optimize("O0"))) rand_hook()
+/*int __attribute__((optimize("O0"))) rand_hook()
 {
     return rand_hook_trampoline();
 }
@@ -25,7 +25,7 @@ int rand_hook_trampoline()
                  :
                  : "g"(jump_loc));
     asm volatile("nop");
-}
+}*/
 
 void UpdateGame_Normal_hook() {
     if (!rs2.menu_enabled && !rs2.frame_advance) {

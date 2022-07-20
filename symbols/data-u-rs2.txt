@@ -15,3 +15,10 @@ GAME_fracture_end_faun_state = 0x800B34FD;
 GAME_rng = 0x8006d144;
 
 GAME_moby_array_pointer = 0x80066f14;
+
+GAME_num_lives = 0x8006712C;
+
+GAME_zoe_checkpoint_active = 0x80067414;
+
+GAME_gems_collected_status = 0x8006AC84;
+GAME_orbs_collected_status = 0x80069FD0;

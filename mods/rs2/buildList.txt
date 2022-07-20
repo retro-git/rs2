@@ -1,6 +1,5 @@
 common, exe, 0x80011afc, 0x0, src/hook_main.s
 american-emu, exe, 0x80015808, 0x0, src/hook_draw.s
-common, exe, 0x80059d2c, 0x0, src/hook_rand.s
 common, exe, 0x80011f0c, 0x0, src/hook_startup.s
 common, exe, 0x8001b150, 0x0, src/hook_read_input.s
 common, exe, 0x8001b190, 0x0, src/hook_updategame_normal.s

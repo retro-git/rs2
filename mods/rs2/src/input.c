@@ -28,7 +28,23 @@ void read_input_hook()
 
     if (currentInput.b.l2 && currentInput.b.r2)
     {
-        if (rs2.button_holdtimes[TRIANGLE] == 1)
+        if (rs2.button_holdtimes[START] == 1)
+        {
+            for (uint16_t i = 0; i < NUM_OPTIONS_MENU2_RESPAWN; i++)
+            {
+                if (menus[OPTIONS_MENU2_RESPAWN].d.options_table[i].type == OPTION_TOGGLE)
+                {
+                    OptionToggleData *data = menus[OPTIONS_MENU2_RESPAWN].d.options_table[i].d.option_toggle_data;
+                    if (data->toggled)
+                    {
+                        data->execute();
+                    }
+                }
+            }
+            GAME_num_lives++;
+            GAME_OnDeath();
+        }
+        else if (rs2.button_holdtimes[TRIANGLE] == 1)
         {
             rs2.savestate.position = GAME_spyro.position;
             rs2.savestate.rotation = GAME_spyro.eulerRotations;
@@ -76,11 +92,11 @@ void read_input_hook()
         MenuData *menu = &menus[rs2.menu_index];
         if (rs2.button_holdtimes[R2] == 1)
         {
-            rs2.menu_index = (rs2.menu_index + 1) % (sizeof(menus) / sizeof(MenuData));
+            rs2.menu_index = (rs2.menu_index + 1) % (NUM_MENUS);
         }
         else if (rs2.button_holdtimes[L2] == 1)
         {
-            rs2.menu_index = (rs2.menu_index + (sizeof(menus) / sizeof(MenuData) - 1)) % (sizeof(menus) / sizeof(MenuData));
+            rs2.menu_index = (rs2.menu_index + (NUM_MENUS - 1)) % (NUM_MENUS);
         }
         else if (rs2.button_holdtimes[DUP] && rs2.button_holdtimes[DUP] % 2 == 0)
         {
@@ -101,13 +117,13 @@ void read_input_hook()
                 break;
 
             case MENU_TYPE_OPTIONS:
-                switch(menu->d.options_table[menu->menu_selection_index].type)
+                switch (menu->d.options_table[menu->menu_selection_index].type)
                 {
-                    case OPTION_TOGGLE:
-                        menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled = !menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled;
+                case OPTION_TOGGLE:
+                    menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled = !menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled;
                     break;
-                    case OPTION_ONESHOT:
-                        menu->d.options_table[menu->menu_selection_index].d.option_oneshot_data->execute();
+                case OPTION_ONESHOT:
+                    menu->d.options_table[menu->menu_selection_index].d.option_oneshot_data->execute();
                 }
                 break;
             }
@@ -117,11 +133,11 @@ void read_input_hook()
         {
             if (menu->type == MENU_TYPE_OPTIONS)
             {
-                OptionData* option = &menu->d.options_table[menu->menu_selection_index];
-                switch(option->type)
+                OptionData *option = &menu->d.options_table[menu->menu_selection_index];
+                switch (option->type)
                 {
-                    case OPTION_NUMBER:
-                        option->d.option_number_data->number = currentInput.b.dright ? option->d.option_number_data->number + 1 : option->d.option_number_data->number  - 1;
+                case OPTION_NUMBER:
+                    option->d.option_number_data->number = currentInput.b.dright ? option->d.option_number_data->number + 1 : option->d.option_number_data->number - 1;
                     break;
                 }
             }

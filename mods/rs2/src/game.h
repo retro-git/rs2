@@ -114,6 +114,7 @@ int GAME_GetTextWidth(char* text);
 void GAME_ReadInput(void);
 void GAME_RenderGame(void);
 void GAME_UpdateGame_Normal(void);
+void GAME_OnDeath(void);
 void GAME_FUN_80013a14(unsigned int unk);
 void GAME_FUN_80077374(int unk);
 
@@ -125,6 +126,10 @@ extern Vec3s GAME_cam_rotation;
 extern InputState GAME_inputStates[5];
 extern int32_t GAME_rng;
 extern void* GAME_moby_array_pointer;
+extern uint8_t GAME_num_lives;
+extern uint8_t GAME_zoe_checkpoint_active;
+extern void* GAME_gems_collected_status;
+extern void* GAME_orbs_collected_status;
 
 extern int32_t GAME_level_load_id;
 extern int32_t GAME_world_id;

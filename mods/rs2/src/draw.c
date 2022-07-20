@@ -71,23 +71,14 @@ void draw_hook(unsigned int unk)
         }
     }
 
-   // *(MATRIX*)0x80067e84 
-
-    for (int i = 0; ; i++) {
+    /*for (int i = 0; ; i++) {
         Moby* current_moby = GAME_moby_array_pointer + (i * sizeof(Moby));
 
         if (current_moby->objectTypeID == 0x0078) {
             LIBC_printf("SPARX: %d  %d  %d\n", current_moby->position.x, current_moby->position.y, current_moby->position.z);
             break;
         }
-
-       /* if (current_moby->data.data_pointer == 0 || current_moby->updateState == -1) {
-            LIBC_printf("MOBYS: %d\n", i);
-            break;
-        }*/
-
-       // LIBC_printf("MOBYA: %d: %x\n", i, current_moby->objectTypeID);
-    }
+    }*/
 }
 
 void draw_menu()
@@ -114,18 +105,18 @@ void draw_menu()
             GAME_DrawText(buffer, MENU_X_COORD, MENU_Y_COORD(i), i == menu->menu_selection_index ? TEXTCOL_LIGHT_YELLOW : TEXTCOL_DARK_YELLOW, 0);
             switch (option->type)
             {
-            case OPTION_TOGGLE:
-            {
-                char* text = option->d.option_toggle_data->toggled ? "ON" : "OFF";
-                GAME_DrawText(text, MENU_X_COORD_VALUE, MENU_Y_COORD(i), (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
-            }
-            break;
-            case OPTION_NUMBER:
-            {
-                LIBC_sprintf(buffer, "%d", option->d.option_number_data->number);
-                GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
+                case OPTION_TOGGLE:
+                {
+                    char* text = option->d.option_toggle_data->toggled ? "ON" : "OFF";
+                    GAME_DrawText(text, MENU_X_COORD_VALUE, MENU_Y_COORD(i), (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
+                }
                 break;
-            }
+                case OPTION_NUMBER:
+                {
+                    LIBC_sprintf(buffer, "%d", option->d.option_number_data->number);
+                    GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
+                    break;
+                }
             }
         }
         break;
