@@ -23,16 +23,20 @@ void init()
 
 void passive_effects()
 {
+    if (GAME_gameState != PLAYING)
+        return;
     // moneybags costs 0 gems
     for (int i = 0; i < sizeof(GAME_moneybags_paywalls) / sizeof(MoneybagsPaywall); i++)
     {
         GAME_moneybags_paywalls[i].cost = 0;
     }
-    // set flags for each enter level cutscene being watched
+    // set flags for enter level cutscene being watched
     for (int i = 0; i < 0x1d; i++)
     {
         *(uint8_t *)(0x8006b084 + i) = 1;
     }
+    //remove exit level cutscenes
+    *(uint8_t*)0x80066ff4 = 0;
 }
 
 void read_input_hook()
