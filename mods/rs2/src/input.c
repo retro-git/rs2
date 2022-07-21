@@ -9,11 +9,42 @@
 #include "vec3.h"
 #include "gpu.h"
 
+void init()
+{
+    // skip intro and load into glimmer
+    if (GAME_gameState == 0xb)
+    {
+        *(uint8_t *)(0x80066f90) = 0xb;
+        *(uint8_t *)(0x800698f4) = 3;
+        *(uint8_t *)(0x80067e0c) = 5;
+        rs2.initialised = true;
+    }
+}
+
+void passive_effects()
+{
+    // moneybags costs 0 gems
+    for (int i = 0; i < sizeof(GAME_moneybags_paywalls) / sizeof(MoneybagsPaywall); i++)
+    {
+        GAME_moneybags_paywalls[i].cost = 0;
+    }
+    // set flags for each enter level cutscene being watched
+    for (int i = 0; i < 0x1c; i++)
+    {
+        *(uint8_t *)(0x8006b084 + i) = 1;
+    }
+}
+
 void read_input_hook()
 {
     GAME_ReadInput();
 
-    if (GAME_gameState != PLAYING) return;
+    if (!rs2.initialised) init();
+
+    passive_effects();
+
+    if (GAME_gameState != PLAYING)
+        return;
 
     controller_u_t currentInput = GAME_inputStates[0].current;
 
@@ -33,34 +64,34 @@ void read_input_hook()
     {
         if (rs2.button_holdtimes[START] == 1)
         {
-           /* for (uint16_t i = 0; i < NUM_OPTIONS_MENU2_RESPAWN; i++)
-            {
-                if (menus[OPTIONS_MENU2_RESPAWN].d.options_table[i].type == OPTION_TOGGLE)
-                {
-                    OptionToggleData *data = menus[OPTIONS_MENU2_RESPAWN].d.options_table[i].d.option_toggle_data;
-                    if (data->toggled)
-                    {
-                        data->execute();
-                    }
-                }
-            }*/
+            /* for (uint16_t i = 0; i < NUM_OPTIONS_MENU2_RESPAWN; i++)
+             {
+                 if (menus[OPTIONS_MENU2_RESPAWN].d.options_table[i].type == OPTION_TOGGLE)
+                 {
+                     OptionToggleData *data = menus[OPTIONS_MENU2_RESPAWN].d.options_table[i].d.option_toggle_data;
+                     if (data->toggled)
+                     {
+                         data->execute();
+                     }
+                 }
+             }*/
             GAME_pause_submenu_index = 0;
             GAME_unk_timer = 0;
             GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
-            *(int16_t*)0x800698f0 = 0;
+            *(int16_t *)0x800698f0 = 0;
         }
         else if (rs2.button_holdtimes[SQUARE] == 1)
         {
-            GAME_SaveCheckpoint((void*)0x80067414, &GAME_spyro.position, *(uint32_t*)0x80069ffe);
+            GAME_SaveCheckpoint((void *)0x80067414, &GAME_spyro.position, *(uint32_t *)0x80069ffe);
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                .text = "Checkpoint saved",
-                .x = SCREEN_LEFT + 10,
-                .y = SCREEN_BOTTOM - 15,
-                .col = TEXTCOL_WHITE,
-                .cur_time = 0,
-                .start_time = 0,
-                .end_time = 30,
-            });
+                                                    .text = "Checkpoint saved",
+                                                    .x = SCREEN_LEFT + 10,
+                                                    .y = SCREEN_BOTTOM - 15,
+                                                    .col = TEXTCOL_WHITE,
+                                                    .cur_time = 0,
+                                                    .start_time = 0,
+                                                    .end_time = 30,
+                                                });
         }
         else if (rs2.button_holdtimes[TRIANGLE] == 1)
         {
@@ -102,14 +133,18 @@ void read_input_hook()
         rs2.frame_advance = !rs2.frame_advance;
         GAME_inputStates[0].pressed.b.select = 0;
     }
-    else if (currentInput.b.select) {
-        if (currentInput.b.circle && GAME_world_id != DRAGON_SHORES) { //swim
+    else if (currentInput.b.select)
+    {
+        if (currentInput.b.circle && GAME_world_id != DRAGON_SHORES)
+        { // swim
             GAME_spyro.state = 0x29;
         }
-        else if (currentInput.b.cross) { //moon jump
-            *(int16_t*)0x8006A08D = menus[OPTIONS_MENU1].d.options_table[MENU1_MOONJUMP_SPEED].d.option_number_data->number;
+        else if (currentInput.b.cross)
+        { // moon jump
+            *(int16_t *)0x8006A08D = menus[OPTIONS_MENU1].d.options_table[MENU1_MOONJUMP_SPEED].d.option_number_data->number;
         }
-        else if (currentInput.b.triangle) { //normal
+        else if (currentInput.b.triangle)
+        { // normal
             GAME_spyro.state = 0;
         }
         /*else if (currentInput.b.square) { //supercharge
@@ -168,11 +203,14 @@ void read_input_hook()
                 switch (option->type)
                 {
                 case OPTION_NUMBER:
-                    OptionNumberData* data = option->d.option_number_data;
+                    OptionNumberData *data = option->d.option_number_data;
                     int16_t diff = currentInput.b.dright ? 1 : -1;
-                    if (data->number + diff < data->min) data->number = data->max;
-                    else if (data->number + diff > data->max) data->number = data->min;
-                    else data->number += diff;
+                    if (data->number + diff < data->min)
+                        data->number = data->max;
+                    else if (data->number + diff > data->max)
+                        data->number = data->min;
+                    else
+                        data->number += diff;
                     break;
                 }
             }

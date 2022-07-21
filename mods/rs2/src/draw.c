@@ -119,7 +119,9 @@ void draw_menu()
             break;
             case OPTION_NUMBER:
             {
-                LIBC_sprintf(buffer, "%d", option->d.option_number_data->number);
+                OptionNumberData* data = option->d.option_number_data;
+                LIBC_printf("asad%x\n", data->names);
+                data->names != 0 ? LIBC_sprintf(buffer, "%s", data->names[data->number]) : LIBC_sprintf(buffer, "%d", data->number);
                 GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
                 break;
             }

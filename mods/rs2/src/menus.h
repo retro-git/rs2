@@ -6,7 +6,7 @@
 
 #define NUM_MENUS 3
 #define NUM_LEVELS 29
-#define NUM_OPTIONS_MENU1 9
+#define NUM_OPTIONS_MENU1 10
 #define NUM_OPTIONS_MENU2_RESPAWN 4
 
 typedef void (*option_execute_func)(void);
@@ -60,6 +60,7 @@ typedef struct {
     int32_t number;
     int32_t min;
     int32_t max;
+    const char** names;
 } OptionNumberData;
 
 typedef struct {
