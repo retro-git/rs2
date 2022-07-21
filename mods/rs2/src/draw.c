@@ -97,6 +97,7 @@ void draw_menu()
     MenuData *menu = &menus[rs2.menu_index];
 
     GAME_DrawOutlinedBG(0 - 5, FRAME_WIDTH, SCREEN_TOP - 5, SCREEN_BOTTOM);
+    GAME_DrawText(menu->title, FRAME_WIDTH / 2 - GAME_GetTextWidth(menu->title) / 2, SCREEN_TOP + 10, TEXTCOL_LIGHT_YELLOW, 0);
 
     switch (menu->type)
     {

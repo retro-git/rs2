@@ -35,18 +35,21 @@ OptionData menu2_respawn_options_table[NUM_OPTIONS_MENU2_RESPAWN] = {
 MenuData menus[NUM_MENUS] = {
     {
         MENU_TYPE_TELEPORT, 
+        "Teleport Menu",
         sizeof(levels_table) / sizeof(LevelData),
         0,
         &levels_table,
     },
     {
         MENU_TYPE_OPTIONS,
+        "General Options Menu",
         NUM_OPTIONS_MENU1,
         0,
         &menu1_options_table,
     },
     {
         MENU_TYPE_OPTIONS,
+        "Respawn Options Menu - L2 R2 START",
         NUM_OPTIONS_MENU2_RESPAWN,
         0,
         &menu2_respawn_options_table,
