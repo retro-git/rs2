@@ -93,11 +93,6 @@ void draw_menu()
 
     GAME_DrawOutlinedBG(0 - 5, FRAME_WIDTH, SCREEN_TOP - 5, SCREEN_BOTTOM);
 
-    Color col;
-    col.r = 0xff;
-    col.g = 0xff;
-    col.b = 0xff;
-
     switch (menu->type)
     {
     case MENU_TYPE_TELEPORT:
@@ -105,7 +100,7 @@ void draw_menu()
         for (uint16_t i = 0; i < menu->num_options; i++)
         {
             LIBC_sprintf(buffer, "%s", levels_table[i].name);
-            GAME_DrawText(buffer, i <= 14 ? 100 : 300, 40 + 10 * (i % 15), i == menu->menu_selection_index ? TEXTCOL_LIGHT_YELLOW : TEXTCOL_DARK_YELLOW, 0);
+            GAME_DrawText(buffer, i < MAX_MENU_ITEMS_PER_COL ? 100 : 300, MENU_Y_COORD(i), i == menu->menu_selection_index ? TEXTCOL_LIGHT_YELLOW : TEXTCOL_DARK_YELLOW, 0);
         }
         break;
     case MENU_TYPE_OPTIONS:

@@ -171,6 +171,22 @@ void read_input_hook()
         {
             menu->menu_selection_index == menus[rs2.menu_index].num_options - 1 ? menu->menu_selection_index = 0 : menu->menu_selection_index++;
         }
+        switch(menu->type) {
+            case MENU_TYPE_TELEPORT:
+                if (rs2.button_holdtimes[DLEFT] && rs2.button_holdtimes[DLEFT] % 2 == 0) {
+                    menu->menu_selection_index = menu->menu_selection_index >= 15 ? menu->menu_selection_index - 15 : menu->menu_selection_index + 15;
+                    //menu->menu_selection_index = menu->menu_selection_index >=15 ? menu->menu_selection_index - 15 : menu->menu_selection_index;
+                } 
+                else if (rs2.button_holdtimes[DRIGHT] && rs2.button_holdtimes[DRIGHT] % 2 == 0) {
+                    menu->menu_selection_index = menu->menu_selection_index < 15 ? menu->menu_selection_index + 15 : menu->menu_selection_index - 15;
+                    //menu->menu_selection_index = menu->menu_selection_index < 15 ? menu->menu_selection_index + 15 : menu->menu_selection_index;
+                }
+                if (menu->menu_selection_index >= menus[rs2.menu_index].num_options) {
+                    menu->menu_selection_index = menus[rs2.menu_index].num_options - 1;
+                }
+            break;
+        }
+
 
         if (rs2.button_holdtimes[CROSS] == 1)
         {

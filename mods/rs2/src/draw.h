@@ -1,7 +1,9 @@
 #ifndef DRAW_HOOK_H
 #define DRAW_HOOK_H
 
-#define MENU_Y_COORD(index) (40 + 10 * (index % 15))
+#define MAX_MENU_ITEMS_PER_COL 15
+
+#define MENU_Y_COORD(index) (40 + 10 * (index % MAX_MENU_ITEMS_PER_COL))
 #define MENU_X_COORD (FRAME_WIDTH / 3)
 #define MENU_X_COORD_VALUE (FRAME_WIDTH / 3 + 160)
 
