@@ -29,7 +29,7 @@ void passive_effects()
         GAME_moneybags_paywalls[i].cost = 0;
     }
     // set flags for each enter level cutscene being watched
-    for (int i = 0; i < 0x1c; i++)
+    for (int i = 0; i < 0x1d; i++)
     {
         *(uint8_t *)(0x8006b084 + i) = 1;
     }
