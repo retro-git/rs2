@@ -36,15 +36,16 @@ void passive_effects()
     {
         *(uint8_t *)(0x8006b084 + i) = 1;
     }
-    //remove exit level cutscenes
-    *(uint8_t*)0x80066ff4 = 0;
+    // remove exit level cutscenes
+    *(uint8_t *)0x80066ff4 = 0;
 }
 
 void read_input_hook()
 {
     GAME_ReadInput();
 
-    if (!rs2.initialised) init();
+    if (!rs2.initialised)
+        init();
 
     passive_effects();
 
@@ -101,6 +102,8 @@ void read_input_hook()
         }
         else if (rs2.button_holdtimes[TRIANGLE] == 1)
         {
+            rs2.savestate.state_saved = true;
+            rs2.savestate.level = GAME_world_id;
             rs2.savestate.position = GAME_spyro.position;
             rs2.savestate.rotation = GAME_spyro.eulerRotations;
             rs2.savestate.cam_rotation = GAME_cam_rotation;
@@ -119,18 +122,45 @@ void read_input_hook()
         }
         else if (rs2.button_holdtimes[CIRCLE] == 1)
         {
-            GAME_spyro.position = rs2.savestate.position;
-            GAME_spyro.eulerRotations = rs2.savestate.rotation;
-            GAME_cam_rotation = rs2.savestate.cam_rotation;
-            GAME_cam_position = rs2.savestate.cam_position;
+            if (rs2.savestate.level != GAME_world_id || !rs2.savestate.state_saved)
+            {
+                add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+                                                        .text = "No save in current level",
+                                                        .x = SCREEN_LEFT + 10,
+                                                        .y = SCREEN_BOTTOM - 15,
+                                                        .col = TEXTCOL_WHITE,
+                                                        .cur_time = 0,
+                                                        .start_time = 0,
+                                                        .end_time = 30,
+                                                        .gameplay_should_draw = 1,
+                                                    });
+            }
+            else
+            {
+                GAME_spyro.position = rs2.savestate.position;
+                GAME_spyro.eulerRotations = rs2.savestate.rotation;
+                GAME_cam_rotation = rs2.savestate.cam_rotation;
+                GAME_cam_position = rs2.savestate.cam_position;
+            }
         }
     }
 
     if (rs2.button_holdtimes[R3] == 1)
     {
         rs2.menu_enabled = !rs2.menu_enabled;
-        if (rs2.menu_enabled) {
-            char* msg = messages[LIBC_rand() % NUM_MESSAGES];
+        if (rs2.menu_enabled)
+        {
+            char *msg = messages[LIBC_rand() % NUM_MESSAGES];
+            // add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+            //                                         .text = msg,
+            //                                         .x = FRAME_WIDTH / 2 - (GAME_GetTextWidth(msg) / 2),
+            //                                         .y = SCREEN_BOTTOM - 15,
+            //                                         .col = LIBC_rand() % 5,
+            //                                         .cur_time = 0,
+            //                                         .start_time = 0,
+            //                                         .end_time = 0,
+            //                                         .gameplay_should_draw = 0,
+            //                                     });
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
                                                     .text = msg,
                                                     .x = FRAME_WIDTH / 2 - (GAME_GetTextWidth(msg) / 2),
@@ -191,22 +221,25 @@ void read_input_hook()
         {
             menu->menu_selection_index == menus[rs2.menu_index].num_options - 1 ? menu->menu_selection_index = 0 : menu->menu_selection_index++;
         }
-        switch(menu->type) {
-            case MENU_TYPE_TELEPORT:
-                if (rs2.button_holdtimes[DLEFT] && rs2.button_holdtimes[DLEFT] % 3 == 0) {
-                    menu->menu_selection_index = menu->menu_selection_index >= 15 ? menu->menu_selection_index - 15 : menu->menu_selection_index + 15;
-                    //menu->menu_selection_index = menu->menu_selection_index >=15 ? menu->menu_selection_index - 15 : menu->menu_selection_index;
-                } 
-                else if (rs2.button_holdtimes[DRIGHT] && rs2.button_holdtimes[DRIGHT] % 3 == 0) {
-                    menu->menu_selection_index = menu->menu_selection_index < 15 ? menu->menu_selection_index + 15 : menu->menu_selection_index - 15;
-                    //menu->menu_selection_index = menu->menu_selection_index < 15 ? menu->menu_selection_index + 15 : menu->menu_selection_index;
-                }
-                if (menu->menu_selection_index >= menus[rs2.menu_index].num_options) {
-                    menu->menu_selection_index = menus[rs2.menu_index].num_options - 1;
-                }
+        switch (menu->type)
+        {
+        case MENU_TYPE_TELEPORT:
+            if (rs2.button_holdtimes[DLEFT] && rs2.button_holdtimes[DLEFT] % 3 == 0)
+            {
+                menu->menu_selection_index = menu->menu_selection_index >= 15 ? menu->menu_selection_index - 15 : menu->menu_selection_index + 15;
+                // menu->menu_selection_index = menu->menu_selection_index >=15 ? menu->menu_selection_index - 15 : menu->menu_selection_index;
+            }
+            else if (rs2.button_holdtimes[DRIGHT] && rs2.button_holdtimes[DRIGHT] % 3 == 0)
+            {
+                menu->menu_selection_index = menu->menu_selection_index < 15 ? menu->menu_selection_index + 15 : menu->menu_selection_index - 15;
+                // menu->menu_selection_index = menu->menu_selection_index < 15 ? menu->menu_selection_index + 15 : menu->menu_selection_index;
+            }
+            if (menu->menu_selection_index >= menus[rs2.menu_index].num_options)
+            {
+                menu->menu_selection_index = menus[rs2.menu_index].num_options - 1;
+            }
             break;
         }
-
 
         if (rs2.button_holdtimes[CROSS] == 1)
         {
@@ -254,34 +287,34 @@ void read_input_hook()
     }
 }
 
-LevelData levels_table[NUM_LEVELS]  = {
-    { "Summer Forest", 0xa, HOMEWORLD },
-    { "Glimmer", 0xb, STAGE },
-    { "Idol Springs", 0xc, STAGE },
-    { "Colossus", 0xd, STAGE },
-    { "Hurricos", 0x15, STAGE },
-    { "Aquaria Towers", 0x16, STAGE },
-    { "Sunny Beach", 0x17, STAGE },
-    { "Ocean Speedway", 0x19, STAGE },
-    { "Crush", 0x1a, BOSS },
-    { "Autumn Plains", 0x1e, HOMEWORLD },
-    { "Skelos Badlands", 0x1f, STAGE },
-    { "Crystal Glacier", 0x20, STAGE },
-    { "Breeze Harbor", 0x21, STAGE },
-    { "Zephyr", 0x22, STAGE },
-    { "Metro Speedway", 0x23, STAGE },
-    { "Scorch", 0x29, STAGE },
-    { "Shady Oasis", 0x2a, STAGE },
-    { "Magma Cone", 0x2b, STAGE },
-    { "Fracture Hills", 0x2c, STAGE },
-    { "Icy Speedway", 0x2d, STAGE },
-    { "Gulp", 0x2e, BOSS },
-    { "Winter Tundra", 0x32, HOMEWORLD },
-    { "Mystic Marsh", 0x33, STAGE },
-    { "Cloud Temples", 0x34, STAGE },
-    { "Canyon Speedway", 0x37, STAGE },
-    { "Robotica Farms", 0x3d, STAGE },
-    { "Metropolis", 0x3e, STAGE },
-    { "Dragon Shores", 0x41, STAGE },
-    { "Ripto", 0x42, BOSS },
+LevelData levels_table[NUM_LEVELS] = {
+    {"Summer Forest", 0xa, HOMEWORLD},
+    {"Glimmer", 0xb, STAGE},
+    {"Idol Springs", 0xc, STAGE},
+    {"Colossus", 0xd, STAGE},
+    {"Hurricos", 0x15, STAGE},
+    {"Aquaria Towers", 0x16, STAGE},
+    {"Sunny Beach", 0x17, STAGE},
+    {"Ocean Speedway", 0x19, STAGE},
+    {"Crush", 0x1a, BOSS},
+    {"Autumn Plains", 0x1e, HOMEWORLD},
+    {"Skelos Badlands", 0x1f, STAGE},
+    {"Crystal Glacier", 0x20, STAGE},
+    {"Breeze Harbor", 0x21, STAGE},
+    {"Zephyr", 0x22, STAGE},
+    {"Metro Speedway", 0x23, STAGE},
+    {"Scorch", 0x29, STAGE},
+    {"Shady Oasis", 0x2a, STAGE},
+    {"Magma Cone", 0x2b, STAGE},
+    {"Fracture Hills", 0x2c, STAGE},
+    {"Icy Speedway", 0x2d, STAGE},
+    {"Gulp", 0x2e, BOSS},
+    {"Winter Tundra", 0x32, HOMEWORLD},
+    {"Mystic Marsh", 0x33, STAGE},
+    {"Cloud Temples", 0x34, STAGE},
+    {"Canyon Speedway", 0x37, STAGE},
+    {"Robotica Farms", 0x3d, STAGE},
+    {"Metropolis", 0x3e, STAGE},
+    {"Dragon Shores", 0x41, STAGE},
+    {"Ripto", 0x42, BOSS},
 };

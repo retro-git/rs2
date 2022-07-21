@@ -5,13 +5,16 @@
 #include "game.h"
 #include "vec3.h"
 #include "libcd.h"
+#include "common.h"
 
 typedef struct
 {
+    enum Levels level;
     Vec3 position;
     Vec3 rotation;
     Vec3 cam_position;
     Vec3s cam_rotation;
+    uint8_t state_saved;
 } savestate_t;
 
 struct rs2 {

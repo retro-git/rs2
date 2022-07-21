@@ -43,7 +43,7 @@ void draw_hook(unsigned int unk)
         {
         case DRAW_TEXT_TIMEOUT:
             draw_text_timeout_data_t *data = &draw_commands[i].d.draw_text_timeout_data;
-            if (data->cur_time > data->start_time && data->cur_time < data->end_time)
+            if (data->cur_time > data->start_time && data->cur_time < data->end_time || data->start_time == 0 && data->end_time == 0)
             {
                 if (!data->gameplay_should_draw && !rs2.menu_enabled) {
                     draw_commands[i].type = FREE_SLOT;
@@ -51,7 +51,7 @@ void draw_hook(unsigned int unk)
                 };
                 GAME_DrawText(data->text, data->x, data->y, data->col, 0);
             }
-            data->cur_time += 1;
+            if (data->start_time != data->end_time) data->cur_time += 1;
             if (data->cur_time > data->end_time)
             {
                 draw_commands[i].type = FREE_SLOT;
