@@ -20,6 +20,7 @@ typedef struct {
     uint16_t cur_time;
     uint16_t start_time;
     uint16_t end_time;
+    uint8_t gameplay_should_draw;
 } draw_text_timeout_data_t;
 
 typedef struct {

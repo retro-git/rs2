@@ -34,6 +34,9 @@ void draw_hook(unsigned int unk)
 {
     GAME_FUN_80013a14(unk);
 
+    if (rs2.menu_enabled)
+        draw_menu();
+
     for (uint16_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++)
     {
         switch (draw_commands[i].type)
@@ -42,6 +45,10 @@ void draw_hook(unsigned int unk)
             draw_text_timeout_data_t *data = &draw_commands[i].d.draw_text_timeout_data;
             if (data->cur_time > data->start_time && data->cur_time < data->end_time)
             {
+                if (!data->gameplay_should_draw && !rs2.menu_enabled) {
+                    draw_commands[i].type = FREE_SLOT;
+                    continue;
+                };
                 GAME_DrawText(data->text, data->x, data->y, data->col, 0);
             }
             data->cur_time += 1;
@@ -57,12 +64,10 @@ void draw_hook(unsigned int unk)
         }
     }
 
-    if (rs2.menu_enabled)
-        draw_menu();
-
     for (uint16_t i = 0; i < NUM_MENUS; i++)
     {
-        if (menus[i].type != MENU_TYPE_OPTIONS) continue;
+        if (menus[i].type != MENU_TYPE_OPTIONS)
+            continue;
         for (uint16_t j = 0; j < menus[i].num_options; j++)
         {
             if (menus[i].d.options_table[j].type == OPTION_TOGGLE)
@@ -121,7 +126,7 @@ void draw_menu()
             break;
             case OPTION_NUMBER:
             {
-                OptionNumberData* data = option->d.option_number_data;
+                OptionNumberData *data = option->d.option_number_data;
                 data->names != 0 ? LIBC_sprintf(buffer, "%s", data->names[data->number]) : LIBC_sprintf(buffer, "%d", data->number);
                 GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
                 break;

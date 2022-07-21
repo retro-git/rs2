@@ -91,6 +91,7 @@ void read_input_hook()
                                                     .cur_time = 0,
                                                     .start_time = 0,
                                                     .end_time = 30,
+                                                    .gameplay_should_draw = 1,
                                                 });
         }
         else if (rs2.button_holdtimes[TRIANGLE] == 1)
@@ -108,6 +109,7 @@ void read_input_hook()
                                                     .cur_time = 0,
                                                     .start_time = 0,
                                                     .end_time = 30,
+                                                    .gameplay_should_draw = 1,
                                                 });
         }
         else if (rs2.button_holdtimes[CIRCLE] == 1)
@@ -173,11 +175,11 @@ void read_input_hook()
         }
         switch(menu->type) {
             case MENU_TYPE_TELEPORT:
-                if (rs2.button_holdtimes[DLEFT] && rs2.button_holdtimes[DLEFT] % 2 == 0) {
+                if (rs2.button_holdtimes[DLEFT] && rs2.button_holdtimes[DLEFT] % 3 == 0) {
                     menu->menu_selection_index = menu->menu_selection_index >= 15 ? menu->menu_selection_index - 15 : menu->menu_selection_index + 15;
                     //menu->menu_selection_index = menu->menu_selection_index >=15 ? menu->menu_selection_index - 15 : menu->menu_selection_index;
                 } 
-                else if (rs2.button_holdtimes[DRIGHT] && rs2.button_holdtimes[DRIGHT] % 2 == 0) {
+                else if (rs2.button_holdtimes[DRIGHT] && rs2.button_holdtimes[DRIGHT] % 3 == 0) {
                     menu->menu_selection_index = menu->menu_selection_index < 15 ? menu->menu_selection_index + 15 : menu->menu_selection_index - 15;
                     //menu->menu_selection_index = menu->menu_selection_index < 15 ? menu->menu_selection_index + 15 : menu->menu_selection_index;
                 }

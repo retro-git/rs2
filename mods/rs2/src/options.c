@@ -22,6 +22,8 @@ void oneshot_toggle_message(char toggled, uint32_t option_index)
                                             .cur_time = 0,
                                             .start_time = 0,
                                             .end_time = 15,
+                                            .gameplay_should_draw = 0,
+                                            .gameplay_should_draw = 0,
                                         });
 }
 
