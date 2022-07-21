@@ -110,6 +110,7 @@ void GAME_DrawText_Center(char* text, int x, int y, int col);
 void GAME_DrawText_CenterWithBG(char* text, int x, int y, int col);
 void GAME_DrawText_Right(char* text, int x, int y, int col);
 int GAME_GetTextWidth(char* text);
+void GAME_SaveCheckpoint(void* param_1, Vec3* spawnPosition, uint32_t spawnYawRotation);
 
 void GAME_ReadInput(void);
 void GAME_RenderGame(void);

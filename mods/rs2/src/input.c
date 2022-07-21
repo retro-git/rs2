@@ -49,6 +49,19 @@ void read_input_hook()
             GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
             *(int16_t*)0x800698f0 = 0;
         }
+        else if (rs2.button_holdtimes[SQUARE] == 1)
+        {
+            GAME_SaveCheckpoint((void*)0x80067414, &GAME_spyro.position, *(uint32_t*)0x80069ffe);
+            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+                .text = "Checkpoint saved",
+                .x = SCREEN_LEFT + 10,
+                .y = SCREEN_BOTTOM - 15,
+                .col = TEXTCOL_WHITE,
+                .cur_time = 0,
+                .start_time = 0,
+                .end_time = 30,
+            });
+        }
         else if (rs2.button_holdtimes[TRIANGLE] == 1)
         {
             rs2.savestate.position = GAME_spyro.position;
@@ -57,13 +70,13 @@ void read_input_hook()
             rs2.savestate.cam_position = GAME_cam_position;
 
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Saved",
-                                                    .x = 80,
-                                                    .y = 80,
-                                                    .col = 4,
+                                                    .text = "Position saved",
+                                                    .x = SCREEN_LEFT + 10,
+                                                    .y = SCREEN_BOTTOM - 15,
+                                                    .col = TEXTCOL_WHITE,
                                                     .cur_time = 0,
                                                     .start_time = 0,
-                                                    .end_time = 60,
+                                                    .end_time = 30,
                                                 });
         }
         else if (rs2.button_holdtimes[CIRCLE] == 1)

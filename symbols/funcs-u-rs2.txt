@@ -13,3 +13,4 @@ GAME_GetTextWidth = 0x8004a7dc;
 LIBC_rand = 0x80059d2c;
 
 GAME_OnDeath = 0x80032e74;
+GAME_SaveCheckpoint = 0x8004c0c8;
