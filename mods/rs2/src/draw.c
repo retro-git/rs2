@@ -91,6 +91,13 @@ void draw_menu()
     char buffer[32];
     MenuData *menu = &menus[rs2.menu_index];
 
+    GAME_DrawOutlinedBG(0 - 5, FRAME_WIDTH, SCREEN_TOP - 5, SCREEN_BOTTOM);
+
+    Color col;
+    col.r = 0xff;
+    col.g = 0xff;
+    col.b = 0xff;
+
     switch (menu->type)
     {
     case MENU_TYPE_TELEPORT:
@@ -120,7 +127,6 @@ void draw_menu()
             case OPTION_NUMBER:
             {
                 OptionNumberData* data = option->d.option_number_data;
-                LIBC_printf("asad%x\n", data->names);
                 data->names != 0 ? LIBC_sprintf(buffer, "%s", data->names[data->number]) : LIBC_sprintf(buffer, "%d", data->number);
                 GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
                 break;

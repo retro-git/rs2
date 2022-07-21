@@ -114,6 +114,7 @@ int LIBC_rand();
 void GAME_DrawText_Center(char* text, int x, int y, int col);
 void GAME_DrawText_CenterWithBG(char* text, int x, int y, int col);
 void GAME_DrawText_Right(char* text, int x, int y, int col);
+void GAME_DrawOutlinedBG(short left, short right, short top, short bottom);
 int GAME_GetTextWidth(char* text);
 void GAME_SaveCheckpoint(void* param_1, Vec3* spawnPosition, uint32_t spawnYawRotation);
 
