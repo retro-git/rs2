@@ -104,6 +104,11 @@ enum BlendMode {
 	BLENDMODE_ADD
 };
 
+typedef struct {
+    short cost;
+    short isPayed;
+} MoneybagsPaywall;
+
 int LIBC_rand();
 
 void GAME_DrawText_Center(char* text, int x, int y, int col);
@@ -146,5 +151,7 @@ extern uint32_t GAME_ripto_zoe_state;
 extern int32_t GAME_sparx_health;
 extern void* GAME_end_level_portals_status;
 extern uint32_t GAME_num_talismans;
+
+extern MoneybagsPaywall GAME_moneybags_paywalls[38];
 
 #endif

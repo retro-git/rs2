@@ -37,9 +37,19 @@ void UpdateGame_Normal_hook() {
     }
 }
 
+void init() {
+    for (int i = 0; i < sizeof(GAME_moneybags_paywalls) / sizeof(MoneybagsPaywall); i++) {
+        GAME_moneybags_paywalls[i].cost = 0;
+    }
+
+    rs2.initialised = true;
+}
+
 void main_hook()
 {
     GAME_RenderGame();
+
+    if (!rs2.initialised) init();
 
     GAME_ripto_zoe_state = 0;
 
