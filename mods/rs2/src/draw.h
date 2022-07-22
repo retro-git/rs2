@@ -1,6 +1,8 @@
 #ifndef DRAW_HOOK_H
 #define DRAW_HOOK_H
 
+#include "menus.h"
+
 #define MAX_MENU_ITEMS_PER_COL 15
 
 #define MENU_Y_COORD(index) (40 + 10 * (index % MAX_MENU_ITEMS_PER_COL))
@@ -36,4 +38,7 @@ void draw_menu();
 void begin_warp(uint16_t level_index);
 void DrawLine(short x0, short y0, Color c0, short x1, short y1, Color c1);
 
+extern LevelData levels_table[NUM_LEVELS];
+
 #endif
+

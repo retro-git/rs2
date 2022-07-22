@@ -93,6 +93,7 @@ void draw_hook(unsigned int unk)
 
 void draw_menu()
 {
+    // LIBC_printf("draw\n");
     char buffer[32];
     MenuData *menu = &menus[rs2.menu_index];
 
@@ -215,3 +216,35 @@ void DrawRectST(short left, short right, short top, short bottom, Color color)
     GAME_GPUPackets_Insert(ptrPrimitive);
     GAME_GPUPackets_Next = ptrPrimitive + 1;
 }
+
+LevelData levels_table[NUM_LEVELS] = {
+    {(char *)0x800106e0, 0xa, HOMEWORLD},  // summer
+    {(char *)0x80066ea0, 0xb, STAGE},      // glimmer
+    {(char *)0x800106d0, 0xc, STAGE},      // idol
+    {(char *)0x800106c4, 0xd, STAGE},      // colossus
+    {(char *)0x800106b8, 0x15, STAGE},     // hurricos
+    {(char *)0x800106a8, 0x16, STAGE},     // aquaria
+    {(char *)0x8001069c, 0x17, STAGE},     // sunny beach
+    {(char *)0x8001068c, 0x19, STAGE},     // ocean speedway
+    {(char *)0x8001067c, 0x1a, BOSS},      // crush
+    {(char *)0x8001066c, 0x1e, HOMEWORLD}, // ap
+    {(char *)0x8001065c, 0x1f, STAGE},     // skelos
+    {(char *)0x8001064c, 0x20, STAGE},     // crystal
+    {(char *)0x8001063c, 0x21, STAGE},     // breeze
+    {(char *)0x80066e98, 0x22, STAGE},     // zephyr
+    {(char *)0x8001062c, 0x23, STAGE},     // metro
+    {(char *)0x80066e90, 0x29, STAGE},     // scorch
+    {(char *)0x80010620, 0x2a, STAGE},     // shady
+    {(char *)0x80010614, 0x2b, STAGE},     // magma
+    {(char *)0x80010604, 0x2c, STAGE},     // fracture
+    {(char *)0x800105f4, 0x2d, STAGE},     // icy
+    {(char *)0x800105e4, 0x2e, BOSS},      // gulp
+    {(char *)0x800105d4, 0x32, HOMEWORLD}, // winter tundra
+    {(char *)0x800105c4, 0x33, STAGE},     // mystic
+    {(char *)0x800105b4, 0x34, STAGE},     // cloud
+    {(char *)0x800105a4, 0x37, STAGE},     // canyon
+    {(char *)0x80010594, 0x3d, STAGE},     // robotica
+    {(char *)0x80010588, 0x3e, STAGE},     // metropolis
+    {(char *)0x80010578, 0x41, STAGE},     // dragon shores
+    {(char *)0x80010568, 0x42, BOSS},      // ripto
+};

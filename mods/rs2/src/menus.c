@@ -1,6 +1,8 @@
 #include "menus.h"
 #include "game.h"
 #include "input.h"
+#include "rs2.h"
+#include "draw.h"
 
 //const char* zero = "zero";
 //const char* one = "one";
@@ -42,14 +44,14 @@ MenuData menus[NUM_MENUS] = {
     },
     {
         MENU_TYPE_OPTIONS,
-        "General Options Menu",
+        "General Options",
         NUM_OPTIONS_MENU1,
         0,
         &menu1_options_table,
     },
     {
         MENU_TYPE_OPTIONS,
-        "Respawn Options Menu - L2 R2 START",
+        "Respawn Options",
         NUM_OPTIONS_MENU2_RESPAWN,
         0,
         &menu2_respawn_options_table,

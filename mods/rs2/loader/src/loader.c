@@ -166,7 +166,7 @@ int main(void)
             // MoveImage(tim_moneybags.prect, 0, 0);
             // MoveImage(tim_moneybags.prect, 0, SCREENYRES);
             // printf("%d\n", i);
-            FntPrint("rs2-1.0 RETRO PRODUCTIONS"); // Send string to print stream
+            FntPrint("rs2-1.0 - RETRO PRODUCTIONS"); // Send string to print stream
             FntFlush(-1);                          // Draw printe stream
             display();                             // Execute display()
 
