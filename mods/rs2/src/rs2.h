@@ -32,6 +32,7 @@ struct rs2 {
 };
 
 extern struct rs2 rs2;
+extern LevelData levels_table[NUM_LEVELS];
 
 void UpdateGame_Normal_hook();
 int rand_hook_trampoline();

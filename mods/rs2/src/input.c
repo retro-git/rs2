@@ -10,45 +10,23 @@
 #include "gpu.h"
 #include "msg.h"
 
-void init_effects()
+void savestate_draw_msg(char *msg)
 {
-    // skip intro and load into glimmer
-    if (GAME_gameState == 0xb)
-    {
-        *(uint8_t *)(0x80066f90) = 0xb;
-        *(uint8_t *)(0x800698f4) = 3;
-        *(uint8_t *)(0x80067e0c) = 5;
-        GAME_num_lives = 99;
-        rs2.initialised_input_hook = true;
-    }
-}
-
-void passive_effects()
-{
-    if (GAME_gameState != PLAYING)
-        return;
-    // moneybags costs 0 gems
-    for (int i = 0; i < sizeof(GAME_moneybags_paywalls) / sizeof(MoneybagsPaywall); i++)
-    {
-        GAME_moneybags_paywalls[i].cost = 0;
-    }
-    // set flags for enter level cutscene being watched
-    for (int i = 0; i < 0x1d; i++)
-    {
-        *(uint8_t *)(0x8006b084 + i) = 1;
-    }
-    // remove exit level cutscenes
-    *(uint8_t *)0x80066ff4 = 0;
+    add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+                                            .text = msg,
+                                            .x = SCREEN_LEFT + 10,
+                                            .y = SCREEN_BOTTOM - 15,
+                                            .col = TEXTCOL_WHITE,
+                                            .cur_time = 0,
+                                            .start_time = 0,
+                                            .end_time = 30,
+                                            .gameplay_should_draw = 1,
+                                        });
 }
 
 void read_input_hook()
 {
     GAME_ReadInput();
-
-    if (!rs2.initialised_input_hook)
-        init_effects();
-
-    passive_effects();
 
     if (GAME_gameState != PLAYING)
         return;
@@ -90,16 +68,18 @@ void read_input_hook()
         else if (rs2.button_holdtimes[SQUARE] == 1)
         {
             GAME_SaveCheckpoint((void *)0x80067414, &GAME_spyro.position, *(uint32_t *)0x80069ffe);
-            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Checkpoint saved",
-                                                    .x = SCREEN_LEFT + 10,
-                                                    .y = SCREEN_BOTTOM - 15,
-                                                    .col = TEXTCOL_WHITE,
-                                                    .cur_time = 0,
-                                                    .start_time = 0,
-                                                    .end_time = 30,
-                                                    .gameplay_should_draw = 1,
-                                                });
+            // add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+            //                                         .text = "Checkpoint saved",
+            //                                         .x = SCREEN_LEFT + 10,
+            //                                         .y = SCREEN_BOTTOM - 15,
+            //                                         .col = TEXTCOL_WHITE,
+            //                                         .cur_time = 0,
+            //                                         .start_time = 0,
+            //                                         .end_time = 30,
+            //                                         .gameplay_should_draw = 1,
+            //                                     });
+
+            savestate_draw_msg("Checkpoint saved");
         }
         else if (rs2.button_holdtimes[TRIANGLE] == 1)
         {
@@ -110,39 +90,24 @@ void read_input_hook()
             rs2.savestate.cam_rotation = GAME_cam_rotation;
             rs2.savestate.cam_position = GAME_cam_position;
 
-            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Position saved",
-                                                    .x = SCREEN_LEFT + 10,
-                                                    .y = SCREEN_BOTTOM - 15,
-                                                    .col = TEXTCOL_WHITE,
-                                                    .cur_time = 0,
-                                                    .start_time = 0,
-                                                    .end_time = 30,
-                                                    .gameplay_should_draw = 1,
-                                                });
+            // add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+            //                                         .text = "Pos saved",
+            //                                         .x = SCREEN_LEFT + 10,
+            //                                         .y = SCREEN_BOTTOM - 15,
+            //                                         .col = TEXTCOL_WHITE,
+            //                                         .cur_time = 0,
+            //                                         .start_time = 0,
+            //                                         .end_time = 30,
+            //                                         .gameplay_should_draw = 1,
+            //                                     });
+            savestate_draw_msg("Pos saved");
         }
-        else if (rs2.button_holdtimes[CIRCLE] == 1)
+        else if (rs2.button_holdtimes[CIRCLE] == 1 && rs2.savestate.level == GAME_world_id && rs2.savestate.state_saved)
         {
-            if (rs2.savestate.level != GAME_world_id || !rs2.savestate.state_saved)
-            {
-                add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                        .text = "No save in current level",
-                                                        .x = SCREEN_LEFT + 10,
-                                                        .y = SCREEN_BOTTOM - 15,
-                                                        .col = TEXTCOL_WHITE,
-                                                        .cur_time = 0,
-                                                        .start_time = 0,
-                                                        .end_time = 30,
-                                                        .gameplay_should_draw = 1,
-                                                    });
-            }
-            else
-            {
-                GAME_spyro.position = rs2.savestate.position;
-                GAME_spyro.eulerRotations = rs2.savestate.rotation;
-                GAME_cam_rotation = rs2.savestate.cam_rotation;
-                GAME_cam_position = rs2.savestate.cam_position;
-            }
+            GAME_spyro.position = rs2.savestate.position;
+            GAME_spyro.eulerRotations = rs2.savestate.rotation;
+            GAME_cam_rotation = rs2.savestate.cam_rotation;
+            GAME_cam_position = rs2.savestate.cam_position;
         }
     }
 
@@ -277,35 +242,3 @@ void read_input_hook()
         }
     }
 }
-
-LevelData levels_table[NUM_LEVELS] = {
-    {"Summer Forest", 0xa, HOMEWORLD},
-    {"Glimmer", 0xb, STAGE},
-    {"Idol Springs", 0xc, STAGE},
-    {"Colossus", 0xd, STAGE},
-    {"Hurricos", 0x15, STAGE},
-    {"Aquaria Towers", 0x16, STAGE},
-    {"Sunny Beach", 0x17, STAGE},
-    {"Ocean Speedway", 0x19, STAGE},
-    {"Crush", 0x1a, BOSS},
-    {"Autumn Plains", 0x1e, HOMEWORLD},
-    {"Skelos Badlands", 0x1f, STAGE},
-    {"Crystal Glacier", 0x20, STAGE},
-    {"Breeze Harbor", 0x21, STAGE},
-    {"Zephyr", 0x22, STAGE},
-    {"Metro Speedway", 0x23, STAGE},
-    {"Scorch", 0x29, STAGE},
-    {"Shady Oasis", 0x2a, STAGE},
-    {"Magma Cone", 0x2b, STAGE},
-    {"Fracture Hills", 0x2c, STAGE},
-    {"Icy Speedway", 0x2d, STAGE},
-    {"Gulp", 0x2e, BOSS},
-    {"Winter Tundra", 0x32, HOMEWORLD},
-    {"Mystic Marsh", 0x33, STAGE},
-    {"Cloud Temples", 0x34, STAGE},
-    {"Canyon Speedway", 0x37, STAGE},
-    {"Robotica Farms", 0x3d, STAGE},
-    {"Metropolis", 0x3e, STAGE},
-    {"Dragon Shores", 0x41, STAGE},
-    {"Ripto", 0x42, BOSS},
-};

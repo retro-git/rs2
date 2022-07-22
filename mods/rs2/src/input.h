@@ -5,6 +5,4 @@
 
 void read_input_hook();
 
-extern LevelData levels_table[NUM_LEVELS];
-
 #endif

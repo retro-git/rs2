@@ -37,7 +37,7 @@ typedef enum {
 
 typedef struct {
     char* name;
-    int load_level_id;
+    int8_t load_level_id;
     LevelType type;
 } LevelData;
 

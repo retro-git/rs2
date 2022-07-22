@@ -28,6 +28,36 @@ int rand_hook_trampoline()
     asm volatile("nop");
 }*/
 
+void init_effects()
+{
+    // skip intro and load into glimmer
+    if (GAME_gameState == 0xb)
+    {
+        *(uint8_t *)(0x80066f90) = 0xb;
+        *(uint8_t *)(0x800698f4) = 3;
+        *(uint8_t *)(0x80067e0c) = 5;
+        GAME_num_lives = 99;
+    }
+}
+
+void passive_effects()
+{
+    if (GAME_gameState != PLAYING)
+        return;
+    // moneybags costs 0 gems
+    for (int i = 0; i < sizeof(GAME_moneybags_paywalls) / sizeof(MoneybagsPaywall); i++)
+    {
+        GAME_moneybags_paywalls[i].cost = 0;
+    }
+    // set flags for enter level cutscene being watched
+    for (int i = 0; i < 0x1d; i++)
+    {
+        *(uint8_t *)(0x8006b084 + i) = 1;
+    }
+    // remove exit level cutscenes
+    *(uint8_t *)0x80066ff4 = 0;
+}
+
 void UpdateGame_Normal_hook()
 {
     if (!rs2.menu_enabled && !rs2.frame_advance)
@@ -57,26 +87,27 @@ OverlayFile files[NUM_OVERLAY_FILES] = {
 
 void read_cb(unsigned char status, unsigned char *result)
 {
-    LIBC_printf("loaded file %d\n", rs2.cur_init_file);
+    //LIBC_printf("loaded file %d\n", rs2.cur_init_file);
     //patch_jump(files[rs2.cur_init_file].hook_loc, files[rs2.cur_init_file].hook_func);
     //patch_jump((int32_t *)0x80015808, (int32_t)rs2.cur_init_file == 0 ? draw_hook : read_input_hook);
     rs2.cur_init_file++;
 
     if (rs2.cur_init_file == NUM_OVERLAY_FILES)
     {
-        LIBC_printf("all files loaded\n");
+        //LIBC_printf("all files loaded\n");
         for (int i = 0; i < NUM_OVERLAY_FILES; i++) {
             patch_jump(files[i].hook_loc, files[i].hook_func); 
         }
         patch_jump((int32_t *)0x8001b190, (int32_t)UpdateGame_Normal_hook);
         LIBCD_CdReadCallback(rs2.read_callback);
+        init_effects();
         rs2.initialised = 1;
     }
 }
 
 void init()
 {
-    LIBC_printf("init %d\n", BUILD);
+    //LIBC_printf("init %d\n", BUILD);
 
 #if BUILD == 94424
     patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
@@ -92,12 +123,9 @@ void init()
         //LIBCD_CdIntToPos(229989, &loc);
 
         char res;
-        if (LIBCD_CdControlB(CdlSetloc, &loc, &res) == 0) {
-            LIBC_printf("cdcontrolb failed\n");
-        }
-        if (LIBCD_CdRead(2, (void *)rs2.cur_init_file == 0 ? &kernel_free_space_1 : &kernel_free_space_2, 0x80) == 0) {
-            LIBC_printf("cdread failed\n");
-        } 
+        LIBCD_CdControlB(CdlSetloc, &loc, &res) == 0;
+        LIBCD_CdRead(2, (void *)rs2.cur_init_file == 0 ? &kernel_free_space_1 : &kernel_free_space_2, 0x80);
+            //LIBC_printf("cdread failed\n");
 
         files[rs2.cur_init_file].loading = 1;
     }
@@ -114,6 +142,8 @@ void main_hook()
     {
         init();
     }
+
+    passive_effects();
 
     GAME_ripto_zoe_state = 0;
 
@@ -148,3 +178,35 @@ void handle_warp()
         GAME_unk_timer = 0;
     }
 }
+
+LevelData levels_table[NUM_LEVELS] = {
+    {(char *)0x800106e0, 0xa, HOMEWORLD},  // summer
+    {(char *)0x80066ea0, 0xb, STAGE},      // glimmer
+    {(char *)0x800106d0, 0xc, STAGE},      // idol
+    {(char *)0x800106c4, 0xd, STAGE},      // colossus
+    {(char *)0x800106b8, 0x15, STAGE},     // hurricos
+    {(char *)0x800106a8, 0x16, STAGE},     // aquaria
+    {(char *)0x8001069c, 0x17, STAGE},     // sunny beach
+    {(char *)0x8001068c, 0x19, STAGE},     // ocean speedway
+    {(char *)0x8001067c, 0x1a, BOSS},      // crush
+    {(char *)0x8001066c, 0x1e, HOMEWORLD}, // ap
+    {(char *)0x8001065c, 0x1f, STAGE},     // skelos
+    {(char *)0x8001064c, 0x20, STAGE},     // crystal
+    {(char *)0x8001063c, 0x21, STAGE},     // breeze
+    {(char *)0x80066e98, 0x22, STAGE},     // zephyr
+    {(char *)0x8001062c, 0x23, STAGE},     // metro
+    {(char *)0x80066e90, 0x29, STAGE},     // scorch
+    {(char *)0x80010620, 0x2a, STAGE},     // shady
+    {(char *)0x80010614, 0x2b, STAGE},     // magma
+    {(char *)0x80010604, 0x2c, STAGE},     // fracture
+    {(char *)0x800105f4, 0x2d, STAGE},     // icy
+    {(char *)0x800105e4, 0x2e, BOSS},      // gulp
+    {(char *)0x800105d4, 0x32, HOMEWORLD}, // winter tundra
+    {(char *)0x800105c4, 0x33, STAGE},     // mystic
+    {(char *)0x800105b4, 0x34, STAGE},     // cloud
+    {(char *)0x800105a4, 0x37, STAGE},     // canyon
+    {(char *)0x80010594, 0x3d, STAGE},     // robotica
+    {(char *)0x80010588, 0x3e, STAGE},     // metropolis
+    {(char *)0x80010578, 0x41, STAGE},     // dragon shores
+    {(char *)0x80010568, 0x42, BOSS},      // ripto
+};
