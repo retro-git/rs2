@@ -124,7 +124,7 @@ void init()
 
         char res;
         LIBCD_CdControlB(CdlSetloc, &loc, &res) == 0;
-        LIBCD_CdRead(2, (void *)rs2.cur_init_file == 0 ? &kernel_free_space_1 : &kernel_free_space_2, 0x80);
+        LIBCD_CdRead(rs2.cur_init_file == 0 ? 2 : 1, (void *)rs2.cur_init_file == 0 ? &kernel_free_space_1 : &kernel_free_space_2, 0x80);
             //LIBC_printf("cdread failed\n");
 
         files[rs2.cur_init_file].loading = 1;
