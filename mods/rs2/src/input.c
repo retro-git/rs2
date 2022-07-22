@@ -146,7 +146,7 @@ void read_input_hook()
         }
     }
 
-    if (rs2.button_holdtimes[R3] == 1 || (currentInput.b.select && rs2.button_holdtimes[L2] == 1))
+    if (rs2.button_holdtimes[R3] == 1 || (currentInput.b.select && rs2.button_holdtimes[L2] == 1 || (currentInput.b.l2 && rs2.button_holdtimes[SELECT] == 1)))
     {
         rs2.menu_enabled = !rs2.menu_enabled;
         if (rs2.menu_enabled && (LIBC_rand() % 3 == 0))
