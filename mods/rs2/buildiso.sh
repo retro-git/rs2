@@ -11,6 +11,7 @@ python3 ../../../../tools/mod-builder/main.py 4 $1
 
 # build loader
 cd loader/src
+make clean
 make VERSION=$1
 mv loader.ps-exe ../../../../build/spyro2_rs2/LOADER.BIN # move loader to build folder
 
