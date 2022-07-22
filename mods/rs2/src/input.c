@@ -18,6 +18,7 @@ void init()
         *(uint8_t *)(0x80066f90) = 0xb;
         *(uint8_t *)(0x800698f4) = 3;
         *(uint8_t *)(0x80067e0c) = 5;
+        GAME_num_lives = 99;
         rs2.initialised = true;
     }
 }
@@ -145,22 +146,12 @@ void read_input_hook()
         }
     }
 
-    if (rs2.button_holdtimes[R3] == 1)
+    if (rs2.button_holdtimes[R3] == 1 || (currentInput.b.select && rs2.button_holdtimes[L2] == 1))
     {
         rs2.menu_enabled = !rs2.menu_enabled;
-        if (rs2.menu_enabled)
+        if (rs2.menu_enabled && (LIBC_rand() % 3 == 0))
         {
             char *msg = messages[LIBC_rand() % NUM_MESSAGES];
-            // add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-            //                                         .text = msg,
-            //                                         .x = FRAME_WIDTH / 2 - (GAME_GetTextWidth(msg) / 2),
-            //                                         .y = SCREEN_BOTTOM - 15,
-            //                                         .col = LIBC_rand() % 5,
-            //                                         .cur_time = 0,
-            //                                         .start_time = 0,
-            //                                         .end_time = 0,
-            //                                         .gameplay_should_draw = 0,
-            //                                     });
             add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
                                                     .text = msg,
                                                     .x = FRAME_WIDTH / 2 - (GAME_GetTextWidth(msg) / 2),

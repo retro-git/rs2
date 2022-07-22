@@ -1,70 +1,88 @@
-#include <sys/types.h>
-#include <stdio.h>
-#include <libgte.h>
-#include <libetc.h>
-#include <libgpu.h>
-#include <libapi.h>
-#include <libds.h>
-#include <libcd.h>
+#include "loader.h"
 
 // CD specifics
 #define CD_SECTOR_SIZE 2048
 // Converting bytes to sectors SECTOR_SIZE is defined in words, aka int
-#define BtoS(len) ( ( len + CD_SECTOR_SIZE - 1 ) / CD_SECTOR_SIZE ) 
+#define BtoS(len) ((len + CD_SECTOR_SIZE - 1) / CD_SECTOR_SIZE)
 
-#define VMODE 0                 // Video Mode : 0 : NTSC, 1: PAL
-#define SCREENXRES 320          // Screen width
-#define SCREENYRES 240          // Screen height
-#define CENTERX SCREENXRES/2    // Center of screen on x 
-#define CENTERY SCREENYRES/2    // Center of screen on y
-#define MARGINX 0                // margins for text display
+#define VMODE 0                // Video Mode : 0 : NTSC, 1: PAL
+#define SCREENXRES 320         // Screen width
+#define SCREENYRES 240         // Screen height
+#define CENTERX SCREENXRES / 2 // Center of screen on x
+#define CENTERY SCREENYRES / 2 // Center of screen on y
+#define MARGINX 0              // margins for text display
 #define MARGINY 32
-#define FONTSIZE 8 * 7           // Text Field Height
+#define FONTSIZE 8 * 7 // Text Field Height
+#define OTLEN 8        // Ordering table length
 
-DISPENV disp[2];                 // Double buffered DISPENV and DRAWENV
+DISPENV disp[2]; // Double buffered DISPENV and DRAWENV
 DRAWENV draw[2];
-short db = 0;                      // index of which buffer is used, values 0, 1
+short db = 0; // index of which buffer is used, values 0, 1
+
+u_long ot[2][OTLEN];
+char primbuff[2][32768];
+char *nextpri = primbuff[0];
 
 int i = 0;
 void init(void)
 {
-    ResetGraph(0);                 // Initialize drawing engine with a complete reset (0)
-    SetDefDispEnv(&disp[0], 0, 0         , SCREENXRES, SCREENYRES);     // Set display area for both &disp[0] and &disp[1]
-    SetDefDispEnv(&disp[1], 0, SCREENYRES, SCREENXRES, SCREENYRES);     // &disp[0] is on top  of &disp[1]
-    SetDefDrawEnv(&draw[0], 0, SCREENYRES, SCREENXRES, SCREENYRES);     // Set draw for both &draw[0] and &draw[1]
-    SetDefDrawEnv(&draw[1], 0, 0         , SCREENXRES, SCREENYRES);     // &draw[0] is below &draw[1]
-    if (VMODE)                  // PAL
+    ResetGraph(0);
+    SetDefDispEnv(&disp[0], 0, 0, SCREENXRES, SCREENYRES);
+    SetDefDispEnv(&disp[1], 0, SCREENYRES, SCREENXRES, SCREENYRES);
+    SetDefDrawEnv(&draw[0], 0, SCREENYRES, SCREENXRES, SCREENYRES);
+    SetDefDrawEnv(&draw[1], 0, 0, SCREENXRES, SCREENYRES);
+    if (VMODE)
     {
         SetVideoMode(MODE_PAL);
-        disp[0].screen.y += 8;  // add offset : 240 + 8 + 8 = 256
+        disp[0].screen.y += 8;
         disp[1].screen.y += 8;
-        }
-    SetDispMask(1);                 // Display on screen    
-    setRGB0(&draw[0], 50, 50, 50); // set color for first draw area
-    setRGB0(&draw[1], 50, 50, 50); // set color for second draw area
-    draw[0].isbg = 1;               // set mask for draw areas. 1 means repainting the area with the RGB color each frame 
+    }
+    SetDispMask(1);
+    setRGB0(&draw[0], 0, 0, 0);
+    setRGB0(&draw[1], 0, 0, 0);
+    draw[0].isbg = 1;
     draw[1].isbg = 1;
-    PutDispEnv(&disp[db]);          // set the disp and draw environnments
+    PutDispEnv(&disp[db]);
     PutDrawEnv(&draw[db]);
-    FntLoad(960, 0);                // Load font to vram at 960,0(+128)
-    FntOpen(MARGINX, SCREENYRES - MARGINY - FONTSIZE, SCREENXRES - MARGINX * 2, FONTSIZE, 0, 280 ); // FntOpen(x, y, width, height,  black_bg, max. nbr. chars
+    FntLoad(960, 0);
+    FntOpen(CENTERX - 85, 15, SCREENXRES - MARGINX * 2, FONTSIZE, 0, 280);
 }
 
 void display(void)
 {
-    DrawSync(0);                    // Wait for all drawing to terminate
-    VSync(0);                       // Wait for the next vertical blank
-    PutDispEnv(&disp[db]);          // set alternate disp and draw environnments
-    PutDrawEnv(&draw[db]);  
-    db = !db;                       // flip db value (0 or 1)
+    DrawSync(0); 
+    VSync(0);              // Wait for the next vertical blank
+    PutDispEnv(&disp[db]); // set alternate disp and draw environnments
+    PutDrawEnv(&draw[db]);
+    DrawOTag(&ot[db][OTLEN - 1]);
+    db = !db; // flip db value (0 or 1)
+    nextpri = primbuff[db];
 }
 
-void inject(char* file_name, u_char* dst) {
+void LoadTexture(u_long *tim, TIM_IMAGE *tparam)
+{                    
+    OpenTIM(tim);
+    ReadTIM(tparam);
+
+    LoadImage(tparam->prect, tparam->paddr);
+    DrawSync(0);
+
+    if (tparam->mode & 0x8)
+    {
+        LoadImage(tparam->crect, tparam->caddr);
+        DrawSync(0);
+    }
+}
+
+void inject(char *file_name, u_char *dst)
+{
     CdlFILE filePos;
-    if (CdSearchFile(&filePos, file_name) == 0) {
+    if (CdSearchFile(&filePos, file_name) == 0)
+    {
         printf("File %s not found\n", file_name);
     }
-    else {
+    else
+    {
         printf("File %s found\n", file_name);
     }
     CdControlB(CdlSetloc, (u_char *)&filePos.pos, 0);
@@ -74,41 +92,74 @@ void inject(char* file_name, u_char* dst) {
 
 int main(void)
 {
-    init();                         // init display
+    SPRT *sprt_16b;
+    DR_TPAGE *tpage_16b;
+
+    init(); // init display
 
     printf("LOADING %d\n", VERSION);
 
-    u_char* kernel_free_space_1;
-    u_char* kernel_free_space_2;
+    u_char *kernel_free_space_1;
+    u_char *kernel_free_space_2;
 
-    if (VERSION == 2) {
-        kernel_free_space_1 = (u_char*)0x8000A000;
-        kernel_free_space_2 = (u_char*)0x8000c400;
+    if (VERSION == 2)
+    {
+        kernel_free_space_1 = (u_char *)0x8000A000;
+        kernel_free_space_2 = (u_char *)0x8000c400;
     }
-    else if (VERSION == 3) {
-        kernel_free_space_1 = (u_char*)0x800096A8;
-        kernel_free_space_2 = (u_char*)0x80007526;
+    else if (VERSION == 3)
+    {
+        kernel_free_space_1 = (u_char *)0x800096A8;
+        kernel_free_space_2 = (u_char *)0x80007526;
     }
 
     CdInit();
     inject("\\DRAW.BIN;1", kernel_free_space_1);
     inject("\\INPUT.BIN;1", kernel_free_space_2);
 
-    while (1)                       // infinite loop
-    {   
-        i += 1;
-       // printf("%d\n", i);
-        FntPrint("rs2-0.0.1-alpha RETRO PRODUCTIONS");  // Send string to print stream
-        FntFlush(-1);               // Draw printe stream
-        display();                  // Execute display()
-        if (i == 100) {
+    LoadTexture(_binary____TIM_moneybags_tim_start, &tim_moneybags);
+
+    // MoveImage(tim_moneybags.prect, 0, 0);
+
+    while (1) // infinite loop
+    {
+        ClearOTagR(ot[db], OTLEN);
+        sprt_16b = (SPRT *)nextpri;
+        setSprt(sprt_16b);
+        setRGB0(sprt_16b, 128, 128, 128);
+        setXY0(sprt_16b, 0, 0);
+        setWH(sprt_16b, 320, 240);
+        setClut(sprt_16b, tim_moneybags.crect->x, tim_moneybags.crect->y);
+        addPrim(ot[db], sprt_16b);
+        nextpri += sizeof(SPRT);
+
+
+        tpage_16b = (DR_TPAGE *)nextpri;
+        setDrawTPage(tpage_16b, 0, 1,
+                     getTPage(tim_moneybags.mode & 0x3, 0,
+                              tim_moneybags.prect->x, tim_moneybags.prect->y)); 
+                                                                  
+                                                                  
+        addPrim(ot[db], tpage_16b);                               
+        nextpri += sizeof(DR_TPAGE);                              
+
+        // MoveImage(tim_moneybags.prect, 0, 0);
+        // MoveImage(tim_moneybags.prect, 0, SCREENYRES);
+        //printf("%d\n", i);
+        FntPrint("rs2-1.0 RETRO PRODUCTIONS"); // Send string to print stream
+        FntFlush(-1);                                  // Draw printe stream
+        display();                                      // Execute display()
+        
+        i += 1;                                   
+        if (i == 120)
+        {
             break;
         }
     }
 
     ResetGraph(0);
-    //CardStop();
-    //PadStop();
+    // CardStop();
+    // PadStop();
     StopCallback();
     _96_init();
     LoadExec("cdrom:\\SCUS_944.25;1", 0x801FFFF0, 0);
