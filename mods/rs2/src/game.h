@@ -127,6 +127,7 @@ void GAME_FUN_80077374(int unk);
 
 extern int32_t header_start;
 extern int32_t kernel_free_space_1;
+extern int32_t kernel_free_space_2;
 
 extern Vec3 GAME_cam_position;
 extern Vec3s GAME_cam_rotation;

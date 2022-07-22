@@ -18,7 +18,9 @@ typedef struct
 } savestate_t;
 
 struct rs2 {
+    uint16_t cur_init_file;
     uint16_t initialised;
+    uint16_t initialised_input_hook;
     uint16_t menu_index;
     uint16_t menu_enabled;
     uint16_t is_warping;

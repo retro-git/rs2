@@ -23,6 +23,8 @@ u_long ot[2][OTLEN];
 char primbuff[2][32768];
 char *nextpri = primbuff[0];
 
+int err = 0;
+
 int i = 0;
 void init(void)
 {
@@ -50,7 +52,7 @@ void init(void)
 
 void display(void)
 {
-    DrawSync(0); 
+    DrawSync(0);
     VSync(0);              // Wait for the next vertical blank
     PutDispEnv(&disp[db]); // set alternate disp and draw environnments
     PutDrawEnv(&draw[db]);
@@ -60,7 +62,7 @@ void display(void)
 }
 
 void LoadTexture(u_long *tim, TIM_IMAGE *tparam)
-{                    
+{
     OpenTIM(tim);
     ReadTIM(tparam);
 
@@ -74,20 +76,38 @@ void LoadTexture(u_long *tim, TIM_IMAGE *tparam)
     }
 }
 
+void error(char* func_name, char* file_name) {
+    char buffer[64];
+    sprintf(buffer, "%s failed - %s", func_name, file_name);
+    FntPrint(buffer);
+    FntFlush(-1);
+    display();
+    err = 1;
+}
+
 void inject(char *file_name, u_char *dst)
 {
     CdlFILE filePos;
     if (CdSearchFile(&filePos, file_name) == 0)
     {
-        printf("File %s not found\n", file_name);
+        error("CdSearchFile", file_name);
+        return;
     }
-    else
+    if (CdControlB(CdlSetloc, (u_char *)&filePos.pos, 0) != 0)
     {
-        printf("File %s found\n", file_name);
+        error("CdControlB", file_name);
+        return;
     }
-    CdControlB(CdlSetloc, (u_char *)&filePos.pos, 0);
-    CdRead(BtoS(filePos.size), dst, CdlModeSpeed);
-    CdReadSync(0, 0);
+    if (CdRead(BtoS(filePos.size), dst, CdlModeSpeed) == 0)
+    {
+        error("CdRead", file_name);
+        return;
+    }
+    if (CdReadSync(0, 0) == -1)
+    {
+        error("CdReadSync", file_name);
+        return;
+    }
 }
 
 int main(void)
@@ -97,25 +117,25 @@ int main(void)
 
     init(); // init display
 
-    printf("LOADING %d\n", VERSION);
+    // printf("LOADING %d\n", VERSION);
 
-    u_char *kernel_free_space_1;
-    u_char *kernel_free_space_2;
+    // u_char *kernel_free_space_1;
+    // u_char *kernel_free_space_2;
 
-    if (VERSION == 2)
-    {
-        kernel_free_space_1 = (u_char *)0x8000A000;
-        kernel_free_space_2 = (u_char *)0x8000c400;
-    }
-    else if (VERSION == 3)
-    {
-        kernel_free_space_1 = (u_char *)0x800096A8;
-        kernel_free_space_2 = (u_char *)0x80007526;
-    }
+    // if (VERSION == 2)
+    // {
+    //     kernel_free_space_1 = (u_char *)0x8000A000;
+    //     kernel_free_space_2 = (u_char *)0x8000c400;
+    // }
+    // else if (VERSION == 3)
+    // {
+    //     kernel_free_space_1 = (u_char *)0x800096A8;
+    //     kernel_free_space_2 = (u_char *)0x80007526;
+    // }
 
-    CdInit();
-    inject("\\DRAW.BIN;1", kernel_free_space_1);
-    inject("\\INPUT.BIN;1", kernel_free_space_2);
+    // CdInit();
+    // inject("\\DRAW.BIN;1", kernel_free_space_1);
+    // inject("\\INPUT.BIN;1", kernel_free_space_2);
 
     LoadTexture(_binary____TIM_moneybags_tim_start, &tim_moneybags);
 
@@ -123,37 +143,38 @@ int main(void)
 
     while (1) // infinite loop
     {
-        ClearOTagR(ot[db], OTLEN);
-        sprt_16b = (SPRT *)nextpri;
-        setSprt(sprt_16b);
-        setRGB0(sprt_16b, 128, 128, 128);
-        setXY0(sprt_16b, 0, 0);
-        setWH(sprt_16b, 320, 240);
-        setClut(sprt_16b, tim_moneybags.crect->x, tim_moneybags.crect->y);
-        addPrim(ot[db], sprt_16b);
-        nextpri += sizeof(SPRT);
-
-
-        tpage_16b = (DR_TPAGE *)nextpri;
-        setDrawTPage(tpage_16b, 0, 1,
-                     getTPage(tim_moneybags.mode & 0x3, 0,
-                              tim_moneybags.prect->x, tim_moneybags.prect->y)); 
-                                                                  
-                                                                  
-        addPrim(ot[db], tpage_16b);                               
-        nextpri += sizeof(DR_TPAGE);                              
-
-        // MoveImage(tim_moneybags.prect, 0, 0);
-        // MoveImage(tim_moneybags.prect, 0, SCREENYRES);
-        //printf("%d\n", i);
-        FntPrint("rs2-1.0 RETRO PRODUCTIONS"); // Send string to print stream
-        FntFlush(-1);                                  // Draw printe stream
-        display();                                      // Execute display()
-        
-        i += 1;                                   
-        if (i == 120)
+        if (err != 1)
         {
-            break;
+            ClearOTagR(ot[db], OTLEN);
+            sprt_16b = (SPRT *)nextpri;
+            setSprt(sprt_16b);
+            setRGB0(sprt_16b, 128, 128, 128);
+            setXY0(sprt_16b, 0, 0);
+            setWH(sprt_16b, 320, 240);
+            setClut(sprt_16b, tim_moneybags.crect->x, tim_moneybags.crect->y);
+            addPrim(ot[db], sprt_16b);
+            nextpri += sizeof(SPRT);
+
+            tpage_16b = (DR_TPAGE *)nextpri;
+            setDrawTPage(tpage_16b, 0, 1,
+                         getTPage(tim_moneybags.mode & 0x3, 0,
+                                  tim_moneybags.prect->x, tim_moneybags.prect->y));
+
+            addPrim(ot[db], tpage_16b);
+            nextpri += sizeof(DR_TPAGE);
+
+            // MoveImage(tim_moneybags.prect, 0, 0);
+            // MoveImage(tim_moneybags.prect, 0, SCREENYRES);
+            // printf("%d\n", i);
+            FntPrint("rs2-1.0 RETRO PRODUCTIONS"); // Send string to print stream
+            FntFlush(-1);                          // Draw printe stream
+            display();                             // Execute display()
+
+            i += 1;
+            if (i == 120)
+            {
+                break;
+            }
         }
     }
 

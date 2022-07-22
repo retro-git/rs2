@@ -6,6 +6,7 @@
 #include "libc.h"
 #include "spyro.h"
 #include "common.h"
+#include "input.h"
 
 struct rs2 rs2 = {0};
 
@@ -27,19 +28,92 @@ int rand_hook_trampoline()
     asm volatile("nop");
 }*/
 
-void UpdateGame_Normal_hook() {
-    if (!rs2.menu_enabled && !rs2.frame_advance) {
+void UpdateGame_Normal_hook()
+{
+    if (!rs2.menu_enabled && !rs2.frame_advance)
+    {
         GAME_UpdateGame_Normal();
     }
-    else if (!rs2.menu_enabled && rs2.frame_advance && (rs2.button_holdtimes[L3] == 1 || rs2.button_holdtimes[L3] > 5)) {
+    else if (!rs2.menu_enabled && rs2.frame_advance && (rs2.button_holdtimes[L3] == 1 || rs2.button_holdtimes[L3] > 5))
+    {
         GAME_inputStates[0].pressed.i = GAME_inputStates[0].current.i;
         GAME_UpdateGame_Normal();
     }
 }
 
+#define NUM_OVERLAY_FILES 2
+
+typedef struct
+{
+    uint8_t loading;
+    uint32_t* hook_loc;
+    int32_t* hook_func;
+} OverlayFile;
+
+OverlayFile files[NUM_OVERLAY_FILES] = {
+    {0, 0x80015808, draw_hook},
+    {0, 0x8001b150, read_input_hook},
+};
+
+void read_cb(unsigned char status, unsigned char *result)
+{
+    LIBC_printf("loaded file %d\n", rs2.cur_init_file);
+    //patch_jump(files[rs2.cur_init_file].hook_loc, files[rs2.cur_init_file].hook_func);
+    //patch_jump((int32_t *)0x80015808, (int32_t)rs2.cur_init_file == 0 ? draw_hook : read_input_hook);
+    rs2.cur_init_file++;
+
+    if (rs2.cur_init_file == NUM_OVERLAY_FILES)
+    {
+        LIBC_printf("all files loaded\n");
+        for (int i = 0; i < NUM_OVERLAY_FILES; i++) {
+            patch_jump(files[i].hook_loc, files[i].hook_func); 
+        }
+        patch_jump((int32_t *)0x8001b190, (int32_t)UpdateGame_Normal_hook);
+        LIBCD_CdReadCallback(rs2.read_callback);
+        rs2.initialised = 1;
+    }
+}
+
+void init()
+{
+    LIBC_printf("init %d\n", BUILD);
+
+#if BUILD == 94424
+    patch_jump((int32_t *)0x80015808, (int32_t)draw_hook);
+    patch_jump((int32_t *)0x8001b150, (int32_t)read_input_hook);
+    patch_jump((int32_t *)0x8001b190, (int32_t)UpdateGame_Normal_hook);
+    rs2.initialised = 1;
+#else
+    if (files[rs2.cur_init_file].loading == 0)
+    {
+        CdlLOC loc;
+        if (rs2.cur_init_file == 0) rs2.read_callback = LIBCD_CdReadCallback(read_cb);
+        LIBCD_CdIntToPos(rs2.cur_init_file == 0 ? 229989 : 229991, &loc);
+        //LIBCD_CdIntToPos(229989, &loc);
+
+        char res;
+        if (LIBCD_CdControlB(CdlSetloc, &loc, &res) == 0) {
+            LIBC_printf("cdcontrolb failed\n");
+        }
+        if (LIBCD_CdRead(2, (void *)rs2.cur_init_file == 0 ? &kernel_free_space_1 : &kernel_free_space_2, 0x80) == 0) {
+            LIBC_printf("cdread failed\n");
+        } 
+
+        files[rs2.cur_init_file].loading = 1;
+    }
+#endif
+
+    // rs2.initialised = 1;
+}
+
 void main_hook()
 {
     GAME_RenderGame();
+
+    if (!rs2.initialised)
+    {
+        init();
+    }
 
     GAME_ripto_zoe_state = 0;
 
@@ -47,7 +121,6 @@ void main_hook()
     {
         handle_warp();
     }
-
 }
 
 void handle_warp()

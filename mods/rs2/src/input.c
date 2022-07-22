@@ -10,7 +10,7 @@
 #include "gpu.h"
 #include "msg.h"
 
-void init()
+void init_effects()
 {
     // skip intro and load into glimmer
     if (GAME_gameState == 0xb)
@@ -19,7 +19,7 @@ void init()
         *(uint8_t *)(0x800698f4) = 3;
         *(uint8_t *)(0x80067e0c) = 5;
         GAME_num_lives = 99;
-        rs2.initialised = true;
+        rs2.initialised_input_hook = true;
     }
 }
 
@@ -45,8 +45,8 @@ void read_input_hook()
 {
     GAME_ReadInput();
 
-    if (!rs2.initialised)
-        init();
+    if (!rs2.initialised_input_hook)
+        init_effects();
 
     passive_effects();
 
