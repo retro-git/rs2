@@ -8,3 +8,5 @@ Online patcher available at: https://spyro.run/prachack.html (NOTE: as explained
 
 
 ![image](https://user-images.githubusercontent.com/43223593/187248557-94a84975-9055-4912-8724-ec1619c22799.png)
+![image](https://user-images.githubusercontent.com/43223593/187282905-2fdaec79-1161-42db-b895-7c094f19f11d.png)
+![image](https://user-images.githubusercontent.com/43223593/187282978-f106013a-0a2c-4cb9-ae58-fa6c004761c5.png)
