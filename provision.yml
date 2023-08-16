@@ -1,0 +1,75 @@
+- name: Provision PSX Modding Toolchain
+  hosts: all
+  become: no
+
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+      become: yes
+
+    - name: Install required packages
+      apt:
+        name: 
+          - python3
+          - python3-pip
+          - git
+          - libgl1-mesa-glx
+          - libc6-dev
+        state: present
+      become: yes
+
+    - name: Clone repositories
+      git:
+        repo: "{{ item.repo }}"
+        dest: "{{ item.dest }}"
+        recursive: yes
+      loop:
+        - { repo: 'https://github.com/Illidanz/pymkpsxiso.git', dest: '~/pymkpsxiso' }
+        - { repo: 'https://github.com/Illidanz/pyxdelta.git', dest: '~/pyxdelta' }
+        - { repo: 'https://github.com/retro-git/psx-modding-toolchain', dest: '~/psx-modding-toolchain' }
+        - { repo: 'https://github.com/retro-git/rs2.git', dest: '~/psx-modding-toolchain/games/spyro2' }
+
+    - name: Install packages using pip
+      command: pip install .
+      args:
+        chdir: "{{ item }}"
+      loop:
+        - ~/pymkpsxiso
+        - ~/pyxdelta
+
+    - name: Install required Python packages
+      pip:
+        name:
+          - requests
+          - opencv-python
+          - pillow
+
+    - name: Fetch mipsel toolchain compile script and make it executable
+      get_url:
+        url: "https://raw.githubusercontent.com/grumpycoders/pcsx-redux/main/tools/linux-mips/spawn-compiler.sh"
+        dest: "~/spawn-compiler.sh"
+        mode: "u+x"
+
+    - name: Run the script with sudo and makeflags
+      command: "sudo /home/vagrant/spawn-compiler.sh"
+      become: yes
+      environment:
+        MAKEFLAGS: "-j"
+
+    # - name: Download spawn-compiler.sh
+    #   get_url:
+    #     url: https://github.com/grumpycoders/pcsx-redux/raw/main/tools/linux-mips/spawn-compiler.sh
+    #     dest: /home/vagrant/spawn-compiler.sh
+
+    # - name: Compile gcc mipself-none-elf
+    #   command: /bin/bash /home/vagrant/spawn-compiler.sh
+    #   args:
+    #     chdir: /home/vagrant
+    #   environment:
+    #     PATH: "{{ ansible_env.PATH }}:/home/vagrant/mipself-none-elf/bin"
+
+    # - name: Install mkpsxiso and vcdiff
+    #   apt:
+    #     name:
+    #       - mkisofs
+    #       - vcdimager
