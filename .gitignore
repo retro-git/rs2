@@ -10,3 +10,4 @@ output/
 *.o
 *.dep
 .DS_Store
+.vagrant
