@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 declare -A versions
 versions[2]="ps1"

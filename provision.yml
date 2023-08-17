@@ -55,14 +55,10 @@
           - opencv-python
           - pillow
 
-    - name: Make rs2 build directory and /usr/libexec/gcc
+    - name: Make rs2 build directory
       file:
-        path: "{{ item }}"
+        path: "/home/vagrant/psx-modding-toolchain/games/rs2/build"
         state: directory
-      loop:
-        - "/home/vagrant/psx-modding-toolchain/games/rs2/build"
-        - "/usr/libexec/gcc"
-      become: yes
 
     - name: Copy psyq folder and spyro2.bin from /vagrant/ with remote_src
       copy:
@@ -73,7 +69,6 @@
         - { src: "/vagrant/psyq-4_7-converted", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/" }
         - { src: "/vagrant/spyro2.bin", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.bin" }
         - { src: "/vagrant/spyro2.cue", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.cue" }
-      become: yes
 
     # - name: Download psyq and spyro2
     #   command: "wget {{ item.url }}"
@@ -111,6 +106,12 @@
       command: "/home/vagrant/spawn-compiler.sh"
       become: yes
       when: mipsel.stat.exists == False
+
+    - name: Make /usr/libexec/gcc dir
+      file:
+        path: "/usr/libexec/gcc"
+        state: directory
+      become: yes
 
     - name: Create symlinks
       file:
