@@ -1,4 +1,4 @@
-- name: Provision PSX Modding Toolchain
+- name: Provision RS2 & PSX Modding Toolchain
   hosts: all
   become: no
 
