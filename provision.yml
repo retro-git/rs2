@@ -65,26 +65,36 @@
         - "/usr/libexec/gcc"
       become: yes
 
-    - name: Download psyq and spyro2
-      command: "wget {{ item.url }}"
-      args:
-        chdir: "{{ item.dest }}"
+    - name: Copy psyq folder and spyro2.bin from /vagrant/ with remote_src
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        remote_src: yes
       loop:
-        - { url: "http://psx.arthus.net/sdk/Psy-Q/psyq-4.7-converted-full.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4.7-converted-full.7z" }
-        - { url: "https://archive.org/download/Spyro2RiptosRage.7z/Spyro%202%20-%20Ripto%27s%20Rage.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build/", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/build/Spyro 2 - Ripto's Rage.7z" }
-      when: not (item.creates is defined and item.creates is file)
+        - { src: "/vagrant/psyq-4_7-converted", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted" }
+        - { src: "/vagrant/spyro2.bin", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.bin" }
       become: yes
 
-    - name: Extract psyq and spyro2
-      command: "7z x {{ item.src }} -o{{ item.dest }}"
-      when: not (item.creates is defined and item.creates is file)
-      loop:
-        - { src: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4.7-converted-full.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted" }
-        - { src: "/home/vagrant/psx-modding-toolchain/games/rs2/build/Spyro 2 - Ripto's Rage.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.bin" }
+    # - name: Download psyq and spyro2
+    #   command: "wget {{ item.url }}"
+    #   args:
+    #     chdir: "{{ item.dest }}"
+    #   loop:
+    #     - { url: "http://psx.arthus.net/sdk/Psy-Q/psyq-4.7-converted-full.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4.7-converted-full.7z" }
+    #     - { url: "https://archive.org/download/Spyro2RiptosRage.7z/Spyro%202%20-%20Ripto%27s%20Rage.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build/", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/build/Spyro 2 - Ripto's Rage.7z" }
+    #   when: not (item.creates is defined and item.creates is file)
+    #   become: yes
+
+    # - name: Extract psyq and spyro2
+    #   command: "7z x {{ item.src }} -o{{ item.dest }}"
+    #   when: not (item.creates is defined and item.creates is file)
+    #   loop:
+    #     - { src: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4.7-converted-full.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted" }
+    #     - { src: "/home/vagrant/psx-modding-toolchain/games/rs2/build/Spyro 2 - Ripto's Rage.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.bin" }
 
     # Rename first .bin file in /home/vagrant/psx-modding-toolchain/games/rs2/build to spyro2.bin
-    - name: Rename first .bin file in /home/vagrant/psx-modding-toolchain/games/rs2/build to spyro2.bin
-      shell: mv /home/vagrant/psx-modding-toolchain/games/rs2/build/*.bin /home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.bin
+    # - name: Rename first .bin file in /home/vagrant/psx-modding-toolchain/games/rs2/build to spyro2.bin
+    #   shell: mv /home/vagrant/psx-modding-toolchain/games/rs2/build/*.bin /home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.bin
 
     - name: Fetch mipsel toolchain compile script and make it executable
       get_url:

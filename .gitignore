@@ -11,3 +11,5 @@ output/
 *.dep
 .DS_Store
 .vagrant
+spyro2.bin
+psyq-4_7-converted
