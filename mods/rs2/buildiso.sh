@@ -5,7 +5,7 @@ versions[2]="ps1"
 versions[3]="ps2"
 
 # clean/compile/build mod iso
-python3 ../../../../tools/mod-builder/main.py 11
+python3 ../../../../tools/mod-builder/main.py 18
 python3 ../../../../tools/mod-builder/main.py 1 $1
 python3 ../../../../tools/mod-builder/main.py 4 $1
 

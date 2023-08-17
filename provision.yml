@@ -55,13 +55,12 @@
           - opencv-python
           - pillow
 
-    - name: Make rs2 build directory, /home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted.7z and /usr/libexec/gcc
+    - name: Make rs2 build directory and /usr/libexec/gcc
       file:
         path: "{{ item }}"
         state: directory
       loop:
         - "/home/vagrant/psx-modding-toolchain/games/rs2/build"
-        - "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted"
         - "/usr/libexec/gcc"
       become: yes
 
@@ -71,8 +70,9 @@
         dest: "{{ item.dest }}"
         remote_src: yes
       loop:
-        - { src: "/vagrant/psyq-4_7-converted", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted" }
+        - { src: "/vagrant/psyq-4_7-converted", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/" }
         - { src: "/vagrant/spyro2.bin", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.bin" }
+        - { src: "/vagrant/spyro2.cue", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.cue" }
       become: yes
 
     # - name: Download psyq and spyro2
@@ -102,16 +102,22 @@
         dest: "/home/vagrant/spawn-compiler.sh"
         mode: "u+x"
 
+    - name: Gather mipsel file info
+      stat:
+        path: /usr/local/bin/mipsel-none-elf-gcc
+      register: mipsel
+
     - name: Run mipsel toolchain compile script as sudo
       command: "/home/vagrant/spawn-compiler.sh"
       become: yes
+      when: mipsel.stat.exists == False
 
     - name: Create symlinks
       file:
         src: "{{ item.src }}"
-        dst: "{{ item.dst }}"
+        dest: "{{ item.dst }}"
         state: link
       loop:
-        - { src: "/home/vagrant/gcc-13.2.0/build/gcc/cc1", dest: "/usr/bin/cc1" }
-        - { src: "/home/vagrant/gcc-13.2.0/build/gcc/liblto_plugin.so", dest: "/usr/libexec/gcc/liblto_plugin.so" }
+        - { src: "/home/vagrant/gcc-13.2.0/build/gcc/cc1", dst: "/usr/bin/cc1" }
+        - { src: "/home/vagrant/gcc-13.2.0/build/gcc/liblto_plugin.so", dst: "/usr/libexec/gcc/liblto_plugin.so" }
       become: yes
