@@ -14,7 +14,8 @@
           - python3-pip
           - git
           - libgl1-mesa-glx
-          - libc6-dev
+          - p7zip-full
+          - cmake
         state: present
       become: yes
 
@@ -24,52 +25,83 @@
         dest: "{{ item.dest }}"
         recursive: yes
       loop:
-        - { repo: 'https://github.com/Illidanz/pymkpsxiso.git', dest: '~/pymkpsxiso' }
-        - { repo: 'https://github.com/Illidanz/pyxdelta.git', dest: '~/pyxdelta' }
-        - { repo: 'https://github.com/retro-git/psx-modding-toolchain', dest: '~/psx-modding-toolchain' }
-        - { repo: 'https://github.com/retro-git/rs2.git', dest: '~/psx-modding-toolchain/games/spyro2' }
+        - { repo: 'https://github.com/Lameguy64/mkpsxiso', dest: '/home/vagrant/mkpsxiso' }
+        - { repo: 'https://github.com/Illidanz/pymkpsxiso.git', dest: '/home/vagrant/pymkpsxiso' }
+        - { repo: 'https://github.com/Illidanz/pyxdelta.git', dest: '/home/vagrant/pyxdelta' }
+        - { repo: 'https://github.com/retro-git/psx-modding-toolchain', dest: '/home/vagrant/psx-modding-toolchain' }
+        - { repo: 'https://github.com/retro-git/rs2.git', dest: '/home/vagrant/psx-modding-toolchain/games/rs2' }
 
-    - name: Install packages using pip
+    - name: Compile and install mkpsxiso
+      shell: |
+        cmake -S . -B ./build -DCMAKE_BUILD_TYPE=Release
+        cmake --build ./build
+        cmake --install ./build
+      args:
+        chdir: "/home/vagrant/mkpsxiso"
+      become: yes
+
+    - name: Install pymkpsxiso and pyxdelta with pip
       command: pip install .
       args:
         chdir: "{{ item }}"
       loop:
-        - ~/pymkpsxiso
-        - ~/pyxdelta
+        - /home/vagrant/pymkpsxiso
+        - /home/vagrant/pyxdelta
 
-    - name: Install required Python packages
+    - name: Install additional required Python packages
       pip:
         name:
           - requests
           - opencv-python
           - pillow
 
+    - name: Make rs2 build directory, /home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted.7z and /usr/libexec/gcc
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - "/home/vagrant/psx-modding-toolchain/games/rs2/build"
+        - "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted"
+        - "/usr/libexec/gcc"
+      become: yes
+
+    - name: Download psyq and spyro2
+      command: "wget {{ item.url }}"
+      args:
+        chdir: "{{ item.dest }}"
+      loop:
+        - { url: "http://psx.arthus.net/sdk/Psy-Q/psyq-4.7-converted-full.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4.7-converted-full.7z" }
+        - { url: "https://archive.org/download/Spyro2RiptosRage.7z/Spyro%202%20-%20Ripto%27s%20Rage.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build/", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/build/Spyro 2 - Ripto's Rage.7z" }
+      when: not (item.creates is defined and item.creates is file)
+      become: yes
+
+    - name: Extract psyq and spyro2
+      command: "7z x {{ item.src }} -o{{ item.dest }}"
+      when: not (item.creates is defined and item.creates is file)
+      loop:
+        - { src: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4.7-converted-full.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/mods/rs2/loader/psyq-4_7-converted" }
+        - { src: "/home/vagrant/psx-modding-toolchain/games/rs2/build/Spyro 2 - Ripto's Rage.7z", dest: "/home/vagrant/psx-modding-toolchain/games/rs2/build", creates: "/home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.bin" }
+
+    # Rename first .bin file in /home/vagrant/psx-modding-toolchain/games/rs2/build to spyro2.bin
+    - name: Rename first .bin file in /home/vagrant/psx-modding-toolchain/games/rs2/build to spyro2.bin
+      shell: mv /home/vagrant/psx-modding-toolchain/games/rs2/build/*.bin /home/vagrant/psx-modding-toolchain/games/rs2/build/spyro2.bin
+
     - name: Fetch mipsel toolchain compile script and make it executable
       get_url:
         url: "https://raw.githubusercontent.com/grumpycoders/pcsx-redux/main/tools/linux-mips/spawn-compiler.sh"
-        dest: "~/spawn-compiler.sh"
+        dest: "/home/vagrant/spawn-compiler.sh"
         mode: "u+x"
 
-    - name: Run the script with sudo and makeflags
-      command: "sudo /home/vagrant/spawn-compiler.sh"
+    - name: Run mipsel toolchain compile script as sudo
+      command: "/home/vagrant/spawn-compiler.sh"
       become: yes
-      environment:
-        MAKEFLAGS: "-j"
 
-    # - name: Download spawn-compiler.sh
-    #   get_url:
-    #     url: https://github.com/grumpycoders/pcsx-redux/raw/main/tools/linux-mips/spawn-compiler.sh
-    #     dest: /home/vagrant/spawn-compiler.sh
-
-    # - name: Compile gcc mipself-none-elf
-    #   command: /bin/bash /home/vagrant/spawn-compiler.sh
-    #   args:
-    #     chdir: /home/vagrant
-    #   environment:
-    #     PATH: "{{ ansible_env.PATH }}:/home/vagrant/mipself-none-elf/bin"
-
-    # - name: Install mkpsxiso and vcdiff
-    #   apt:
-    #     name:
-    #       - mkisofs
-    #       - vcdimager
+    - name: Create symlinks
+      file:
+        src: "{{ item.src }}"
+        dst: "{{ item.dst }}"
+        state: link
+      loop:
+        - { src: "/home/vagrant/gcc-13.2.0/build/gcc/cc1", dest: "/usr/bin/cc1" }
+        - { src: "/home/vagrant/gcc-13.2.0/build/gcc/liblto_plugin.so", dest: "/usr/libexec/gcc/liblto_plugin.so" }
+      become: yes

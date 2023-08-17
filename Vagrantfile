@@ -4,8 +4,8 @@ Vagrant.configure("2") do |config|
     config.vm.network "private_network", type: "dhcp"
   
     config.vm.provider "parallels" do |vb|
-      vb.memory = "2048"
-      vb.cpus = 2
+      vb.memory = "8092"
+      vb.cpus = 4
     end
   
     config.vm.provision "ansible" do |ansible|
