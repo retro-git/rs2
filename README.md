@@ -1,5 +1,13 @@
 # rs2
 
+## Controls:
+OPEN/CLOSE MENU: R3 or L2+SELECT
+NAVIGATE MENU: DPAD and L2/R2 to switch pages
+SAVE/LOAD CUSTOM POSITION: L2+R2+TRIANGLE to save, L2+R2+CIRCLE to load
+FADE OUT TO MOST RECENT CHECKPOINT: L2+R2+START
+SAVE CUSTOM CHECKPOINT: L2+R2+SQAURE
+
+
 Practice Hack for Spyro 2: Ripto's Rage. Built with [psx-modding-toolchain](https://github.com/mateusfavarin/psx-modding-toolchain).
 
 The following video demonstrates the features, shows how to patch an ISO with the hack, and gives some useful information about the state of the project: https://www.youtube.com/watch?v=njPkQnrKqTM.
