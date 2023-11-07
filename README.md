@@ -5,7 +5,8 @@ OPEN/CLOSE MENU: R3 or L2+SELECT\
 NAVIGATE MENU: DPAD and L2/R2 to switch pages\
 SAVE/LOAD CUSTOM POSITION: L2+R2+TRIANGLE to save, L2+R2+CIRCLE to load\
 FADE OUT TO MOST RECENT CHECKPOINT: L2+R2+START\
-SAVE CUSTOM CHECKPOINT: L2+R2+SQAURE
+SAVE CUSTOM CHECKPOINT: L2+R2+SQAURE\
+FRAME ADVANCE: Press L3 to pause the game. Tap L3 while paused to advance a frame. Hold L3 and then release to advance multiple frames. Press select to unpause
 
 Practice Hack for Spyro 2: Ripto's Rage. Built with [psx-modding-toolchain](https://github.com/mateusfavarin/psx-modding-toolchain).
 
