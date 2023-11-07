@@ -7,7 +7,8 @@ SAVE/LOAD CUSTOM POSITION: L2+R2+TRIANGLE to save, L2+R2+CIRCLE to load\
 FADE OUT TO MOST RECENT CHECKPOINT: L2+R2+START\
 SAVE CUSTOM CHECKPOINT: L2+R2+SQAURE\
 FRAME ADVANCE: Press L3 to pause the game. Tap L3 while paused to advance a frame. Hold L3 and then release to advance multiple frames. Press select to unpause.\
-MOON JUMP: Jump while holding SELECT.
+MOON JUMP: Jump while holding SELECT.\
+SWIM-IN-AIR: SELECT+CIRCLE to enter SIA, SELECT+TRIANGLE to return to normal.
 
 ## About:
 Practice Hack for Spyro 2: Ripto's Rage. Built with [psx-modding-toolchain](https://github.com/mateusfavarin/psx-modding-toolchain).
