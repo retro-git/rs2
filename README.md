@@ -8,6 +8,7 @@ FADE OUT TO MOST RECENT CHECKPOINT: L2+R2+START\
 SAVE CUSTOM CHECKPOINT: L2+R2+SQAURE\
 FRAME ADVANCE: Press L3 to pause the game. Tap L3 while paused to advance a frame. Hold L3 and then release to advance multiple frames. Press select to unpause
 
+## About:
 Practice Hack for Spyro 2: Ripto's Rage. Built with [psx-modding-toolchain](https://github.com/mateusfavarin/psx-modding-toolchain).
 
 The following video demonstrates the features, shows how to patch an ISO with the hack, and gives some useful information about the state of the project: https://www.youtube.com/watch?v=njPkQnrKqTM.
