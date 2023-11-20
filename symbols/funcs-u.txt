@@ -26,7 +26,9 @@ GAME_Vec3_DivByN = 0x8001be60;
 GAME_DrawText = 0x8004a374;
 GAME_DrawSTBlackRect = 0x8004d2d8;
 GAME_DrawOpaqueBlackRect = 0x8004dd28;
+GAME_DrawUnknownRect = 0x8004e1cc;
 GAME_DrawGameScreenshot = 0x8004e14c;
+GAME_DrawShadowedOrangeLine = 0x8004d1bc;
 
 GAME_ReadInput = 0x8001271c;
 

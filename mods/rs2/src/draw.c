@@ -9,21 +9,23 @@
 #include "gpu.h"
 #include "menus.h"
 
-draw_command_t draw_commands[3] = {0};
+// draw_command_t draw_commands[3] = {0};
 
-void add_draw_command(DRAW_COMMAND_TYPE type, void *data)
-{
-    draw_command_t *command = draw_commands;
-    for (uint8_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++, command++)
-    {
-        if (command->type == FREE_SLOT && type == DRAW_TEXT_TIMEOUT)
-        {
-            command->type = DRAW_TEXT_TIMEOUT;
-            memcpy((void *)&command->d.draw_text_timeout_data, data, sizeof(draw_text_timeout_data_t));
-            break;
-        }
-    }
-}
+// void add_draw_command(DRAW_COMMAND_TYPE type, void *data)
+// {
+//     draw_command_t *command = draw_commands;
+//     for (uint8_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++, command++)
+//     {
+//         if (command->type == FREE_SLOT && type == DRAW_TEXT_TIMEOUT)
+//         {
+//             command->type = DRAW_TEXT_TIMEOUT;
+//             memcpy((void *)&command->d.draw_text_timeout_data, data, sizeof(draw_text_timeout_data_t));
+//             break;
+//         }
+//     }
+// }
+
+draw_command_t active_draw_command = {0};
 
 void UpdateGame_Normal_hook()
 {
@@ -39,16 +41,26 @@ void UpdateGame_Normal_hook()
 
 void savestate_draw_msg(char *msg)
 {
-    add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                            .text = msg,
-                                            .x = SCREEN_LEFT + 10,
-                                            .y = SCREEN_BOTTOM - 15,
-                                            .col = TEXTCOL_WHITE,
-                                            .cur_time = 0,
-                                            .start_time = 0,
-                                            .end_time = 30,
-                                            .gameplay_should_draw = 1,
-                                        });
+    // add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+    //                                         .text = msg,
+    //                                         .x = SCREEN_LEFT + 10,
+    //                                         .y = SCREEN_BOTTOM - 15,
+    //                                         .col = TEXTCOL_WHITE,
+    //                                         .cur_time = 0,
+    //                                         .start_time = 0,
+    //                                         .end_time = 30,
+    //                                         .gameplay_should_draw = 1,
+    //                                     });
+    active_draw_command = 
+        (draw_command_t){
+            .active = true,
+            .text = msg,
+            .x = SCREEN_LEFT + 10,
+            .y = SCREEN_BOTTOM - 15,
+            .col = TEXTCOL_WHITE,
+            .ticks = 0,
+            .max_ticks = 30,
+        };
 }
 
 void draw_hook(unsigned int unk)
@@ -58,31 +70,10 @@ void draw_hook(unsigned int unk)
     if (rs2.menu_enabled)
         draw_menu();
 
-    for (uint8_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++)
+    if (active_draw_command.ticks < active_draw_command.max_ticks)
     {
-        switch (draw_commands[i].type)
-        {
-        case DRAW_TEXT_TIMEOUT:
-            draw_text_timeout_data_t *data = &draw_commands[i].d.draw_text_timeout_data;
-            if (data->cur_time > data->start_time && data->cur_time < data->end_time || data->start_time == 0 && data->end_time == 0)
-            {
-                if (!data->gameplay_should_draw && !rs2.menu_enabled) {
-                    draw_commands[i].type = FREE_SLOT;
-                    continue;
-                };
-                GAME_DrawText(data->text, data->x, data->y, data->col, 0);
-            }
-            if (data->start_time != data->end_time) data->cur_time += 1;
-            if (data->cur_time > data->end_time)
-            {
-                draw_commands[i].type = FREE_SLOT;
-            }
-            break;
-        case FREE_SLOT:
-            break;
-        default:
-            break;
-        }
+        GAME_DrawText(active_draw_command.text, active_draw_command.x, active_draw_command.y, active_draw_command.col, 0);
+        active_draw_command.ticks++;
     }
 
     for (uint8_t i = 0; i < NUM_MENUS; i++)
@@ -110,7 +101,6 @@ void draw_hook(unsigned int unk)
 }
 
 void draw_menu() {
-    char buffer[32];
     MenuData *menu = &menus[rs2.menu_index];
 
     GAME_DrawOutlinedBG(0 - 5, FRAME_WIDTH, SCREEN_TOP - 5, SCREEN_BOTTOM);
@@ -158,54 +148,6 @@ void begin_warp(uint8_t level_index)
     }
 
     rs2.is_warping = 1;
-}
-
-void DrawLine(short x0, short y0, Color c0, short x1, short y1, Color c1)
-{
-    LINE_G2 *ptrPrimitive = (LINE_G2 *)GAME_GPUPackets_Next;
-    ptrPrimitive->tag = 0x4000000;
-    ptrPrimitive->code = 0x50;
-
-    ptrPrimitive->x0 = x0;
-    ptrPrimitive->y0 = y0;
-    ptrPrimitive->r0 = c0.r;
-    ptrPrimitive->g0 = c0.g;
-    ptrPrimitive->b0 = c0.b;
-
-    ptrPrimitive->x1 = x1;
-    ptrPrimitive->y1 = y1;
-    ptrPrimitive->r1 = c1.r;
-    ptrPrimitive->g1 = c1.g;
-    ptrPrimitive->b1 = c1.b;
-
-    GAME_GPUPackets_Insert(ptrPrimitive);
-    GAME_GPUPackets_Next = ptrPrimitive + 1;
-}
-
-void DrawRectST(short left, short right, short top, short bottom, Color color)
-{
-    POLY_F4 *ptrPrimitive = (POLY_F4 *)GAME_GPUPackets_Next;
-    ptrPrimitive->tag = 0x5000000;
-    ptrPrimitive->code = 0x2a;
-
-    ptrPrimitive->x0 = left;
-    ptrPrimitive->x2 = left;
-
-    ptrPrimitive->x1 = right;
-    ptrPrimitive->x3 = right;
-
-    ptrPrimitive->y0 = top;
-    ptrPrimitive->y1 = top;
-
-    ptrPrimitive->y2 = bottom;
-    ptrPrimitive->y3 = bottom;
-
-    ptrPrimitive->r0 = color.r;
-    ptrPrimitive->g0 = color.g;
-    ptrPrimitive->b0 = color.b;
-
-    GAME_GPUPackets_Insert(ptrPrimitive);
-    GAME_GPUPackets_Next = ptrPrimitive + 1;
 }
 
 LevelData levels_table[NUM_LEVELS] = {

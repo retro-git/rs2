@@ -85,7 +85,25 @@ void error(char* func_name, char* file_name) {
     err = 1;
 }
 
-void inject(char *file_name, u_char *dst)
+void message(char* msg) {
+    char buffer[64];
+    sprintf(buffer, "%s", msg);
+    FntPrint(buffer);
+    FntFlush(-1);
+    display();
+}
+
+int check_free_bytes(u_char* addr) {
+    int count = 0;
+    while(*addr == 0) {
+        count++;
+        addr++;
+    }
+    return count;
+    printf("Number of consecutive null bytes: %d\n", count);
+}
+
+void inject_file(char *file_name, u_char *dst)
 {
     CdlFILE filePos;
     if (CdSearchFile(&filePos, file_name) == 0)
@@ -93,11 +111,23 @@ void inject(char *file_name, u_char *dst)
         error("CdSearchFile", file_name);
         return;
     }
-    printf("Found file '%s' with size: %lu\n", file_name, filePos.size);
-    printf("Minute: %d\n", filePos.pos.minute);
-    printf("Second: %d\n", filePos.pos.second);
-    printf("Sector: %d\n", filePos.pos.sector);
-    printf("Track: %d\n", filePos.pos.track);
+
+    int rounded_size = ((filePos.size + 511) / 512) * 512;
+    int free_bytes = check_free_bytes(dst);
+    char buffer[128];
+    sprintf(buffer, "%s %d %d %d", file_name, filePos.size, rounded_size, free_bytes);
+    while (1) {
+        for (int i = 0; i < 300; i++) {
+            message(buffer);
+        }
+        break;
+    }
+    if (rounded_size > free_bytes)
+    {
+        error("Not enough free bytes", file_name);
+        return;
+    }
+
     if (CdControl(CdlSetloc, (u_char *)&filePos.pos, 0) == 0)
     {
         error("CdControl", file_name);
@@ -115,6 +145,44 @@ void inject(char *file_name, u_char *dst)
     }
 }
 
+void inject() {
+    printf("INJECTING %d\n", VERSION);
+
+    u_char *header;
+    u_char *kernel_free_space_1;
+    u_char *kernel_free_space_2;
+
+    if (VERSION == 2)
+    {
+        header = (u_char*)(0x8000B070 + 0x4c);
+        kernel_free_space_1 = (u_char *)0x8000A000;
+        kernel_free_space_2 = (u_char *)0x8000c400;
+    }
+    else if (VERSION == 3)
+    {
+        header = (u_char*)(0x8000A8D0 + 0x4c);
+        kernel_free_space_1 = (u_char *)0x800096A8;
+        kernel_free_space_2 = (u_char *)0x80007526;
+    }
+    else {
+        printf("NO VERSION SET WHEN COMPILING\n");
+    }
+
+    char buffer[128];
+    sprintf(buffer, "%s %d", "HEADER", check_free_bytes(header));
+    while (1) {
+        for (int i = 0; i < 300; i++) {
+            message(buffer);
+        }
+        break;
+    }
+
+    CdInit();
+    // inject_file("\\DRAW.BIN;1", kernel_free_space_1);
+    inject_file("\\INPUT.BIN;1", kernel_free_space_1);
+}
+
+
 int main(void)
 {
     SPRT *sprt_16b;
@@ -122,28 +190,7 @@ int main(void)
 
     init(); // init display
 
-    printf("LOADING %d\n", VERSION);
-
-    u_char *kernel_free_space_1;
-    u_char *kernel_free_space_2;
-
-    if (VERSION == 2)
-    {
-        kernel_free_space_1 = (u_char *)0x8000A000;
-        kernel_free_space_2 = (u_char *)0x8000c400;
-    }
-    else if (VERSION == 3)
-    {
-        kernel_free_space_1 = (u_char *)0x800096A8;
-        kernel_free_space_2 = (u_char *)0x80007526;
-    }
-
-    CdInit();
-    inject("\\DRAW.BIN;1", kernel_free_space_1);
-    inject("\\INPUT.BIN;1", kernel_free_space_2);
-
     LoadTexture(_binary____TIM_moneybags_tim_start, &tim_moneybags);
-
     // MoveImage(tim_moneybags.prect, 0, 0);
 
     while (1) // infinite loop
@@ -182,6 +229,8 @@ int main(void)
             }
         }
     }
+
+    inject();
 
     ResetGraph(0);
     // CardStop();

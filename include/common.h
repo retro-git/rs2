@@ -84,8 +84,11 @@ void GAME_DrawText(char * text, int x, int y, int colorIndex, TextConfig * textC
 void GAME_DrawSTBlackRect(short x1, short x2, short y1, short y2);
 // Opaque, Flat, RGB = (0, 0, 0)
 void GAME_DrawOpaqueBlackRect(short x1, short x2, short y1, short y2);
+void GAME_DrawUnknownRect(short x1, short x2, short y1, short y2);
 // Used during the pause menu
 void GAME_DrawGameScreenshot();
+void GAME_DrawShadowedOrangeLine(short p0x,short p0y,short p1x,short p1y);
+
 
 /*
     Data

@@ -98,16 +98,6 @@ void option_input_display_execute()
 {
     InputState *currentInput = &GAME_inputStates[0];
 
-    Color colorUnpressed;
-    colorUnpressed.r = 0x20;
-    colorUnpressed.g = 0x20;
-    colorUnpressed.b = 0x20;
-
-    Color colorPressed;
-    colorPressed.r = 0xff;
-    colorPressed.g = 0xff;
-    colorPressed.b = 0xff;
-
     GAME_GPUChangeTexPage(0xa8);
 
     struct Button {
@@ -130,18 +120,33 @@ void option_input_display_execute()
         {20 + 1, 20 + 7, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, SQUARE}
     };
 
-    // Draw the buttons
+    // *((uint8_t*)0x8004d2dc) = 0;
+    // *((uint8_t*)0x8004d2dd) = 0x2a;
+    // *((uint8_t*)0x8004d2e0) = 0;
+    // *((uint8_t*)0x8004d2e1) = 0;
+
     for (int i = 0; i < sizeof(buttons) / sizeof(buttons[0]); i++) {
-        DrawRectST(buttons[i].x1, buttons[i].x2, buttons[i].y1, buttons[i].y2, rs2.button_holdtimes[buttons[i].identifier] > 0 ? colorPressed : colorUnpressed);
+        if (rs2.button_holdtimes[buttons[i].identifier] > 0) {
+            GAME_DrawOpaqueBlackRect(buttons[i].x1, buttons[i].x2, buttons[i].y1, buttons[i].y2);
+        }
+        else {
+            GAME_DrawSTBlackRect(buttons[i].x1, buttons[i].x2, buttons[i].y1, buttons[i].y2);
+        }
     }
 
-    uint8_t stickX = currentInput->rightStickAnalogX;
-    uint8_t stickY = currentInput->rightStickAnalogY;
-    uint8_t offset = 30;
-    for (uint8_t j = 0; j < 2; j++) {
-        DrawLine(offset, FRAME_HEIGHT - 23 + 16, colorPressed, offset + (stickX - 0x7f) * 9 / 0x80, FRAME_HEIGHT - 23 + 16 + (stickY - 0x7f) * 6 / 0x80, colorPressed);
-        offset = 10;
-        stickX = currentInput->leftStickAnalogX;
-        stickY = currentInput->leftStickAnalogY;
-    }
+    // sticks:
+    
+    // Color colorPressed;
+    // colorPressed.r = 0xff;
+    // colorPressed.g = 0xff;
+    // colorPressed.b = 0xff;
+    // uint8_t stickX = currentInput->rightStickAnalogX;
+    // uint8_t stickY = currentInput->rightStickAnalogY;
+    // uint8_t offset = 30;
+    // for (uint8_t j = 0; j < 2; j++) {
+    //     GAME_DrawShadowedOrangeLine(offset, FRAME_HEIGHT - 23 + 16, offset + (stickX - 0x7f) * 9 / 0x80, FRAME_HEIGHT - 23 + 16 + (stickY - 0x7f) * 6 / 0x80);
+    //     offset = 10;
+    //     stickX = currentInput->leftStickAnalogX;
+    //     stickY = currentInput->leftStickAnalogY;
+    // }
 }

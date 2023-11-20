@@ -15,12 +15,12 @@
 // };
 
 OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
-    { "Input Display", 0, 0, option_input_display_execute },
+    { "Input View", 0, 0, option_input_display_execute },
     { "Satyrless Tools", 0, 0, option_satyrless_tools_execute },
-    { "Instant Fish", 0, 0, option_instant_fish_execute },
-    { "Enable Powerups", 0, 0, option_powerups_alwayson_execute },
+    { "AutoFish", 0, 0, option_instant_fish_execute },
+    { "Powerups", 0, 0, option_powerups_alwayson_execute },
     { "Lock Lives", 1, 0, option_infinite_lives_execute },
-    { "Force Zombie", 0, 0, option_toggle_zombie_execute },
+    { "Zombie", 0, 0, option_toggle_zombie_execute },
     { "Sparx ER", 1, 0, option_toggle_sparx_extended_range_execute },
     { "Fireball", 1, 0, option_toggle_fireball_execute },
     // { "Moon Jump Speed", OPTION_NUMBER, &(OptionNumberData){ .number = 20, .min = 6, .max = 100, .names = {0} } },
@@ -29,9 +29,9 @@ OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
 
 OptionData menu2_respawn_options_table[NUM_OPTIONS_MENU2_RESPAWN] = {
     { "Checkpoint", 0, 0, option_reset_checkpoint_execute },
-    { "Gems", 0, 0, option_reset_gems_execute },
-    { "Orbs", 0, 0, option_reset_orbs_execute },
-    { "Talismans", 0, 0, option_reset_eol_portals_execute },
+    { "Gem", 0, 0, option_reset_gems_execute },
+    { "Orb", 0, 0, option_reset_orbs_execute },
+    { "Talisman", 0, 0, option_reset_eol_portals_execute },
 };
 
 MenuData menus[NUM_MENUS] = {
