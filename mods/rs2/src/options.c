@@ -10,21 +10,21 @@
 #include "vec3.h"
 #include "gpu.h"
 
-#define OPTION_TOGGLE_ENABLED(menu, option) (menus[menu].d.options_table[option].d.option_toggle_data->toggled)
+// #define OPTION_TOGGLE_ENABLED(menu, option) (menus[menu].d.options_table[option].d.option_toggle_data->toggled)
 
-void oneshot_toggle_message(char toggled, uint32_t option_index)
-{
-    add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                            .text = "DONE",
-                                            .x = MENU_X_COORD_VALUE,
-                                            .y = MENU_Y_COORD(option_index),
-                                            .col = toggled ? TEXTCOL_GREEN : TEXTCOL_RED,
-                                            .cur_time = 0,
-                                            .start_time = 0,
-                                            .end_time = 15,
-                                            .gameplay_should_draw = 0,
-                                        });
-}
+// void oneshot_toggle_message(char toggled, uint32_t option_index)
+// {
+//     add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+//                                             .text = "DONE",
+//                                             .x = MENU_X_COORD_VALUE,
+//                                             .y = MENU_Y_COORD(option_index),
+//                                             .col = toggled ? TEXTCOL_GREEN : TEXTCOL_RED,
+//                                             .cur_time = 0,
+//                                             .start_time = 0,
+//                                             .end_time = 15,
+//                                             .gameplay_should_draw = 0,
+//                                         });
+// }
 
 void option_instant_fish_execute()
 {
@@ -44,12 +44,8 @@ void option_powerups_alwayson_execute() {
 }
 
 void option_toggle_zombie_execute() {
-    if (GAME_sparx_health >= 0) {
-        GAME_sparx_health = -1;
-    } else {
-        GAME_sparx_health = 3;
-    }
-    oneshot_toggle_message(GAME_sparx_health == -1, MENU1_ZOMBIE);
+    GAME_sparx_health = -1;
+    // oneshot_toggle_message(GAME_sparx_health == -1, MENU1_ZOMBIE);
    // GAME_sparx_health >= 0 ? GAME_sparx_health = -1 : GAME_sparx_health = 3;
 }
 
@@ -70,7 +66,7 @@ void option_reset_eol_portals_execute() {
 
 void option_infinite_lives_execute() {
     *(int16_t*)0x80032fe4 ^= -1;
-    oneshot_toggle_message(*(int16_t*)0x80032fe4 == 0, MENU1_LOCK_LIVES);
+    // oneshot_toggle_message(*(int16_t*)0x80032fe4 == 0, MENU1_LOCK_LIVES);
 }
 
 void option_satyrless_tools_execute()
@@ -89,13 +85,13 @@ void option_satyrless_tools_execute()
 void option_toggle_fireball_execute()
 {
     GAME_fireball_state = !GAME_fireball_state;
-    oneshot_toggle_message(GAME_fireball_state, MENU1_FIREBALL);
+    // oneshot_toggle_message(GAME_fireball_state, MENU1_FIREBALL);
 }
 
 void option_toggle_sparx_extended_range_execute()
 {
     GAME_sparx_extended_range_state = !GAME_sparx_extended_range_state;
-    oneshot_toggle_message(GAME_sparx_extended_range_state, MENU1_SPARX_ER);
+    // oneshot_toggle_message(GAME_sparx_extended_range_state, MENU1_SPARX_ER);
 }
 
 void option_input_display_execute()
@@ -142,7 +138,7 @@ void option_input_display_execute()
     uint8_t stickX = currentInput->rightStickAnalogX;
     uint8_t stickY = currentInput->rightStickAnalogY;
     uint8_t offset = 30;
-    for (int j = 0; j < 2; j++) {
+    for (uint8_t j = 0; j < 2; j++) {
         DrawLine(offset, FRAME_HEIGHT - 23 + 16, colorPressed, offset + (stickX - 0x7f) * 9 / 0x80, FRAME_HEIGHT - 23 + 16 + (stickY - 0x7f) * 6 / 0x80, colorPressed);
         offset = 10;
         stickX = currentInput->leftStickAnalogX;

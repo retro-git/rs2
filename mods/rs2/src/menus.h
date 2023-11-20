@@ -26,13 +26,14 @@ typedef enum {
     MENU1_ZOMBIE = 5,
     MENU1_SPARX_ER = 6,
     MENU1_FIREBALL = 7,
-    MENU1_MOONJUMP_SPEED = 8,
+    // MENU1_MOONJUMP_SPEED = 8,
 } MENU1_OPTIONS;
 
 typedef enum {
-    //MENU2_RESPAWN_RESET_CHECKPOINT = 0,
-    MENU2_RESPAWN_RESET_GEMS = 0,
-    MENU2_RESPAWN_RESET_ORBS = 1,
+    MENU2_RESPAWN_RESET_CHECKPOINT = 0,
+    MENU2_RESPAWN_RESET_GEMS = 1,
+    MENU2_RESPAWN_RESET_ORBS = 2,
+    MENU2_RESPAWN_RESET_TALISMANS = 3,
 } MENU2_RESPAWN_OPTIONS;
 
 typedef struct {
@@ -51,26 +52,29 @@ typedef struct {
     option_execute_func execute;
 } OptionOneShotData;
 
-typedef struct {
-    int16_t toggled;
-    option_execute_func execute;
-} OptionToggleData;
+// typedef struct {
+//     bool toggled;
+//     bool oneshot;
+//     option_execute_func execute;
+// } OptionToggleData;
 
 typedef struct {
-    int32_t number;
-    int32_t min;
-    int32_t max;
+    int16_t number;
+    int16_t min;
+    int16_t max;
     const char** names;
 } OptionNumberData;
 
 typedef struct {
     char* name;
-    OPTION_TYPE type;
-    union {
-        OptionToggleData* option_toggle_data;
-        OptionNumberData* option_number_data;
-        OptionOneShotData* option_oneshot_data;
-    } d;
+    bool oneshot;
+    bool toggled;
+    option_execute_func execute;
+    // union {
+    //     OptionToggleData* option_toggle_data;
+    //     OptionNumberData* option_number_data;
+    //     OptionOneShotData* option_oneshot_data;
+    // } d;
 } OptionData;
 
 typedef enum {

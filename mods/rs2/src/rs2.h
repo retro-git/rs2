@@ -32,8 +32,5 @@ extern struct rs2 rs2;
 // extern LevelData levels_table[NUM_LEVELS];
 
 void UpdateGame_Normal_hook();
-void handle_input();
-void patch_jump(int32_t *overwrite_loc, int32_t jump_loc);
-void handle_warp();
 
 #endif

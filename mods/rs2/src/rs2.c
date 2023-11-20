@@ -28,38 +28,6 @@ int rand_hook_trampoline()
     asm volatile("nop");
 }*/
 
-void passive_effects()
-{
-    if (GAME_gameState != PLAYING)
-        return;
-    // moneybags costs 0 gems
-    for (int i = 0; i < sizeof(GAME_moneybags_paywalls) / sizeof(MoneybagsPaywall); i++)
-    {
-        GAME_moneybags_paywalls[i].cost = 0;
-    }
-    // set flags for enter level cutscene being watched
-    for (int i = 0; i < 0x1d; i++)
-    {
-        *(uint8_t *)(0x8006b084 + i) = 1;
-    }
-    // remove exit level cutscenes
-    *(uint8_t *)0x80066ff4 = 0;
-
-    GAME_ripto_zoe_state = 0;
-}
-
-void UpdateGame_Normal_hook()
-{
-    if (!rs2.menu_enabled && (rs2.button_holdtimes[L3] == 1 || rs2.button_holdtimes[L3] > 5 || !rs2.frame_advance))
-    {
-        if (rs2.frame_advance)
-        {
-            GAME_inputStates[0].pressed.i = GAME_inputStates[0].current.i;
-        }
-        GAME_UpdateGame_Normal();
-    }
-}
-
 // #define NUM_OVERLAY_FILES 2
 
 // typedef struct
@@ -140,34 +108,47 @@ void main_hook()
         rs2.initialised = 1;
     }
 
-    passive_effects();
+    if (GAME_gameState == PLAYING)
+    {
+        // passive effects
+        // moneybags costs 0 gems
+        for (int i = 0; i < sizeof(GAME_moneybags_paywalls) / sizeof(MoneybagsPaywall); i++)
+        {
+            GAME_moneybags_paywalls[i].cost = 0;
+        }
+        // set flags for enter level cutscene being watched
+        for (int i = 0; i < 0x1d; i++)
+        {
+            *(uint8_t *)(0x8006b084 + i) = 1;
+        }
+        // remove exit level cutscenes
+        *(uint8_t *)0x80066ff4 = 0;
+
+        GAME_ripto_zoe_state = 0;
+    }
 
     if (rs2.is_warping)
     {
-        handle_warp();
-    }
-}
+        // handle warp
+        uint32_t unk_cam_bossfix = *(uint32_t *)0x80067eB0;
+        uint32_t unk_cam_homefix = *(uint32_t *)0x80067F28;
 
-void handle_warp()
-{
-    uint32_t unk_cam_bossfix = *(uint32_t *)0x80067eB0;
-    uint32_t unk_cam_homefix = *(uint32_t *)0x80067F28;
+        GAME_level_load_id = rs2.warp_selected_level.load_level_id;
 
-    GAME_level_load_id = rs2.warp_selected_level.load_level_id;
+        if (GAME_gameState == PLAYING) {
+            rs2.is_warping = 0;
+        } else if (GAME_gameState == LOADING_LEVELS) {
+            // crush, gulp, ripto starting cams respectively
+            int is_boss_level_start = rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75);
+            // home world starting cams respectively
+            int is_homeworld_level_start = rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401);
 
-    if (GAME_gameState == PLAYING) {
-        rs2.is_warping = 0;
-    } else if (GAME_gameState == LOADING_LEVELS) {
-        // crush, gulp, ripto starting cams respectively
-        int is_boss_level_start = rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75);
-        // home world starting cams respectively
-        int is_homeworld_level_start = rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401);
-
-        if (is_boss_level_start || is_homeworld_level_start) {
-            GAME_unk_timer = 0;
-            GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
-            GAME_pause_submenu_index = 0;
-            *(int32_t *)0x800698f0 = 0;
+            if (is_boss_level_start || is_homeworld_level_start) {
+                GAME_unk_timer = 0;
+                GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
+                GAME_pause_submenu_index = 0;
+                *(int32_t *)0x800698f0 = 0;
+            }
         }
     }
 }

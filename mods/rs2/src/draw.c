@@ -25,6 +25,32 @@ void add_draw_command(DRAW_COMMAND_TYPE type, void *data)
     }
 }
 
+void UpdateGame_Normal_hook()
+{
+    if (!rs2.menu_enabled && (rs2.button_holdtimes[L3] == 1 || rs2.button_holdtimes[L3] > 5 || !rs2.frame_advance))
+    {
+        if (rs2.frame_advance)
+        {
+            GAME_inputStates[0].pressed.i = GAME_inputStates[0].current.i;
+        }
+        GAME_UpdateGame_Normal();
+    }
+}
+
+void savestate_draw_msg(char *msg)
+{
+    add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+                                            .text = msg,
+                                            .x = SCREEN_LEFT + 10,
+                                            .y = SCREEN_BOTTOM - 15,
+                                            .col = TEXTCOL_WHITE,
+                                            .cur_time = 0,
+                                            .start_time = 0,
+                                            .end_time = 30,
+                                            .gameplay_should_draw = 1,
+                                        });
+}
+
 void draw_hook(unsigned int unk)
 {
     GAME_FUN_80013a14(unk);
@@ -65,13 +91,10 @@ void draw_hook(unsigned int unk)
             continue;
         for (uint8_t j = 0; j < menus[i].num_options; j++)
         {
-            if (menus[i].d.options_table[j].type == OPTION_TOGGLE)
+            OptionData* data = &menus[i].d.options_table[j];
+            if (data->toggled && !data->oneshot)
             {
-                OptionToggleData *data = menus[i].d.options_table[j].d.option_toggle_data;
-                if (data->toggled)
-                {
-                    data->execute();
-                }
+                data->execute();
             }
         }
     }
@@ -86,21 +109,6 @@ void draw_hook(unsigned int unk)
     }*/
 }
 
-void draw_option(MenuData *menu, OptionData *option, uint16_t i, char *buffer) {
-    LIBC_sprintf(buffer, "%s", option->name);
-    GAME_DrawText(buffer, MENU_X_COORD, MENU_Y_COORD(i), i == menu->menu_selection_index ? TEXTCOL_LIGHT_YELLOW : TEXTCOL_DARK_YELLOW, 0);
-
-    if (option->type == OPTION_TOGGLE) {
-        char *text = option->d.option_toggle_data->toggled ? "ON" : "OFF";
-        GAME_DrawText(text, MENU_X_COORD_VALUE, MENU_Y_COORD(i), (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
-    }
-    // } else if (option->type == OPTION_NUMBER) {
-    //     OptionNumberData *data = option->d.option_number_data;
-    //     data->names != 0 ? LIBC_sprintf(buffer, "%s", data->names[data->number]) : LIBC_sprintf(buffer, "%d", data->number);
-    //     GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
-    // }
-}
-
 void draw_menu() {
     char buffer[32];
     MenuData *menu = &menus[rs2.menu_index];
@@ -111,11 +119,12 @@ void draw_menu() {
     for (uint8_t i = 0; i < menu->num_options; i++) {
         switch (menu->type) {
             case MENU_TYPE_TELEPORT:
-                LIBC_sprintf(buffer, "%s", menu->d.levels_table[i].name);
-                GAME_DrawText(buffer, i < MAX_MENU_ITEMS_PER_COL ? 100 : 300, MENU_Y_COORD(i), i == menu->menu_selection_index ? TEXTCOL_LIGHT_YELLOW : TEXTCOL_DARK_YELLOW, 0);
+                GAME_DrawText(menu->d.levels_table[i].name, i < MAX_MENU_ITEMS_PER_COL ? 100 : 300, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW ^ ((i == menu->menu_selection_index) * (TEXTCOL_LIGHT_YELLOW ^ TEXTCOL_DARK_YELLOW)), 0);
                 break;
             case MENU_TYPE_OPTIONS:
-                draw_option(menu, &menu->d.options_table[i], i, buffer);
+                OptionData* option = &menu->d.options_table[i];
+                GAME_DrawText(option->name, MENU_X_COORD, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW ^ ((i == menu->menu_selection_index) * (TEXTCOL_LIGHT_YELLOW ^ TEXTCOL_DARK_YELLOW)), 0);
+                GAME_DrawText(option->toggled ? "ON" : "OFF", MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_RED ^ ((option->toggled == 1) * (TEXTCOL_GREEN ^ TEXTCOL_RED)), 0);
                 break;
         }
     }

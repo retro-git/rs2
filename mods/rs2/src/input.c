@@ -9,20 +9,6 @@
 #include "vec3.h"
 #include "gpu.h"
 
-void savestate_draw_msg(char *msg)
-{
-    add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                            .text = msg,
-                                            .x = SCREEN_LEFT + 10,
-                                            .y = SCREEN_BOTTOM - 15,
-                                            .col = TEXTCOL_WHITE,
-                                            .cur_time = 0,
-                                            .start_time = 0,
-                                            .end_time = 30,
-                                            .gameplay_should_draw = 1,
-                                        });
-}
-
 void read_input_hook()
 {
     GAME_ReadInput();
@@ -171,14 +157,10 @@ void read_input_hook()
                 break;
 
             case MENU_TYPE_OPTIONS:
-                switch (menu->d.options_table[menu->menu_selection_index].type)
-                {
-                case OPTION_TOGGLE:
-                    menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled = !menu->d.options_table[menu->menu_selection_index].d.option_toggle_data->toggled;
-                    break;
-                case OPTION_ONESHOT:
-                    menu->d.options_table[menu->menu_selection_index].d.option_oneshot_data->execute();
-                    break;
+                OptionData* data = &menu->d.options_table[menu->menu_selection_index];
+                data->toggled = !data->toggled;
+                if (data->oneshot) {
+                    data->execute();
                 }
                 break;
             }
