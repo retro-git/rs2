@@ -121,7 +121,7 @@ void draw_menu() {
     }
 }
 
-void begin_warp(uint16_t level_index)
+void begin_warp(uint8_t level_index)
 {
     // rs2.warp_selected_level = levels_table[rs2.menu_selection_index];
     rs2.warp_selected_level = menus[rs2.menu_index].d.levels_table[level_index];

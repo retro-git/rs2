@@ -81,8 +81,8 @@ typedef enum {
 typedef struct {
     MENU_TYPE type;
     const char* title;
-    uint16_t num_options;
-    uint16_t menu_selection_index;
+    uint8_t num_options;
+    uint8_t menu_selection_index;
     union {
         LevelData* levels_table;
         OptionData* options_table;
