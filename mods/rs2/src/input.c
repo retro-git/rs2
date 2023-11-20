@@ -8,7 +8,6 @@
 #include "common.h"
 #include "vec3.h"
 #include "gpu.h"
-#include "msg.h"
 
 void savestate_draw_msg(char *msg)
 {
@@ -26,7 +25,7 @@ void savestate_draw_msg(char *msg)
 
 void read_input_hook()
 {
-    //LIBC_printf("input\n");
+    LIBC_printf("input\n");
     GAME_ReadInput();
 
     if (GAME_gameState != PLAYING)
@@ -34,7 +33,7 @@ void read_input_hook()
 
     controller_u_t currentInput = GAME_inputStates[0].current;
 
-    for (uint16_t i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(int32_t); i++)
+    for (uint16_t i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(uint16_t); i++)
     {
         if (currentInput.i >> i & 1)
         {

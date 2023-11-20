@@ -25,11 +25,11 @@ done
 
 # make copy of xml, insert loader, and rename bin/cue
 cp spyro2_rs2_noloader.xml spyro2_rs2.xml
-sed -i $'/directory_tree.*/i\\\\t\\t\\t<file name="LOADER.BIN" source="spyro2_rs2/LOADER.BIN" type="data" />' spyro2_rs2.xml
+sed -i '/<\/directory_tree>/i \ \ \t\t\t<file name="LOADER.BIN" source="spyro2_rs2/LOADER.BIN" type="data" />' spyro2_rs2.xml
 sed -i 's/mkpsxiso/spyro2_rs2/g' spyro2_rs2.xml
 
 # make backup copy of original system.cnf, insert loader into new system.cnf
-cd spyro2
+cd spyro2_rs2
 mv SYSTEM.CNF SYSTEM.CNF.ORIG
 cp SYSTEM.CNF.ORIG SYSTEM.CNF
 sed -i 's/SCUS_944.25/LOADER.BIN/' SYSTEM.CNF

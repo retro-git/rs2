@@ -23,7 +23,6 @@ void oneshot_toggle_message(char toggled, uint32_t option_index)
                                             .start_time = 0,
                                             .end_time = 15,
                                             .gameplay_should_draw = 0,
-                                            .gameplay_should_draw = 0,
                                         });
 }
 
@@ -70,11 +69,7 @@ void option_reset_eol_portals_execute() {
 }
 
 void option_infinite_lives_execute() {
-    if (*(int16_t*)0x80032fe4 == -1) {
-        *(int16_t*)0x80032fe4 = 0;
-    } else {
-        *(int16_t*)0x80032fe4 = -1;
-    }
+    *(int16_t*)0x80032fe4 ^= -1;
     oneshot_toggle_message(*(int16_t*)0x80032fe4 == 0, MENU1_LOCK_LIVES);
 }
 
@@ -118,44 +113,40 @@ void option_input_display_execute()
     colorPressed.b = 0x80;
 
     GAME_GPUChangeTexPage(0xa8);
-    DrawRectST(4, 16, FRAME_HEIGHT - 23, FRAME_HEIGHT - 23 + 4, currentInput->current.b.l2 ? colorPressed : colorUnpressed);
-    DrawRectST(2, 18, FRAME_HEIGHT - 23 + 5, FRAME_HEIGHT - 23 + 9, currentInput->current.b.l1 ? colorPressed : colorUnpressed);
 
-    DrawRectST(20 + 4, 20 + 16, FRAME_HEIGHT - 23, FRAME_HEIGHT - 23 + 4, currentInput->current.b.r2 ? colorPressed : colorUnpressed);
-    DrawRectST(20 + 2, 20 + 18, FRAME_HEIGHT - 23 + 5, FRAME_HEIGHT - 23 + 9, currentInput->current.b.r1 ? colorPressed : colorUnpressed);
+    struct Button {
+        uint8_t x1, x2, y1, y2;
+        uint8_t identifier;
+    };
 
-    DrawRectST(7, 13, FRAME_HEIGHT - 23 + 10, FRAME_HEIGHT - 23 + 14, currentInput->current.b.dup ? colorPressed : colorUnpressed);
-    DrawRectST(13, 19, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, currentInput->current.b.dright ? colorPressed : colorUnpressed);
-    DrawRectST(7, 13, FRAME_HEIGHT - 23 + 18, FRAME_HEIGHT - 23 + 22, currentInput->current.b.ddown ? colorPressed : colorUnpressed);
-    DrawRectST(1, 7, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, currentInput->current.b.dleft ? colorPressed : colorUnpressed);
+    struct Button buttons[] = {
+        {4, 16, FRAME_HEIGHT - 23, FRAME_HEIGHT - 23 + 4, L2},
+        {2, 18, FRAME_HEIGHT - 23 + 5, FRAME_HEIGHT - 23 + 9, L1},
+        {20 + 4, 20 + 16, FRAME_HEIGHT - 23, FRAME_HEIGHT - 23 + 4, R2},
+        {20 + 2, 20 + 18, FRAME_HEIGHT - 23 + 5, FRAME_HEIGHT - 23 + 9, R1},
+        {7, 13, FRAME_HEIGHT - 23 + 10, FRAME_HEIGHT - 23 + 14, DUP},
+        {13, 19, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, DRIGHT},
+        {7, 13, FRAME_HEIGHT - 23 + 18, FRAME_HEIGHT - 23 + 22, DDOWN},
+        {1, 7, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, DLEFT},
+        {20 + 7, 20 + 13, FRAME_HEIGHT - 23 + 10, FRAME_HEIGHT - 23 + 14, TRIANGLE},
+        {20 + 13, 20 + 19, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, CIRCLE},
+        {20 + 7, 20 + 13, FRAME_HEIGHT - 23 + 18, FRAME_HEIGHT - 23 + 22, CROSS},
+        {20 + 1, 20 + 7, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, SQUARE}
+    };
 
-    colorPressed.r = 0x00;
-    colorPressed.g = 0x80;
-    colorPressed.b = 0x00;
-    DrawRectST(20 + 7, 20 + 13, FRAME_HEIGHT - 23 + 10, FRAME_HEIGHT - 23 + 14, currentInput->current.b.triangle ? colorPressed : colorUnpressed);
-    colorPressed.r = 0x80;
-    colorPressed.g = 0x00;
-    colorPressed.b = 0x00;
-    DrawRectST(20 + 13, 20 + 19, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, currentInput->current.b.circle ? colorPressed : colorUnpressed);
-    colorPressed.r = 0x00;
-    colorPressed.g = 0x20;
-    colorPressed.b = 0x80;
-    DrawRectST(20 + 7, 20 + 13, FRAME_HEIGHT - 23 + 18, FRAME_HEIGHT - 23 + 22, currentInput->current.b.cross ? colorPressed : colorUnpressed);
-    colorPressed.r = 0x80;
-    colorPressed.g = 0x00;
-    colorPressed.b = 0x80;
-    DrawRectST(20 + 1, 20 + 7, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, currentInput->current.b.square ? colorPressed : colorUnpressed);
+    // Draw the buttons
+    for (int i = 0; i < sizeof(buttons) / sizeof(buttons[0]); i++) {
+        DrawRectST(buttons[i].x1, buttons[i].x2, buttons[i].y1, buttons[i].y2, rs2.button_holdtimes[buttons[i].identifier] > 0 ? colorPressed : colorUnpressed);
+    }
 
-    colorUnpressed.r = 0x20;
-    colorUnpressed.g = 0x20;
-    colorUnpressed.b = 0x20;
+    // draw the analog sticks
     colorPressed.r = 0xff;
     colorPressed.g = 0xff;
     colorPressed.b = 0xff;
     DrawLine(
-        20 + 10, FRAME_HEIGHT - 23 + 16, colorUnpressed,
+        20 + 10, FRAME_HEIGHT - 23 + 16, colorPressed,
         20 + 10 + (currentInput->rightStickAnalogX - 0x7f) * 9 / 0x80, FRAME_HEIGHT - 23 + 16 + (currentInput->rightStickAnalogY - 0x7f) * 6 / 0x80, colorPressed);
     DrawLine(
-        10, FRAME_HEIGHT - 23 + 16, colorUnpressed,
+        10, FRAME_HEIGHT - 23 + 16, colorPressed,
         10 + (currentInput->leftStickAnalogX - 0x7f) * 9 / 0x80, FRAME_HEIGHT - 23 + 16 + (currentInput->leftStickAnalogY - 0x7f) * 6 / 0x80, colorPressed);
 }

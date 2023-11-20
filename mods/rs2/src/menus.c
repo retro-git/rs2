@@ -18,8 +18,8 @@ OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
     { "Input Display", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_input_display_execute } },
     { "Satyrless Tools", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_satyrless_tools_execute } },
     { "Instant Fish", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_instant_fish_execute } },
-    { "Powerups Enabled", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_powerups_alwayson_execute }},
-    { "Lock Life Count", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_infinite_lives_execute }},
+    { "Enable Powerups", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_powerups_alwayson_execute }},
+    { "Lock Lives", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_infinite_lives_execute }},
     { "Toggle Zombie", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_toggle_zombie_execute }},
     { "Toggle Sparx ER", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_toggle_sparx_extended_range_execute }},
     { "Toggle Fireball", OPTION_ONESHOT, &(OptionOneShotData){ .execute = option_toggle_fireball_execute } },
@@ -28,30 +28,30 @@ OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
 };
 
 OptionData menu2_respawn_options_table[NUM_OPTIONS_MENU2_RESPAWN] = {
-    { "Reset Checkpoint", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_checkpoint_execute } },
-    { "Reset Gems", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_gems_execute } },
-    { "Reset Orbs", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_orbs_execute } },
-    { "Reset Talismans", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_eol_portals_execute } },
+    { "Checkpoint", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_checkpoint_execute } },
+    { "Gems", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_gems_execute } },
+    { "Orbs", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_orbs_execute } },
+    { "Talismans", OPTION_TOGGLE, &(OptionToggleData){ .toggled = 0, .execute = option_reset_eol_portals_execute } },
 };
 
 MenuData menus[NUM_MENUS] = {
     {
         MENU_TYPE_TELEPORT, 
-        "Teleport Menu",
+        "Teleport",
         sizeof(levels_table) / sizeof(LevelData),
         0,
         &levels_table,
     },
     {
         MENU_TYPE_OPTIONS,
-        "General Options",
+        "General",
         NUM_OPTIONS_MENU1,
         0,
         &menu1_options_table,
     },
     {
         MENU_TYPE_OPTIONS,
-        "Respawn Options",
+        "Reset On Respawn - L2 R2 START",
         NUM_OPTIONS_MENU2_RESPAWN,
         0,
         &menu2_respawn_options_table,

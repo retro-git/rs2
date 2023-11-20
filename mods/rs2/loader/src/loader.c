@@ -93,9 +93,14 @@ void inject(char *file_name, u_char *dst)
         error("CdSearchFile", file_name);
         return;
     }
-    if (CdControlB(CdlSetloc, (u_char *)&filePos.pos, 0) != 0)
+    printf("Found file '%s' with size: %lu\n", file_name, filePos.size);
+    printf("Minute: %d\n", filePos.pos.minute);
+    printf("Second: %d\n", filePos.pos.second);
+    printf("Sector: %d\n", filePos.pos.sector);
+    printf("Track: %d\n", filePos.pos.track);
+    if (CdControl(CdlSetloc, (u_char *)&filePos.pos, 0) == 0)
     {
-        error("CdControlB", file_name);
+        error("CdControl", file_name);
         return;
     }
     if (CdRead(BtoS(filePos.size), dst, CdlModeSpeed) == 0)
@@ -117,25 +122,25 @@ int main(void)
 
     init(); // init display
 
-    // printf("LOADING %d\n", VERSION);
+    printf("LOADING %d\n", VERSION);
 
-    // u_char *kernel_free_space_1;
-    // u_char *kernel_free_space_2;
+    u_char *kernel_free_space_1;
+    u_char *kernel_free_space_2;
 
-    // if (VERSION == 2)
-    // {
-    //     kernel_free_space_1 = (u_char *)0x8000A000;
-    //     kernel_free_space_2 = (u_char *)0x8000c400;
-    // }
-    // else if (VERSION == 3)
-    // {
-    //     kernel_free_space_1 = (u_char *)0x800096A8;
-    //     kernel_free_space_2 = (u_char *)0x80007526;
-    // }
+    if (VERSION == 2)
+    {
+        kernel_free_space_1 = (u_char *)0x8000A000;
+        kernel_free_space_2 = (u_char *)0x8000c400;
+    }
+    else if (VERSION == 3)
+    {
+        kernel_free_space_1 = (u_char *)0x800096A8;
+        kernel_free_space_2 = (u_char *)0x80007526;
+    }
 
-    // CdInit();
-    // inject("\\DRAW.BIN;1", kernel_free_space_1);
-    // inject("\\INPUT.BIN;1", kernel_free_space_2);
+    CdInit();
+    inject("\\DRAW.BIN;1", kernel_free_space_1);
+    inject("\\INPUT.BIN;1", kernel_free_space_2);
 
     LoadTexture(_binary____TIM_moneybags_tim_start, &tim_moneybags);
 

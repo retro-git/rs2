@@ -14,31 +14,26 @@ typedef struct
     Vec3 rotation;
     Vec3 cam_position;
     Vec3s cam_rotation;
-    uint8_t state_saved;
+    bool state_saved;
 } savestate_t;
 
 struct rs2 {
-    uint16_t cur_init_file;
-    uint16_t initialised;
-    uint16_t initialised_input_hook;
-    uint16_t menu_index;
-    uint16_t menu_enabled;
-    uint16_t is_warping;
-    uint16_t frame_advance;
+    bool initialised;
+    uint8_t menu_index;
+    bool menu_enabled;
+    bool is_warping;
+    bool frame_advance;
     LevelData warp_selected_level;
     savestate_t savestate;
-    CdlCB read_callback;
-    int32_t button_holdtimes[16];
+    uint16_t button_holdtimes[16];
 };
 
 extern struct rs2 rs2;
 // extern LevelData levels_table[NUM_LEVELS];
 
 void UpdateGame_Normal_hook();
-int rand_hook_trampoline();
 void handle_input();
 void patch_jump(int32_t *overwrite_loc, int32_t jump_loc);
-void read_cb(unsigned char status, unsigned char *result);
 void handle_warp();
 
 #endif
