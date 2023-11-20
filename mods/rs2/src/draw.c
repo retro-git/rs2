@@ -9,12 +9,12 @@
 #include "gpu.h"
 #include "menus.h"
 
-draw_command_t draw_commands[4] = {0};
+draw_command_t draw_commands[3] = {0};
 
 void add_draw_command(DRAW_COMMAND_TYPE type, void *data)
 {
     draw_command_t *command = draw_commands;
-    for (uint16_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++, command++)
+    for (uint8_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++, command++)
     {
         if (command->type == FREE_SLOT && type == DRAW_TEXT_TIMEOUT)
         {
@@ -28,11 +28,11 @@ void add_draw_command(DRAW_COMMAND_TYPE type, void *data)
 void draw_hook(unsigned int unk)
 {
     GAME_FUN_80013a14(unk);
-    
+
     if (rs2.menu_enabled)
         draw_menu();
 
-    for (uint16_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++)
+    for (uint8_t i = 0; i < sizeof(draw_commands) / sizeof(draw_command_t); i++)
     {
         switch (draw_commands[i].type)
         {
@@ -59,11 +59,11 @@ void draw_hook(unsigned int unk)
         }
     }
 
-    for (uint16_t i = 0; i < NUM_MENUS; i++)
+    for (uint8_t i = 0; i < NUM_MENUS; i++)
     {
         if (menus[i].type != MENU_TYPE_OPTIONS)
             continue;
-        for (uint16_t j = 0; j < menus[i].num_options; j++)
+        for (uint8_t j = 0; j < menus[i].num_options; j++)
         {
             if (menus[i].d.options_table[j].type == OPTION_TOGGLE)
             {
@@ -93,11 +93,12 @@ void draw_option(MenuData *menu, OptionData *option, uint16_t i, char *buffer) {
     if (option->type == OPTION_TOGGLE) {
         char *text = option->d.option_toggle_data->toggled ? "ON" : "OFF";
         GAME_DrawText(text, MENU_X_COORD_VALUE, MENU_Y_COORD(i), (option->d.option_toggle_data->toggled == 1 ? TEXTCOL_GREEN : TEXTCOL_RED), 0);
-    } else if (option->type == OPTION_NUMBER) {
-        OptionNumberData *data = option->d.option_number_data;
-        data->names != 0 ? LIBC_sprintf(buffer, "%s", data->names[data->number]) : LIBC_sprintf(buffer, "%d", data->number);
-        GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
     }
+    // } else if (option->type == OPTION_NUMBER) {
+    //     OptionNumberData *data = option->d.option_number_data;
+    //     data->names != 0 ? LIBC_sprintf(buffer, "%s", data->names[data->number]) : LIBC_sprintf(buffer, "%d", data->number);
+    //     GAME_DrawText(buffer, MENU_X_COORD_VALUE, MENU_Y_COORD(i), TEXTCOL_DARK_YELLOW, 0);
+    // }
 }
 
 void draw_menu() {
@@ -107,7 +108,7 @@ void draw_menu() {
     GAME_DrawOutlinedBG(0 - 5, FRAME_WIDTH, SCREEN_TOP - 5, SCREEN_BOTTOM);
     GAME_DrawText(menu->title, FRAME_WIDTH / 2 - GAME_GetTextWidth(menu->title) / 2, SCREEN_TOP + 10, TEXTCOL_LIGHT_YELLOW, 0);
 
-    for (uint16_t i = 0; i < menu->num_options; i++) {
+    for (uint8_t i = 0; i < menu->num_options; i++) {
         switch (menu->type) {
             case MENU_TYPE_TELEPORT:
                 LIBC_sprintf(buffer, "%s", menu->d.levels_table[i].name);

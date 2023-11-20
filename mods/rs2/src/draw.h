@@ -18,11 +18,11 @@ typedef struct {
     char* text;
     uint16_t x;
     uint16_t y;
-    uint16_t col;
+    uint8_t col;
     uint16_t cur_time;
     uint16_t start_time;
     uint16_t end_time;
-    uint8_t gameplay_should_draw;
+    bool gameplay_should_draw;
 } draw_text_timeout_data_t;
 
 typedef struct {

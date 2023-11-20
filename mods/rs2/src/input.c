@@ -25,7 +25,6 @@ void savestate_draw_msg(char *msg)
 
 void read_input_hook()
 {
-    LIBC_printf("input\n");
     GAME_ReadInput();
 
     if (GAME_gameState != PLAYING)
@@ -33,7 +32,7 @@ void read_input_hook()
 
     controller_u_t currentInput = GAME_inputStates[0].current;
 
-    for (uint16_t i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(uint16_t); i++)
+    for (uint8_t i = 0; i < sizeof(rs2.button_holdtimes) / sizeof(uint16_t); i++)
     {
         if (currentInput.i >> i & 1)
         {
@@ -68,17 +67,6 @@ void read_input_hook()
         else if (rs2.button_holdtimes[SQUARE] == 1)
         {
             GAME_SaveCheckpoint((void *)0x80067414, &GAME_spyro.position, *(uint32_t *)0x80069ffe);
-            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-                                                    .text = "Checkpoint saved",
-                                                    .x = SCREEN_LEFT + 10,
-                                                    .y = SCREEN_BOTTOM - 15,
-                                                    .col = TEXTCOL_WHITE,
-                                                    .cur_time = 0,
-                                                    .start_time = 0,
-                                                    .end_time = 30,
-                                                    .gameplay_should_draw = 1,
-                                                });
-
             savestate_draw_msg("Checkpoint saved");
         }
         else if (rs2.button_holdtimes[TRIANGLE] == 1)
@@ -89,17 +77,6 @@ void read_input_hook()
             rs2.savestate.rotation = GAME_spyro.eulerRotations;
             rs2.savestate.cam_rotation = GAME_cam_rotation;
             rs2.savestate.cam_position = GAME_cam_position;
-
-            // add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-            //                                         .text = "Pos saved",
-            //                                         .x = SCREEN_LEFT + 10,
-            //                                         .y = SCREEN_BOTTOM - 15,
-            //                                         .col = TEXTCOL_WHITE,
-            //                                         .cur_time = 0,
-            //                                         .start_time = 0,
-            //                                         .end_time = 30,
-            //                                         .gameplay_should_draw = 1,
-            //                                     });
             savestate_draw_msg("Pos saved");
         }
         else if (rs2.button_holdtimes[CIRCLE] == 1 && rs2.savestate.level == GAME_world_id && rs2.savestate.state_saved)
@@ -114,20 +91,6 @@ void read_input_hook()
     if (rs2.button_holdtimes[R3] == 1 || (currentInput.b.select && rs2.button_holdtimes[L2] == 1 || (currentInput.b.l2 && rs2.button_holdtimes[SELECT] == 1)))
     {
         rs2.menu_enabled = !rs2.menu_enabled;
-        // if (rs2.menu_enabled && (LIBC_rand() % 3 == 0))
-        // {
-        //     char *msg = messages[LIBC_rand() % NUM_MESSAGES];
-        //     add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
-        //                                             .text = msg,
-        //                                             .x = FRAME_WIDTH / 2 - (GAME_GetTextWidth(msg) / 2),
-        //                                             .y = SCREEN_BOTTOM - 15,
-        //                                             .col = LIBC_rand() % 5,
-        //                                             .cur_time = 0,
-        //                                             .start_time = 0,
-        //                                             .end_time = 30,
-        //                                             .gameplay_should_draw = 0,
-        //                                         });
-        // }
     }
 
     if (rs2.button_holdtimes[L3] == 1 && !rs2.frame_advance)
@@ -147,7 +110,8 @@ void read_input_hook()
         }
         else if (currentInput.b.cross)
         { // moon jump
-            *(int16_t *)0x8006A08D = menus[OPTIONS_MENU1].d.options_table[MENU1_MOONJUMP_SPEED].d.option_number_data->number;
+            // *(int16_t *)0x8006A08D = menus[OPTIONS_MENU1].d.options_table[MENU1_MOONJUMP_SPEED].d.option_number_data->number;
+            *(int16_t *)0x8006A08D = 20;
         }
         else if (currentInput.b.triangle)
         { // normal
@@ -220,25 +184,25 @@ void read_input_hook()
             }
         }
 
-        if ((rs2.button_holdtimes[DRIGHT] && rs2.button_holdtimes[DRIGHT] % 2 == 0) || (rs2.button_holdtimes[DLEFT] && rs2.button_holdtimes[DLEFT] % 2 == 0))
-        {
-            if (menu->type == MENU_TYPE_OPTIONS)
-            {
-                OptionData *option = &menu->d.options_table[menu->menu_selection_index];
-                switch (option->type)
-                {
-                case OPTION_NUMBER:
-                    OptionNumberData *data = option->d.option_number_data;
-                    int16_t diff = currentInput.b.dright ? 1 : -1;
-                    if (data->number + diff < data->min)
-                        data->number = data->max;
-                    else if (data->number + diff > data->max)
-                        data->number = data->min;
-                    else
-                        data->number += diff;
-                    break;
-                }
-            }
-        }
+        // if ((rs2.button_holdtimes[DRIGHT] && rs2.button_holdtimes[DRIGHT] % 2 == 0) || (rs2.button_holdtimes[DLEFT] && rs2.button_holdtimes[DLEFT] % 2 == 0))
+        // {
+        //     if (menu->type == MENU_TYPE_OPTIONS)
+        //     {
+        //         OptionData *option = &menu->d.options_table[menu->menu_selection_index];
+        //         switch (option->type)
+        //         {
+        //         case OPTION_NUMBER:
+        //             OptionNumberData *data = option->d.option_number_data;
+        //             int16_t diff = currentInput.b.dright ? 1 : -1;
+        //             if (data->number + diff < data->min)
+        //                 data->number = data->max;
+        //             else if (data->number + diff > data->max)
+        //                 data->number = data->min;
+        //             else
+        //                 data->number += diff;
+        //             break;
+        //         }
+        //     }
+        // }
     }
 }

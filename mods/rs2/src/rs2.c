@@ -28,18 +28,6 @@ int rand_hook_trampoline()
     asm volatile("nop");
 }*/
 
-void init_effects()
-{
-    // skip intro and load into glimmer
-    if (GAME_gameState == 0xb)
-    {
-        *(uint8_t *)(0x80066f90) = 0xb;
-        *(uint8_t *)(0x800698f4) = 3;
-        *(uint8_t *)(0x80067e0c) = 5;
-        GAME_num_lives = 99;
-    }
-}
-
 void passive_effects()
 {
     if (GAME_gameState != PLAYING)
@@ -141,7 +129,14 @@ void main_hook()
 
     if (!rs2.initialised)
     {
-        init_effects();
+        // skip intro and load into glimmer
+        if (GAME_gameState == 0xb)
+        {
+            *(uint8_t *)(0x80066f90) = 0xb;
+            *(uint8_t *)(0x800698f4) = 3;
+            *(uint8_t *)(0x80067e0c) = 5;
+            GAME_num_lives = 99;
+        }
         rs2.initialised = 1;
     }
 
@@ -157,24 +152,22 @@ void handle_warp()
 {
     uint32_t unk_cam_bossfix = *(uint32_t *)0x80067eB0;
     uint32_t unk_cam_homefix = *(uint32_t *)0x80067F28;
+
     GAME_level_load_id = rs2.warp_selected_level.load_level_id;
 
-    if (GAME_gameState == PLAYING)
-    {
+    if (GAME_gameState == PLAYING) {
         rs2.is_warping = 0;
-    }
-    else if (GAME_gameState == LOADING_LEVELS && rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75)) // crush, gulp, ripto starting cams respectively
-    {
-        GAME_unk_timer = 0;
-        GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
-        *(int16_t *)0x800698F0 = 0;
-        GAME_pause_submenu_index = 0;
-    }
-    else if (GAME_gameState == LOADING_LEVELS && rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401)) // home world starting cams respectively
-    {
-        GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
-        GAME_pause_submenu_index = 0;
-        *(int32_t *)0x800698f0 = 0;
-        GAME_unk_timer = 0;
+    } else if (GAME_gameState == LOADING_LEVELS) {
+        // crush, gulp, ripto starting cams respectively
+        int is_boss_level_start = rs2.warp_selected_level.type == BOSS && (unk_cam_bossfix == 0x7404 || unk_cam_bossfix == 0xc9b3 || unk_cam_bossfix == 0x11a75);
+        // home world starting cams respectively
+        int is_homeworld_level_start = rs2.warp_selected_level.type == HOMEWORLD && (unk_cam_homefix == 0xFFFFFDEF || unk_cam_homefix == 0x0402 || unk_cam_homefix == 0x0401);
+
+        if (is_boss_level_start || is_homeworld_level_start) {
+            GAME_unk_timer = 0;
+            GAME_gameState = TRANSITION_LOAD_TO_PLAYING;
+            GAME_pause_submenu_index = 0;
+            *(int32_t *)0x800698f0 = 0;
+        }
     }
 }

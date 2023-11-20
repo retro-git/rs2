@@ -108,9 +108,9 @@ void option_input_display_execute()
     colorUnpressed.b = 0x20;
 
     Color colorPressed;
-    colorPressed.r = 0x80;
-    colorPressed.g = 0x80;
-    colorPressed.b = 0x80;
+    colorPressed.r = 0xff;
+    colorPressed.g = 0xff;
+    colorPressed.b = 0xff;
 
     GAME_GPUChangeTexPage(0xa8);
 
@@ -139,14 +139,13 @@ void option_input_display_execute()
         DrawRectST(buttons[i].x1, buttons[i].x2, buttons[i].y1, buttons[i].y2, rs2.button_holdtimes[buttons[i].identifier] > 0 ? colorPressed : colorUnpressed);
     }
 
-    // draw the analog sticks
-    colorPressed.r = 0xff;
-    colorPressed.g = 0xff;
-    colorPressed.b = 0xff;
-    DrawLine(
-        20 + 10, FRAME_HEIGHT - 23 + 16, colorPressed,
-        20 + 10 + (currentInput->rightStickAnalogX - 0x7f) * 9 / 0x80, FRAME_HEIGHT - 23 + 16 + (currentInput->rightStickAnalogY - 0x7f) * 6 / 0x80, colorPressed);
-    DrawLine(
-        10, FRAME_HEIGHT - 23 + 16, colorPressed,
-        10 + (currentInput->leftStickAnalogX - 0x7f) * 9 / 0x80, FRAME_HEIGHT - 23 + 16 + (currentInput->leftStickAnalogY - 0x7f) * 6 / 0x80, colorPressed);
+    uint8_t stickX = currentInput->rightStickAnalogX;
+    uint8_t stickY = currentInput->rightStickAnalogY;
+    uint8_t offset = 30;
+    for (int j = 0; j < 2; j++) {
+        DrawLine(offset, FRAME_HEIGHT - 23 + 16, colorPressed, offset + (stickX - 0x7f) * 9 / 0x80, FRAME_HEIGHT - 23 + 16 + (stickY - 0x7f) * 6 / 0x80, colorPressed);
+        offset = 10;
+        stickX = currentInput->leftStickAnalogX;
+        stickY = currentInput->leftStickAnalogY;
+    }
 }

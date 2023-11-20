@@ -6,7 +6,7 @@
 
 #define NUM_MENUS 3
 #define NUM_LEVELS 29
-#define NUM_OPTIONS_MENU1 9
+#define NUM_OPTIONS_MENU1 8
 #define NUM_OPTIONS_MENU2_RESPAWN 4
 
 typedef void (*option_execute_func)(void);
