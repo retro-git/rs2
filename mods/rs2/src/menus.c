@@ -16,7 +16,7 @@
 
 OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
     {"Input View", 0, 0, option_input_display_execute},
-    {"Satyr Tools", 0, 0, option_satyrless_tools_execute},
+    {"Satyrless Tools", 0, 0, option_satyrless_tools_execute},
     {"AutoFish", 0, 0, option_instant_fish_execute},
     {"Powerups", 0, 0, option_powerups_alwayson_execute},
     {"Lock Lives", 1, 0, option_infinite_lives_execute},
@@ -28,10 +28,10 @@ OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
 };
 
 OptionData menu2_respawn_options_table[NUM_OPTIONS_MENU2_RESPAWN] = {
-    {"Checkpoint", 0, 0, option_reset_checkpoint_execute},
-    {"Gem", 0, 0, option_reset_gems_execute},
-    {"Orb", 0, 0, option_reset_orbs_execute},
-    {"Talisman", 0, 0, option_reset_eol_portals_execute},
+    {"Reset Checkpoint", 0, 0, option_reset_checkpoint_execute},
+    {"Reset Gems", 0, 0, option_reset_gems_execute},
+    {"Reset Orbs", 0, 0, option_reset_orbs_execute},
+    {"Reset Talismans", 0, 0, option_reset_eol_portals_execute},
 };
 
 MenuData menus[NUM_MENUS] = {
