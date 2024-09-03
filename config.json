@@ -10,7 +10,7 @@
     },
     "versions": [
         {
-            "american-emu": {
+            "american_emu": {
                 "name": "spyro2.bin",
                 "symbols": [
                     "funcs-u.txt",
@@ -23,7 +23,7 @@
             }
         },
         {
-            "american-ps1": {
+            "american_ps1": {
                 "name": "spyro2.bin",
                 "symbols": [
                     "funcs-u.txt",
@@ -36,7 +36,7 @@
             }
         },
         {
-            "american-ps2": {
+            "american_ps2": {
                 "name": "spyro2.bin",
                 "symbols": [
                     "funcs-u.txt",

@@ -39,6 +39,3 @@ sed -i 's/SCUS_944.25/LOADER.BIN/' SYSTEM.CNF
 
 cd ../
 mkpsxiso spyro2_rs2.xml -y
-
-patchname="spyro2_rs2_${versions[$1]}.vcdiff"
-vcdiff encode -dictionary spyro2.bin < spyro2_rs2.bin > $patchname   
