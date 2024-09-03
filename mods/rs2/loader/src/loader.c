@@ -76,7 +76,8 @@ void LoadTexture(u_long *tim, TIM_IMAGE *tparam)
     }
 }
 
-void error(char* func_name, char* file_name) {
+void error(char *func_name, char *file_name)
+{
     char buffer[64];
     sprintf(buffer, "%s failed - %s", func_name, file_name);
     FntPrint(buffer);
@@ -85,7 +86,8 @@ void error(char* func_name, char* file_name) {
     err = 1;
 }
 
-void message(char* msg) {
+void message(char *msg)
+{
     char buffer[64];
     sprintf(buffer, "%s", msg);
     FntPrint(buffer);
@@ -93,9 +95,11 @@ void message(char* msg) {
     display();
 }
 
-int check_free_bytes(u_char* addr) {
+int check_free_bytes(u_char *addr)
+{
     int count = 0;
-    while(*addr == 0) {
+    while (*addr == 0)
+    {
         count++;
         addr++;
     }
@@ -103,7 +107,7 @@ int check_free_bytes(u_char* addr) {
     printf("Number of consecutive null bytes: %d\n", count);
 }
 
-void inject_file(char *file_name, u_char *dst)
+void inject_file(char *file_name, u_long *dst)
 {
     CdlFILE filePos;
     if (CdSearchFile(&filePos, file_name) == 0)
@@ -113,11 +117,13 @@ void inject_file(char *file_name, u_char *dst)
     }
 
     int rounded_size = ((filePos.size + 511) / 512) * 512;
-    int free_bytes = check_free_bytes(dst);
+    int free_bytes = check_free_bytes((u_char *)dst);
     char buffer[128];
     sprintf(buffer, "%s %d %d %d", file_name, filePos.size, rounded_size, free_bytes);
-    while (1) {
-        for (int i = 0; i < 300; i++) {
+    while (1)
+    {
+        for (int i = 0; i < 300; i++)
+        {
             message(buffer);
         }
         break;
@@ -145,43 +151,44 @@ void inject_file(char *file_name, u_char *dst)
     }
 }
 
-void inject() {
+void inject()
+{
     printf("INJECTING %d\n", VERSION);
 
-    u_char *header;
-    u_char *kernel_free_space_1;
-    u_char *kernel_free_space_2;
+    u_long *header;
+    u_long *kernel_free_space_1;
+    u_long *kernel_free_space_2;
 
     if (VERSION == 2)
     {
-        header = (u_char*)(0x8000B070 + 0x4c);
-        kernel_free_space_1 = (u_char *)0x8000A000;
-        kernel_free_space_2 = (u_char *)0x8000c400;
+        header = (u_long *)(0x8000B070 + 0x4c);
+        kernel_free_space_1 = (u_long *)0x8000A000;
+        kernel_free_space_2 = (u_long *)0x8000c400;
     }
     else if (VERSION == 3)
     {
-        header = (u_char*)(0x8000A8D0 + 0x4c);
-        kernel_free_space_1 = (u_char *)0x800096A8;
-        kernel_free_space_2 = (u_char *)0x80007526;
+        header = (u_long *)(0x8000A8D0 + 0x4c);
+        kernel_free_space_1 = (u_long *)0x800096A8;
+        kernel_free_space_2 = (u_long *)0x80007526;
     }
-    else {
+    else
+    {
         printf("NO VERSION SET WHEN COMPILING\n");
     }
 
-    char buffer[128];
-    sprintf(buffer, "%s %d", "HEADER", check_free_bytes(header));
-    while (1) {
-        for (int i = 0; i < 300; i++) {
-            message(buffer);
-        }
-        break;
-    }
+    // char buffer[128];
+    // sprintf(buffer, "%s %d", "HEADER", check_free_bytes(header));
+    // while (1) {
+    //     for (int i = 0; i < 300; i++) {
+    //         message(buffer);
+    //     }
+    //     break;
+    // }
 
     CdInit();
-    // inject_file("\\DRAW.BIN;1", kernel_free_space_1);
-    inject_file("\\INPUT.BIN;1", kernel_free_space_1);
+    inject_file("\\DRAW.BIN;1", kernel_free_space_1);
+    inject_file("\\INPUT.BIN;1", kernel_free_space_2);
 }
-
 
 int main(void)
 {
@@ -219,8 +226,8 @@ int main(void)
             // MoveImage(tim_moneybags.prect, 0, SCREENYRES);
             // printf("%d\n", i);
             FntPrint("rs2-1.0 - RETRO PRODUCTIONS"); // Send string to print stream
-            FntFlush(-1);                          // Draw printe stream
-            display();                             // Execute display()
+            FntFlush(-1);                            // Draw printe stream
+            display();                               // Execute display()
 
             i += 1;
             if (i == 120)

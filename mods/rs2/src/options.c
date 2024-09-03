@@ -39,33 +39,37 @@ void option_reset_checkpoint_execute()
     GAME_zoe_checkpoint_active = 0;
 }
 
-void option_powerups_alwayson_execute() {
+void option_powerups_alwayson_execute()
+{
     GAME_enemies_killed_since_death = 0x30;
 }
 
-void option_toggle_zombie_execute() {
+void option_toggle_zombie_execute()
+{
     GAME_sparx_health = -1;
     // oneshot_toggle_message(GAME_sparx_health == -1, MENU1_ZOMBIE);
-   // GAME_sparx_health >= 0 ? GAME_sparx_health = -1 : GAME_sparx_health = 3;
+    // GAME_sparx_health >= 0 ? GAME_sparx_health = -1 : GAME_sparx_health = 3;
 }
 
 void option_reset_gems_execute()
 {
-    LIBC_bzero(&GAME_gems_collected_status, 0x356);
+    LIBC_bzero((unsigned char *)&GAME_gems_collected_status, 0x356);
 }
 
 void option_reset_orbs_execute()
 {
-    LIBC_bzero(&GAME_orbs_collected_status, 0x1a);
+    LIBC_bzero((unsigned char *)&GAME_orbs_collected_status, 0x1a);
 }
 
-void option_reset_eol_portals_execute() {
-    LIBC_bzero(&GAME_end_level_portals_status, 0x1c);
+void option_reset_eol_portals_execute()
+{
+    LIBC_bzero((unsigned char *)&GAME_end_level_portals_status, 0x1c);
     GAME_num_talismans = 0;
 }
 
-void option_infinite_lives_execute() {
-    *(int16_t*)0x80032fe4 ^= -1;
+void option_infinite_lives_execute()
+{
+    *(int16_t *)0x80032fe4 ^= -1;
     // oneshot_toggle_message(*(int16_t*)0x80032fe4 == 0, MENU1_LOCK_LIVES);
 }
 
@@ -100,7 +104,8 @@ void option_input_display_execute()
 
     GAME_GPUChangeTexPage(0xa8);
 
-    struct Button {
+    struct Button
+    {
         uint8_t x1, x2, y1, y2;
         uint8_t identifier;
     };
@@ -117,25 +122,27 @@ void option_input_display_execute()
         {20 + 7, 20 + 13, FRAME_HEIGHT - 23 + 10, FRAME_HEIGHT - 23 + 14, TRIANGLE},
         {20 + 13, 20 + 19, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, CIRCLE},
         {20 + 7, 20 + 13, FRAME_HEIGHT - 23 + 18, FRAME_HEIGHT - 23 + 22, CROSS},
-        {20 + 1, 20 + 7, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, SQUARE}
-    };
+        {20 + 1, 20 + 7, FRAME_HEIGHT - 23 + 14, FRAME_HEIGHT - 23 + 18, SQUARE}};
 
     // *((uint8_t*)0x8004d2dc) = 0;
     // *((uint8_t*)0x8004d2dd) = 0x2a;
     // *((uint8_t*)0x8004d2e0) = 0;
     // *((uint8_t*)0x8004d2e1) = 0;
 
-    for (int i = 0; i < sizeof(buttons) / sizeof(buttons[0]); i++) {
-        if (rs2.button_holdtimes[buttons[i].identifier] > 0) {
+    for (int i = 0; i < sizeof(buttons) / sizeof(buttons[0]); i++)
+    {
+        if (rs2.button_holdtimes[buttons[i].identifier] > 0)
+        {
             GAME_DrawOpaqueBlackRect(buttons[i].x1, buttons[i].x2, buttons[i].y1, buttons[i].y2);
         }
-        else {
+        else
+        {
             GAME_DrawSTBlackRect(buttons[i].x1, buttons[i].x2, buttons[i].y1, buttons[i].y2);
         }
     }
 
     // sticks:
-    
+
     // Color colorPressed;
     // colorPressed.r = 0xff;
     // colorPressed.g = 0xff;
