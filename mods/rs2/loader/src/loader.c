@@ -154,6 +154,7 @@ void inject_file(char *file_name, u_long *dst)
 void inject()
 {
     printf("INJECTING %d\n", VERSION);
+    printf("ayaya\n");
 
     u_long *header;
     u_long *kernel_free_space_1;
@@ -167,9 +168,9 @@ void inject()
     }
     else if (VERSION == 3)
     {
-        header = (u_long *)(0x8000A8D0 + 0x4c);
-        kernel_free_space_1 = (u_long *)0x800096A8;
-        kernel_free_space_2 = (u_long *)0x80007526;
+        // header = (u_long *)(0x8000A8D0 + 0x4c);
+        kernel_free_space_1 = (u_long *)0x800314b4;
+        kernel_free_space_2 = (u_long *)0x8001D718;
     }
     else
     {
@@ -186,8 +187,8 @@ void inject()
     // }
 
     CdInit();
-    inject_file("\\DRAW.BIN;1", kernel_free_space_1);
-    inject_file("\\INPUT.BIN;1", kernel_free_space_2);
+    inject_file("\\INPUT.BIN;1", kernel_free_space_1);
+    inject_file("\\DRAW.BIN;1", kernel_free_space_2);
 }
 
 int main(void)
