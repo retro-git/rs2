@@ -1,5 +1,9 @@
 #include "loader.h"
 
+#ifndef VERSION
+#define VERSION 2  // Or whatever default version you want
+#endif
+
 // CD specifics
 #define CD_SECTOR_SIZE 2048
 // Converting bytes to sectors SECTOR_SIZE is defined in words, aka int
@@ -168,9 +172,9 @@ void inject()
     }
     else if (VERSION == 3)
     {
-        // header = (u_long *)(0x8000A8D0 + 0x4c);
-        kernel_free_space_1 = (u_long *)0x800314b4;
-        kernel_free_space_2 = (u_long *)0x8001D718;
+        header = (u_long *)(0x8000A8D0 + 0x48);
+        kernel_free_space_1 = (u_long *)0x80008EB0;
+        kernel_free_space_2 = (u_long *)0x80007530;
     }
     else
     {
@@ -178,7 +182,7 @@ void inject()
     }
 
     char buffer[128];
-    sprintf(buffer, "%s %d", "HEADER", check_free_bytes(header));
+    sprintf(buffer, "%s %d", "HEADER", check_free_bytes((u_char *)header));
     while (1)
     {
         for (int i = 0; i < 300; i++)

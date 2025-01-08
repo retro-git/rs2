@@ -7,6 +7,6 @@ american_ps1, header, header_start, 0x4c, src/rs2.c src/options.c, rs2.bin
 american_ps1, kernel, kernel_free_space_1, 0x0, src/input.c, input.bin
 american_ps1, kernel, kernel_free_space_2, 0x0, src/menus.c src/draw.c, draw.bin
 
-american_ps2, header, 0x8000A91C, 0x0, src/rs2.c src/options.c, rs2.bin
-american_ps2, kernel, 0x800314b4, 0x0, src/input.c, input.bin
-american_ps2, kernel, 0x8001D718, 0x0, src/menus.c src/draw.c, draw.bin
+american_ps2, header, header_start, 0x48, src/rs2.c, rs2.bin
+american_ps2, kernel, kernel_free_space_1, 0x0, src/input.c, input.bin
+american_ps2, kernel, kernel_free_space_2, 0x0, src/menus.c src/draw.c src/options.c, draw.bin
