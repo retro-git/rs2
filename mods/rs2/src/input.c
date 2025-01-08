@@ -8,6 +8,7 @@
 #include "common.h"
 #include "vec3.h"
 #include "gpu.h"
+#include "msg.h"
 
 void read_input_hook()
 {
@@ -77,6 +78,20 @@ void read_input_hook()
     if (rs2.button_holdtimes[R3] == 1 || (currentInput.b.select && rs2.button_holdtimes[L2] == 1 || (currentInput.b.l2 && rs2.button_holdtimes[SELECT] == 1)))
     {
         rs2.menu_enabled = !rs2.menu_enabled;
+        if (rs2.menu_enabled)
+        {
+            char *msg = messages[LIBC_rand() % NUM_MESSAGES];
+            add_draw_command(DRAW_TEXT_TIMEOUT, &(draw_text_timeout_data_t){
+                                                    .text = msg,
+                                                    .x = FRAME_WIDTH / 2 - (GAME_GetTextWidth(msg) / 2),
+                                                    .y = SCREEN_BOTTOM - 15,
+                                                    .col = LIBC_rand() % 5,
+                                                    .cur_time = 0,
+                                                    .start_time = 0,
+                                                    .end_time = 100,
+                                                    .gameplay_should_draw = 0,
+                                                });
+        }
     }
 
     if (rs2.button_holdtimes[L3] == 1 && !rs2.frame_advance)

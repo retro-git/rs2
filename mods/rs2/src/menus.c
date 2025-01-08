@@ -15,7 +15,7 @@
 // };
 
 OptionData menu1_options_table[NUM_OPTIONS_MENU1] = {
-    {"Input View", 0, 0, option_input_display_execute},
+    {"Input Display", 0, 0, option_input_display_execute},
     {"Satyrless Tools", 0, 0, option_satyrless_tools_execute},
     {"AutoFish", 0, 0, option_instant_fish_execute},
     {"Powerups", 0, 0, option_powerups_alwayson_execute},

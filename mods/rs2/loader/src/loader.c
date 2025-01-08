@@ -181,16 +181,16 @@ void inject()
         printf("NO VERSION SET WHEN COMPILING\n");
     }
 
-    char buffer[128];
-    sprintf(buffer, "%s %d", "HEADER", check_free_bytes((u_char *)header));
-    while (1)
-    {
-        for (int i = 0; i < 300; i++)
-        {
-            message(buffer);
-        }
-        break;
-    }
+    // char buffer[128];
+    // sprintf(buffer, "%s %d", "HEADER", check_free_bytes((u_char *)header));
+    // while (1)
+    // {
+    //     for (int i = 0; i < 300; i++)
+    //     {
+    //         message(buffer);
+    //     }
+    //     break;
+    // }
 
     CdInit();
     inject_file("\\INPUT.BIN;1", kernel_free_space_1);
@@ -237,7 +237,7 @@ int main(void)
             display();                               // Execute display()
 
             i += 1;
-            if (i == 120)
+            if (i == 150)
             {
                 break;
             }
