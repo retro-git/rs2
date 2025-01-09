@@ -122,7 +122,9 @@ void main_hook()
             *(uint8_t *)(0x8006b084 + i) = 1;
         }
         // remove exit level cutscenes
-        *(uint8_t *)0x80066ff4 = 0;
+        if (GAME_world_id != GLIMMER) {
+            *(uint8_t *)0x80066ff4 = 0;
+        }
 
         GAME_ripto_zoe_state = 0;
     }

@@ -120,23 +120,23 @@ void inject_file(char *file_name, u_long *dst)
         return;
     }
 
-    int rounded_size = ((filePos.size + 511) / 512) * 512;
-    int free_bytes = check_free_bytes((u_char *)dst);
-    char buffer[128];
-    sprintf(buffer, "%s %d %d %d", file_name, filePos.size, rounded_size, free_bytes);
-    while (1)
-    {
-        for (int i = 0; i < 300; i++)
-        {
-            message(buffer);
-        }
-        break;
-    }
-    if (rounded_size > free_bytes)
-    {
-        error("Not enough free bytes", file_name);
-        return;
-    }
+    // int rounded_size = ((filePos.size + 511) / 512) * 512;
+    // int free_bytes = check_free_bytes((u_char *)dst);
+    // char buffer[128];
+    // sprintf(buffer, "%s %d %d %d", file_name, filePos.size, rounded_size, free_bytes);
+    // while (1)
+    // {
+    //     for (int i = 0; i < 300; i++)
+    //     {
+    //         message(buffer);
+    //     }
+    //     break;
+    // }
+    // if (rounded_size > free_bytes)
+    // {
+    //     error("Not enough free bytes", file_name);
+    //     return;
+    // }
 
     if (CdControl(CdlSetloc, (u_char *)&filePos.pos, 0) == 0)
     {
@@ -158,7 +158,6 @@ void inject_file(char *file_name, u_long *dst)
 void inject()
 {
     printf("INJECTING %d\n", VERSION);
-    printf("ayaya\n");
 
     u_long *header;
     u_long *kernel_free_space_1;
@@ -181,16 +180,16 @@ void inject()
         printf("NO VERSION SET WHEN COMPILING\n");
     }
 
-    char buffer[128];
-    sprintf(buffer, "%s %d", "HEADER", check_free_bytes((u_char *)header));
-    while (1)
-    {
-        for (int i = 0; i < 300; i++)
-        {
-            message(buffer);
-        }
-        break;
-    }
+    // char buffer[128];
+    // sprintf(buffer, "%s %d", "HEADER", check_free_bytes((u_char *)header));
+    // while (1)
+    // {
+    //     for (int i = 0; i < 300; i++)
+    //     {
+    //         message(buffer);
+    //     }
+    //     break;
+    // }
 
     CdInit();
     inject_file("\\INPUT.BIN;1", kernel_free_space_1);
@@ -232,12 +231,12 @@ int main(void)
             // MoveImage(tim_moneybags.prect, 0, 0);
             // MoveImage(tim_moneybags.prect, 0, SCREENYRES);
             // printf("%d\n", i);
-            FntPrint("rs2-1.0 - RETRO PRODUCTIONS"); // Send string to print stream
+            FntPrint("rs2 v1.0: RETRO PRODUCTIONS"); // Send string to print stream
             FntFlush(-1);                            // Draw printe stream
             display();                               // Execute display()
 
             i += 1;
-            if (i == 120)
+            if (i == 300)
             {
                 break;
             }
