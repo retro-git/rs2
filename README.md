@@ -1,6 +1,7 @@
 # rs2
 ## Downloads
 [PS1/EMU](https://github.com/retro-git/rs2/releases/download/v1.0/spyro2_rs2_1.0-ps1.zip)
+
 [PS2](https://github.com/retro-git/rs2/releases/download/v1.0/spyro2_rs2_1.0-ps2.zip)
 
 ## Controls:
