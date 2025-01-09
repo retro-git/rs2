@@ -5,25 +5,23 @@
 [PS2](https://github.com/retro-git/rs2/releases/download/v1.0/spyro2_rs2_1.0-ps2.zip)
 
 ## Controls:
-OPEN/CLOSE MENU: R3 or L2+SELECT\
-NAVIGATE MENU: DPAD and L2/R2 to switch pages\
+**OPEN/CLOSE MENU:** R3 or L2+SELECT\
+**NAVIGATE MENU:** DPAD and L2/R2 to switch pages
 
-SAVE/LOAD CUSTOM POSITION: L2+R2+TRIANGLE to save, L2+R2+CIRCLE to load\
+**SAVE/LOAD CUSTOM POSITION:** L2+R2+TRIANGLE to save, L2+R2+CIRCLE to load
 
-SAVE CUSTOM CHECKPOINT: L2+R2+SQAURE\
-FADE OUT TO MOST RECENT CHECKPOINT: L2+R2+START (NOTE: you can configure this to reset gems/orbs/talismans in the menu)\
+**SAVE CUSTOM CHECKPOINT:** L2+R2+SQAURE\
+**LOAD CUSTOM/MOST RECENT CHECKPOINT:** L2+R2+START (NOTE: you can configure this to reset gems/orbs/talismans in the menu)
 
-FRAME ADVANCE: Press L3 to pause the game. Tap L3 while paused to advance a frame. Hold L3 and then release to advance multiple frames. Press select to unpause.\
+**FRAME ADVANCE:** Press L3 to pause the game and enter frame-advance. Tap L3 while paused to advance a frame. Hold L3 to advance multiple frames, and release to re-pause. Press SELECT to unpause and exit frame-advance.
 
-MOON JUMP: Jump while holding SELECT.\
-SWIM-IN-AIR: SELECT+CIRCLE to enter SIA, SELECT+TRIANGLE to return to normal.
+**MOON JUMP:** Jump while holding SELECT.\
+**SWIM-IN-AIR:** SELECT+CIRCLE to enter SIA, SELECT+TRIANGLE to return to normal.
 
 ## About:
 Practice Hack for Spyro 2: Ripto's Rage. Built with [psx-modding-toolchain](https://github.com/mateusfavarin/psx-modding-toolchain).
 
-The following video demonstrates the features, shows how to patch an ISO with the hack, and gives some useful information about the state of the project: https://www.youtube.com/watch?v=njPkQnrKqTM.
-
-Online patcher available at: https://spyro.run/prachack.html (NOTE: as explained in the video above, the PS2 option is currently broken - if you want to play on PS2, select the PS1 option and use popstarter).
+The following video demonstrates the features, and gives some useful information about the state of the project: https://www.youtube.com/watch?v=njPkQnrKqTM.
 
 
 ![image](https://user-images.githubusercontent.com/43223593/187248557-94a84975-9055-4912-8724-ec1619c22799.png)
