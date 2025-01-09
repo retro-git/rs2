@@ -4,6 +4,9 @@
 
 [PS2](https://github.com/retro-git/rs2/releases/download/v1.0/spyro2_rs2_1.0-ps2.zip)
 
+## Video Tutorial:
+https://www.youtube.com/watch?v=rzbAL9hkF-c
+
 ## Controls:
 **OPEN/CLOSE MENU:** R3 or L2+SELECT\
 **NAVIGATE MENU:** DPAD and L2/R2 to switch pages
@@ -19,10 +22,7 @@
 **SWIM-IN-AIR:** SELECT+CIRCLE to enter SIA, SELECT+TRIANGLE to return to normal.
 
 ## About:
-Practice Hack for Spyro 2: Ripto's Rage. Built with [psx-modding-toolchain](https://github.com/mateusfavarin/psx-modding-toolchain).
-
-The following video demonstrates the features, and gives some useful information about the state of the project: https://www.youtube.com/watch?v=njPkQnrKqTM.
-
+Practice Hack for Spyro 2: Ripto's Rage.
 
 ![image](https://user-images.githubusercontent.com/43223593/187248557-94a84975-9055-4912-8724-ec1619c22799.png)
 ![image](https://user-images.githubusercontent.com/43223593/187282905-2fdaec79-1161-42db-b895-7c094f19f11d.png)
