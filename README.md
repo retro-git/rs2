@@ -1,4 +1,4 @@
-# rs2
+# rs2 - Spyro 2 Practice Hack by Retromeister
 ## Downloads
 [PS1/EMU](https://github.com/retro-git/rs2/releases/download/v1.0/spyro2_rs2_1.0-ps1.zip)
 
