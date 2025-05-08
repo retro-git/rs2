@@ -4,9 +4,6 @@
 
 [PS2](https://github.com/retro-git/rs2/releases/download/v1.0/spyro2_rs2_1.0-ps2.zip)
 
-## Video Tutorial:
-https://www.youtube.com/watch?v=rzbAL9hkF-c
-
 ## Controls:
 **OPEN/CLOSE MENU:** R3 or L2+SELECT\
 **NAVIGATE MENU:** DPAD and L2/R2 to switch pages
